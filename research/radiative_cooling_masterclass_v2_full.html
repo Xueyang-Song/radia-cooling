@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radiative Cooling Masterclass | 辐射制冷大师课</title>
+<style>
+:root {
+    --bg0:#080818; --bg1:#10102a; --bg2:#181840;
+    --cy:#00d4ff; --mg:#d946ef; --or:#f97316; --gn:#22c55e; --yl:#facc15;
+    --tx:#eeeeff; --tx2:#9999bb;
+    --glass:rgba(255,255,255,.04); --gb:rgba(255,255,255,.09);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg0);color:var(--tx);line-height:1.75;overflow-x:hidden}
+::-webkit-scrollbar{width:6px} ::-webkit-scrollbar-track{background:var(--bg0)} ::-webkit-scrollbar-thumb{background:var(--bg2);border-radius:3px}
+a{color:var(--cy);text-decoration:none} a:hover{text-decoration:underline}
+
+#prog{position:fixed;top:0;left:0;width:100%;height:3px;z-index:2000}
+#progBar{height:100%;width:0;background:linear-gradient(90deg,var(--cy),var(--mg));transition:width .2s}
+
+nav{position:fixed;top:3px;left:0;width:100%;background:rgba(8,8,24,.92);backdrop-filter:blur(16px);z-index:1000;padding:12px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gb)}
+.nav-t{font-size:1.1rem;font-weight:700;background:linear-gradient(90deg,var(--cy),var(--mg));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.nav-r{display:flex;gap:12px;align-items:center}
+.dots{display:flex;gap:4px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--glass);border:1px solid var(--gb);cursor:pointer;transition:.2s}
+.dot:hover,.dot.on{background:var(--cy);transform:scale(1.3)}
+.lbtn{background:var(--glass);border:1px solid var(--gb);color:var(--tx);padding:6px 14px;border-radius:16px;cursor:pointer;font-size:.8rem;transition:.2s}
+.lbtn:hover{background:var(--cy);color:#000}
+
+main{padding-top:60px}
+.ch{padding:80px 32px;min-height:100vh}
+.ch:nth-child(even){background:var(--bg1)}
+.wrap{max-width:1100px;margin:0 auto}
+.ch-hd{text-align:center;margin-bottom:50px}
+.ch-n{font-size:.8rem;color:var(--cy);text-transform:uppercase;letter-spacing:3px;margin-bottom:6px}
+.ch-t{font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:12px}
+.ch-sub{font-size:1.05rem;color:var(--tx2);max-width:680px;margin:0 auto}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px;position:relative;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-c{position:relative;z-index:1;max-width:850px}
+.hero h1{font-size:clamp(2.2rem,5.5vw,4rem);font-weight:800;margin-bottom:16px;background:linear-gradient(135deg,var(--cy),var(--mg),var(--or));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:gsh 5s ease infinite;background-size:200% 200%}
+@keyframes gsh{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+.hero p{font-size:1.2rem;color:var(--tx2);margin-bottom:32px}
+.cta{display:inline-block;padding:14px 36px;background:linear-gradient(135deg,var(--cy),var(--mg));color:#000;font-weight:700;border-radius:28px;border:none;cursor:pointer;font-size:1rem;transition:.2s}
+.cta:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,212,255,.35)}
+
+.gc{background:var(--glass);border:1px solid var(--gb);border-radius:16px;padding:28px;margin-bottom:24px;transition:.25s}
+.gc:hover{border-color:rgba(0,212,255,.3);transform:translateY(-3px)}
+.gc h3,.gc h4{margin-bottom:12px}
+.gc-t{font-size:1.3rem;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+
+.kc{background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(217,70,239,.08));border-left:3px solid var(--cy);padding:18px 22px;margin:20px 0;border-radius:0 12px 12px 0}
+.kc h4{color:var(--cy);font-size:.85rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.an{background:linear-gradient(135deg,rgba(250,204,21,.08),rgba(249,115,22,.08));border-left:3px solid var(--yl);padding:18px 22px;margin:20px 0;border-radius:0 12px 12px 0}
+.an h4{color:var(--yl);font-size:.85rem;margin-bottom:8px}
+
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+
+.qz{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:26px;margin:24px 0}
+.qo{padding:13px 18px;background:var(--bg1);border:2px solid var(--gb);border-radius:10px;cursor:pointer;transition:.2s;margin-bottom:8px}
+.qo:hover{border-color:var(--cy)}
+.qo.ok{border-color:var(--gn);background:rgba(34,197,94,.1)}
+.qo.no{border-color:#f43;background:rgba(255,68,51,.08)}
+.qfb{margin-top:16px;padding:14px;border-radius:10px;display:none}
+.qfb.show{display:block}
+
+.fm{background:var(--bg1);padding:18px 28px;border-radius:10px;text-align:center;font-family:'Times New Roman',serif;font-size:1.35rem;margin:18px 0;border:1px solid var(--gb);overflow-x:auto}
+.fm sub,.fm sup{font-size:.7em}
+
+.spbar{display:flex;height:44px;border-radius:8px;overflow:hidden;margin:16px 0}
+.spbar>div{display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;padding:0 8px;text-align:center}
+
+.ccnt{background:var(--bg1);border-radius:12px;padding:16px;margin:24px 0;border:1px solid var(--gb)}
+.ccnt canvas{width:100%;border-radius:8px;display:block}
+.ccnt p{text-align:center;color:var(--tx2);font-size:.85rem;margin-top:12px}
+
+.mc{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:22px;transition:.25s;position:relative;overflow:hidden}
+.mc::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px}
+.mc.t1::before{background:var(--cy)} .mc.t2::before{background:var(--or)} .mc.t3::before{background:var(--mg)}
+.mc:hover{transform:translateY(-4px);border-color:rgba(0,212,255,.3)}
+.mc h4{font-size:1.15rem;margin-bottom:6px}
+.mc .tag{display:inline-block;padding:3px 10px;border-radius:16px;font-size:.7rem;font-weight:700;margin-bottom:12px}
+.mc.t1 .tag{background:rgba(0,212,255,.15);color:var(--cy)} .mc.t2 .tag{background:rgba(249,115,22,.15);color:var(--or)} .mc.t3 .tag{background:rgba(217,70,239,.15);color:var(--mg)}
+
+.dtbl{width:100%;border-collapse:collapse;font-size:.88rem;margin:16px 0}
+.dtbl th{text-align:left;padding:10px 12px;color:var(--cy);border-bottom:2px solid rgba(0,212,255,.3);font-weight:600;white-space:nowrap}
+.dtbl td{padding:9px 12px;border-bottom:1px solid var(--gb)}
+.dtbl tr:hover td{background:rgba(0,212,255,.04)}
+
+.lab{background:var(--bg0);border:1px solid var(--gb);border-radius:14px;overflow:hidden;margin:24px 0}
+.lab-bar{background:linear-gradient(90deg,rgba(0,212,255,.15),rgba(217,70,239,.1));padding:12px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--gb);font-size:.9rem}
+.lab-bar .ld{width:8px;height:8px;border-radius:50%}
+.lab-body{padding:20px;overflow-x:auto}
+.lab pre{background:var(--bg1);padding:16px;border-radius:8px;overflow-x:auto;font-size:.82rem;line-height:1.6;color:#c5c5e0;margin:12px 0}
+.lab pre .cm{color:#666} .lab pre .kw{color:var(--cy)} .lab pre .st{color:var(--gn)} .lab pre .num{color:var(--or)}
+
+.matc{background:var(--glass);border:1px solid var(--gb);border-radius:14px;overflow:hidden;transition:.25s}
+.matc:hover{transform:scale(1.015);border-color:var(--cy)}
+.matc-img{height:140px;background:var(--bg1);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.matc-body{padding:16px}
+
+.steps{counter-reset:stp}
+.stp{position:relative;padding-left:64px;margin-bottom:26px}
+.stp::before{counter-increment:stp;content:counter(stp);position:absolute;left:0;top:0;width:44px;height:44px;background:linear-gradient(135deg,var(--cy),var(--mg));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:#000}
+.stp h4{margin-bottom:8px;font-size:1.1rem}
+
+.tl{position:relative;padding-left:26px}
+.tl::before{content:'';position:absolute;left:0;top:0;height:100%;width:2px;background:linear-gradient(180deg,var(--cy),var(--mg))}
+.tl-i{position:relative;margin-bottom:26px;padding-left:26px}
+.tl-i::before{content:'';position:absolute;left:-5px;top:4px;width:12px;height:12px;background:var(--cy);border-radius:50%;border:2px solid var(--bg0)}
+
+.hi{color:var(--cy);font-weight:600} .hm{color:var(--mg);font-weight:600} .ho{color:var(--or);font-weight:600} .hg{color:var(--gn);font-weight:600}
+
+.tleg{display:flex;gap:24px;justify-content:center;margin:24px 0;flex-wrap:wrap}
+.tleg-i{display:flex;align-items:center;gap:8px}
+.tleg-d{width:10px;height:10px;border-radius:50%}
+
+.term{border-bottom:1px dashed var(--cy);cursor:help;position:relative}
+.term:hover::after{content:attr(data-tip);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--cy);color:var(--tx);padding:8px 12px;border-radius:8px;font-size:.8rem;width:280px;z-index:100;line-height:1.4;white-space:normal;pointer-events:none}
+
+.rv{opacity:0;transform:translateY(24px);transition:.7s ease}
+.rv.vis{opacity:1;transform:translateY(0)}
+
+footer{text-align:center;padding:50px 32px;background:var(--bg1);border-top:1px solid var(--gb)}
+
+/* bilingual show/hide — .lc hidden by default, shown when body.cn */
+.lc{display:none}
+body.cn .lc{display:inline}
+body.cn .le{display:none}
+/* block-level bilingual */
+div.lc, p.lc, h3.lc, h4.lc, li.lc, tr.lc, thead.lc{display:none}
+body.cn div.lc, body.cn p.lc, body.cn h3.lc, body.cn h4.lc, body.cn li.lc, body.cn tr.lc, body.cn thead.lc{display:block}
+body.cn div.le, body.cn p.le, body.cn h3.le, body.cn h4.le, body.cn li.le, body.cn tr.le, body.cn thead.le{display:none}
+body.cn tr.lc{display:table-row}
+body.cn thead.lc{display:table-header-group}
+
+@media(max-width:768px){.ch{padding:50px 16px}.g2,.g3{grid-template-columns:1fr}nav{padding:8px 12px}.stp{padding-left:54px}}
+</style>
+</head>
+<body>
+<div id="prog"><div id="progBar"></div></div>
+<nav>
+  <div class="nav-t"><span class="le">Radiative Cooling Masterclass</span><span class="lc">辐射制冷大师课</span></div>
+  <div class="nav-r">
+    <div class="dots" id="dots"></div>
+    <button class="lbtn" id="lb">中文</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+<canvas id="hc"></canvas>
+<div class="hero-c">
+  <h1><span class="le">Master the Science of Cooling Without Energy</span><span class="lc">掌握零能耗制冷的科学</span></h1>
+  <p><span class="le">From fundamental physics to cutting-edge ML — become a peer of the researchers. Interactive, visual, concrete.</span><span class="lc">从基础物理到前沿机器学习——成为研究人员的同行。交互式、可视化、具体。</span></p>
+  <button class="cta" onclick="go('ch1')"><span class="le">Begin →</span><span class="lc">开始 →</span></button>
+</div>
+</section>
+
+<!-- ===== CH 1 : PHYSICS ===== -->
+<section class="ch" id="ch1">
+<div class="wrap">
+<div class="ch-hd">
+  <div class="ch-n"><span class="le">Chapter 1</span><span class="lc">第一章</span></div>
+  <h2 class="ch-t"><span class="le">The Universe's Free Air Conditioner</span><span class="lc">宇宙的免费空调</span></h2>
+  <p class="ch-sub"><span class="le">Everything radiates heat. Aim it at outer space (3 K) through the atmosphere's infrared window, and you get free cooling — no electricity needed.</span><span class="lc">万物都在辐射热量。通过大气红外窗口将其射向太空（3K），就能获得免费冷却——无需电力。</span></p>
+</div>
+
+<div class="gc rv">
+  <div class="gc-t">🌡️ <span class="le">The Core Physics</span><span class="lc">核心物理学</span></div>
+  <p><span class="le">Every object above absolute zero emits <span class="term" data-tip="Electromagnetic radiation in the ~0.7–1000 μm wavelength range, invisible to the human eye. Carries thermal energy away.">thermal infrared radiation</span>. The hotter it is, the more it radiates (Stefan-Boltzmann law: P = εσT⁴). A rooftop at 300 K (27°C) radiates about 460 W/m². But most of that gets absorbed by water vapor and CO₂ in the atmosphere and re-radiated back down.</span><span class="lc">每个高于绝对零度的物体都会发射<span class="term" data-tip="波长约0.7–1000 μm范围的电磁辐射，人眼不可见。将热能从发射体带走。">热红外辐射</span>。温度越高，辐射越多（斯特凡-玻尔兹曼定律：P = εσT⁴）。300K（27°C）的屋顶辐射约460 W/m²。但大部分被大气中的水蒸气和CO₂吸收并重新向下辐射。</span></p>
+  <div class="kc">
+    <h4><span class="le">The Atmospheric Window (8–13 μm)</span><span class="lc">大气窗口（8–13 μm）</span></h4>
+    <p><span class="le">Between 8 and 13 micrometers wavelength, the atmosphere is nearly transparent to infrared. Radiation at these wavelengths passes straight through to outer space (3 K background). This is the <strong>"atmospheric window"</strong> — the only escape route for thermal radiation.</span><span class="lc">在8到13微米波长之间，大气对红外线几乎是透明的。这些波长的辐射直接穿过大气到达太空（3K背景）。这就是<strong>"大气窗口"</strong>——热辐射的唯一逃逸通道。</span></p>
+  </div>
+</div>
+
+<!-- Atmospheric transmittance chart -->
+<div class="ccnt rv">
+  <canvas id="atmCanvas" height="320"></canvas>
+  <p><span class="le">Atmospheric transmittance vs wavelength — the 8–13 μm window is clearly visible</span><span class="lc">大气透过率与波长的关系——8-13 μm窗口清晰可见</span></p>
+</div>
+
+<div class="gc rv">
+  <div class="gc-t">📊 <span class="le">What Is a "Spectrum"?</span><span class="lc">什么是"光谱"？</span></div>
+  <p><span class="le">A <span class="term" data-tip="A graph showing how a property changes across different wavelengths. X-axis = wavelength, Y-axis = fraction (0–1).">spectrum</span> is a graph of how a material behaves at each wavelength. For radiative cooling, we care about two spectra:</span><span class="lc"><span class="term" data-tip="显示属性随不同波长变化的图表。X轴=波长，Y轴=比例（0–1）。">光谱</span>是显示材料在每个波长下行为的图表。对于辐射制冷，我们关注两种光谱：</span></p>
+  <div class="g2" style="margin-top:16px">
+    <div style="background:var(--bg1);padding:16px;border-radius:10px;border:1px solid var(--gb)">
+      <h4 style="color:var(--yl);margin-bottom:8px"><span class="le">☀️ Solar Reflectance Spectrum (0.3–2.5 μm)</span><span class="lc">☀️ 太阳反射光谱（0.3–2.5 μm）</span></h4>
+      <p style="font-size:.9rem"><span class="le">How much sunlight the material bounces away at each wavelength. We want this HIGH (&gt;95%) across the whole solar band so the material doesn't heat up.</span><span class="lc">材料在每个波长上反射了多少阳光。我们希望在整个太阳波段保持高反射率（&gt;95%），使材料不会升温。</span></p>
+    </div>
+    <div style="background:var(--bg1);padding:16px;border-radius:10px;border:1px solid var(--gb)">
+      <h4 style="color:var(--cy);margin-bottom:8px"><span class="le">🌌 Thermal Emissivity Spectrum (2.5–25 μm)</span><span class="lc">🌌 热发射率光谱（2.5–25 μm）</span></h4>
+      <p style="font-size:.9rem"><span class="le">How efficiently the material radiates heat at each wavelength. We want this HIGH (&gt;90%) in the 8–13 μm window so heat escapes to space.</span><span class="lc">材料在每个波长辐射热量的效率。我们希望在8-13 μm窗口保持高发射率（&gt;90%），让热量逃逸到太空。</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- Ideal Spectrum -->
+<div class="gc rv">
+  <div class="gc-t">🔬 <span class="le">The Ideal Spectrum — What Researchers Are Trying to Build</span><span class="lc">理想光谱——研究人员正在构建的目标</span></div>
+  <p><span class="le">Here is what a <strong>perfect</strong> radiative cooling material's spectrum looks like, and what a <strong>real</strong> one looks like:</span><span class="lc">以下是<strong>完美</strong>辐射制冷材料的光谱，以及<strong>实际</strong>材料的光谱：</span></p>
+  <canvas id="idealSpecCanvas" height="300" style="width:100%;margin-top:16px"></canvas>
+  <p style="text-align:center;color:var(--tx2);font-size:.85rem;margin-top:10px"><span class="le">Blue = ideal spectrum | Orange = real BaSO₄ paint (Purdue, 2021) — note the gap in solar band</span><span class="lc">蓝色 = 理想光谱 | 橙色 = 实际BaSO₄涂料（普渡大学，2021）——注意太阳波段的差距</span></p>
+</div>
+
+<!-- EM Spectrum bar -->
+<div class="gc rv">
+  <div class="gc-t">🌈 <span class="le">The Electromagnetic Spectrum for Radiative Cooling</span><span class="lc">辐射制冷的电磁波谱</span></div>
+  <div class="spbar">
+    <div style="background:linear-gradient(90deg,#7b2ff7,#0044ff);flex:1;color:#fff">UV<br>&lt;0.3μm</div>
+    <div style="background:linear-gradient(90deg,#4400ff,#00ff00,#ffff00,#ff0000);flex:2;color:#000"><span class="le">Visible</span><span class="lc">可见光</span><br>0.38–0.7μm</div>
+    <div style="background:linear-gradient(90deg,#cc0000,#660000);flex:1.5;color:#fff"><span class="le">Near-IR</span><span class="lc">近红外</span><br>0.7–2.5μm</div>
+    <div style="background:rgba(0,212,255,.8);flex:.5;color:#000"><span class="le">MIR</span><span class="lc">中红外</span><br>2.5–8μm</div>
+    <div style="background:var(--cy);flex:1.6;color:#000"><strong><span class="le">WINDOW</span><span class="lc">窗口</span></strong><br>8–13μm</div>
+    <div style="background:#333;flex:1.4;color:#fff"><span class="le">Far-IR</span><span class="lc">远红外</span><br>&gt;13μm</div>
+  </div>
+  <p style="text-align:center;margin-top:10px;color:var(--tx2);font-size:.88rem"><span class="le">The atmospheric window (8–13 μm) is the only band where IR escapes to space. Solar band (0.3–2.5 μm) is where we must reflect.</span><span class="lc">大气窗口（8-13 μm）是红外线能逃逸至太空的唯一波段。太阳波段（0.3-2.5 μm）是我们必须反射的区域。</span></p>
+</div>
+
+<!-- Quiz 1 -->
+<div class="qz rv">
+  <h4 style="color:var(--cy);margin-bottom:12px"><span class="le">🧠 Quick Check</span><span class="lc">🧠 快速检查</span></h4>
+  <p style="font-size:1.1rem;margin-bottom:14px"><span class="le">Why do radiative cooling materials need to be engineered at specific wavelengths?</span><span class="lc">为什么辐射制冷材料需要在特定波长上进行工程设计？</span></p>
+  <div class="qo" data-ok="0"><span class="le">Because different colors look better on buildings</span><span class="lc">因为不同颜色在建筑物上更好看</span></div>
+  <div class="qo" data-ok="1"><span class="le">The atmosphere is only transparent to heat radiation in the 8–13 μm band, so materials must emit strongly there while reflecting strongly in the solar band (0.3–2.5 μm)</span><span class="lc">大气只对8-13 μm波段的热辐射透明，因此材料必须在此强烈发射，同时在太阳波段（0.3-2.5 μm）强烈反射</span></div>
+  <div class="qo" data-ok="0"><span class="le">They don't — any white material works perfectly</span><span class="lc">不需要——任何白色材料都完美适用</span></div>
+  <div class="qfb"></div>
+</div>
+</div>
+</section>
+
+<!-- ===== CH 2 : THE DESIGN CHALLENGE ===== -->
+<section class="ch" id="ch2">
+<div class="wrap">
+<div class="ch-hd">
+  <div class="ch-n"><span class="le">Chapter 2</span><span class="lc">第二章</span></div>
+  <h2 class="ch-t"><span class="le">The Impossible Balancing Act</span><span class="lc">不可能的平衡之术</span></h2>
+  <p class="ch-sub"><span class="le">You need materials doing two opposite things simultaneously: reject all sunlight (0.3–2.5 μm) while radiating maximum heat (8–13 μm).</span><span class="lc">你需要材料同时做两件相反的事：反射所有阳光（0.3-2.5 μm），同时最大限度辐射热量（8-13 μm）。</span></p>
+</div>
+
+<div class="g2 rv">
+  <div class="gc" style="border-left:3px solid var(--yl)">
+    <h4 style="color:var(--yl)"><span class="le">☀️ Challenge #1: Reject the Sun</span><span class="lc">☀️ 挑战一：反射阳光</span></h4>
+    <p><span class="le">Sunlight delivers ~1000 W/m². Absorbing even 5% = 50 W of heat gain — far more than typical cooling power. Need <strong>solar reflectance &gt; 95%</strong> across 0.3–2.5 μm.</span><span class="lc">阳光提供约1000 W/m²。即使吸收5% = 50 W的热增益——远超典型冷却功率。需要<strong>太阳反射率 &gt; 95%</strong>覆盖0.3-2.5 μm。</span></p>
+  </div>
+  <div class="gc" style="border-left:3px solid var(--cy)">
+    <h4 style="color:var(--cy)"><span class="le">🌌 Challenge #2: Emit to Space</span><span class="lc">🌌 挑战二：向太空辐射</span></h4>
+    <p><span class="le">Must radiate as much IR as possible through the 8–13 μm window. Need <strong>emissivity &gt; 90%</strong> in this band. Outside the window, high emissivity is wasted (absorbed by atmosphere).</span><span class="lc">必须通过8-13 μm窗口尽可能多地辐射红外线。需要<strong>发射率 &gt; 90%</strong>。窗口外的高发射率是浪费的（被大气吸收）。</span></p>
+  </div>
+</div>
+
+<!-- Net Cooling Power -->
+<div class="gc rv">
+  <div class="gc-t">⚡ <span class="le">The Physics: Net Cooling Power</span><span class="lc">物理学：净冷却功率</span></div>
+  <div class="fm">P<sub>net</sub> = P<sub>rad</sub>(T) − P<sub>atm</sub>(T<sub>amb</sub>) − P<sub>sun</sub> − P<sub>cond+conv</sub></div>
+  <div class="g2" style="margin-top:14px">
+    <div>
+      <p><span class="le"><span class="hi">P<sub>rad</sub></span> = Heat the material radiates away (we maximize this)</span><span class="lc"><span class="hi">P<sub>rad</sub></span> = 材料辐射出的热量（我们最大化此项）</span></p>
+      <p><span class="le"><span class="ho">P<sub>atm</sub></span> = Heat absorbed from the warm atmosphere (minimize)</span><span class="lc"><span class="ho">P<sub>atm</sub></span> = 从温暖大气吸收的热量（最小化）</span></p>
+    </div>
+    <div>
+      <p><span class="le"><span class="ho">P<sub>sun</sub></span> = Solar energy absorbed (minimize → need high reflectance)</span><span class="lc"><span class="ho">P<sub>sun</sub></span> = 吸收的太阳能（最小化 → 需要高反射率）</span></p>
+      <p><span class="le"><span class="ho">P<sub>cond+conv</sub></span> = Heat from conduction &amp; convection (minimize with insulation)</span><span class="lc"><span class="ho">P<sub>cond+conv</sub></span> = 传导和对流热量（用隔热层最小化）</span></p>
+    </div>
+  </div>
+  <p style="margin-top:16px;color:var(--tx2)"><span class="le">For sub-ambient cooling, P<sub>net</sub> must be <strong>positive</strong>. State-of-the-art: 80–120 W/m² net cooling under direct sun.</span><span class="lc">要实现亚环境温度冷却，P<sub>net</sub>必须为<strong>正值</strong>。当前最优：直射阳光下80-120 W/m²净冷却功率。</span></p>
+</div>
+
+<!-- What is a "Structure"? -->
+<div class="gc rv">
+  <div class="gc-t">🏗️ <span class="le">What Is a "Structure" in This Context?</span><span class="lc">在这个语境中"结构"是什么？</span></div>
+  <p><span class="le">When researchers say <span class="term" data-tip="The physical design of the material: what materials are used, their sizes, thicknesses, arrangement, and geometry.">"structure"</span>, they mean the physical design parameters of the material. Here's what that looks like concretely:</span><span class="lc">当研究人员说<span class="term" data-tip="材料的物理设计：使用什么材料、尺寸、厚度、排列和几何形状。这是物理模拟和ML模型的输入。">"结构"</span>时，他们指的是材料的物理设计参数。具体来说是这样的：</span></p>
+  
+  <div class="lab" style="margin-top:18px">
+    <div class="lab-bar"><div class="ld" style="background:var(--gn)"></div> <span class="le">STRUCTURE DATA — Multilayer Film Example (7 layers)</span><span class="lc">结构数据 — 多层薄膜示例（7层）</span></div>
+    <div class="lab-body">
+      <table class="dtbl">
+        <thead class="le">
+          <tr><th>Layer #</th><th>Material</th><th>Thickness (nm)</th><th>n @ 10μm</th><th>k @ 10μm</th></tr>
+        </thead>
+        <thead class="lc">
+          <tr><th>层号</th><th>材料</th><th>厚度 (nm)</th><th>n @ 10μm</th><th>k @ 10μm</th></tr>
+        </thead>
+        <tbody>
+          <tr class="le"><td>1 (top)</td><td>SiO₂</td><td>210</td><td>0.68</td><td>2.13</td></tr>
+          <tr class="lc"><td>1（顶层）</td><td>SiO₂</td><td>210</td><td>0.68</td><td>2.13</td></tr>
+          <tr><td>2</td><td>HfO₂</td><td>85</td><td>1.90</td><td>0.02</td></tr>
+          <tr><td>3</td><td>SiO₂</td><td>420</td><td>0.68</td><td>2.13</td></tr>
+          <tr><td>4</td><td>TiO₂</td><td>56</td><td>5.10</td><td>1.28</td></tr>
+          <tr><td>5</td><td>SiO₂</td><td>310</td><td>0.68</td><td>2.13</td></tr>
+          <tr><td>6</td><td>Al₂O₃</td><td>140</td><td>1.45</td><td>0.38</td></tr>
+          <tr class="le"><td>7 (bottom)</td><td>Ag (reflector)</td><td>150</td><td>—</td><td>—</td></tr>
+          <tr class="lc"><td>7（底层）</td><td>Ag（反射层）</td><td>150</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p style="color:var(--tx2);font-size:.82rem;margin-top:8px"><span class="le"><strong>n</strong> = refractive index (how light bends), <strong>k</strong> = extinction coefficient (how light is absorbed). These come from <a href="https://refractiveindex.info" target="_blank">refractiveindex.info</a> — the critical public database for all optical simulations.</span><span class="lc"><strong>n</strong> = 折射率（光如何弯曲），<strong>k</strong> = 消光系数（光如何被吸收）。这些数据来自 <a href="https://refractiveindex.info" target="_blank">refractiveindex.info</a> — 所有光学模拟的关键公共数据库。</span></p>
+    </div>
+  </div>
+
+  <p style="margin-top:16px"><span class="le">This table <em>IS</em> the input data for a physics simulation. The simulator (TMM, FDTD, or RCWA) takes these numbers and computes the full reflectance/emissivity spectrum from 0.3–25 μm.</span><span class="lc">这个表格<em>就是</em>物理模拟的输入数据。模拟器（TMM、FDTD或RCWA）接收这些数字，计算出0.3-25 μm的完整反射率/发射率光谱。</span></p>
+</div>
+
+<!-- Material Types -->
+<div class="gc rv">
+  <div class="gc-t">🔬 <span class="le">Four Material Strategies</span><span class="lc">四种材料策略</span></div>
+  <div class="g3" style="margin-top:16px">
+    <div class="matc">
+      <div class="matc-img"><canvas id="cv_part" width="200" height="140"></canvas></div>
+      <div class="matc-body">
+        <h4><span class="le">Particle-Filled Polymers</span><span class="lc">颗粒填充聚合物</span></h4>
+        <p style="font-size:.88rem;color:var(--tx2)"><span class="le">SiO₂, TiO₂, or BaSO₄ particles (0.1–10 μm) in PDMS/PMMA matrix. Cheap, scalable, paintable. Purdue's ultra-white BaSO₄ paint reflects 98.1% of solar radiation.</span><span class="lc">SiO₂、TiO₂或BaSO₄颗粒（0.1-10 μm）在PDMS/PMMA基体中。便宜、可规模化、可涂刷。普渡大学的超白BaSO₄涂料反射98.1%的太阳辐射。</span></p>
+        <p style="font-size:.82rem;color:var(--or);margin-top:8px"><span class="le">Structure params: particle diameter, volume fraction, film thickness, material type</span><span class="lc">结构参数：颗粒直径、体积分数、膜厚度、材料类型</span></p>
+      </div>
+    </div>
+    <div class="matc">
+      <div class="matc-img"><canvas id="cv_ml" width="200" height="140"></canvas></div>
+      <div class="matc-body">
+        <h4><span class="le">Multilayer Thin Films</span><span class="lc">多层薄膜</span></h4>
+        <p style="font-size:.88rem;color:var(--tx2)"><span class="le">Alternating layers of dielectrics (SiO₂/HfO₂/TiO₂) on Ag reflector. Thin-film interference controls reflection at each wavelength. 5–20 layers typical.</span><span class="lc">介电材料（SiO₂/HfO₂/TiO₂）交替层叠在Ag反射层上。薄膜干涉控制每个波长的反射。通常5-20层。</span></p>
+        <p style="font-size:.82rem;color:var(--or);margin-top:8px"><span class="le">Structure params: # layers, material per layer, thickness per layer, layer ordering</span><span class="lc">结构参数：层数、每层材料、每层厚度、层序</span></p>
+      </div>
+    </div>
+    <div class="matc">
+      <div class="matc-img"><canvas id="cv_meta" width="200" height="140"></canvas></div>
+      <div class="matc-body">
+        <h4><span class="le">Metasurfaces</span><span class="lc">超表面</span></h4>
+        <p style="font-size:.88rem;color:var(--tx2)"><span class="le">Nano-patterned structures (pillars, gratings, pyramids) that manipulate light via sub-wavelength resonances. Most precise control but hardest to fabricate.</span><span class="lc">纳米图案结构（柱、光栅、金字塔），通过亚波长共振操控光。最精确的控制但最难制造。</span></p>
+        <p style="font-size:.82rem;color:var(--or);margin-top:8px"><span class="le">Structure params: period, width, height, fill fraction, shape, material</span><span class="lc">结构参数：周期、宽度、高度、填充比、形状、材料</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Curse of dimensionality -->
+<div class="gc rv">
+  <div class="gc-t">🎯 <span class="le">The Curse of Dimensionality</span><span class="lc">维度灾难</span></div>
+  <div class="an">
+    <h4><span class="le">🎯 Why brute force fails</span><span class="lc">🎯 为什么蛮力搜索行不通</span></h4>
+    <p><span class="le">A 10-layer film: 5 material choices × 490 thickness steps per layer = <strong>5¹⁰ × 490¹⁰ ≈ 10²⁷ combinations</strong>. At 1 simulation/second, that's 3×10¹⁹ years — far longer than the age of the universe (1.4×10¹⁰ years).</span><span class="lc">10层薄膜：每层5种材料选择 × 490个厚度步长 = <strong>5¹⁰ × 490¹⁰ ≈ 10²⁷种组合</strong>。以每秒1次模拟的速度，需要3×10¹⁹年——远超宇宙年龄（1.4×10¹⁰年）。</span></p>
+  </div>
+  <p style="margin-top:14px"><span class="le">This is why <strong>machine learning is not optional</strong> — it's the only way to navigate this design space in a human lifetime.</span><span class="lc">这就是为什么<strong>机器学习不是可选的</strong>——它是在人类寿命内导航这个设计空间的唯一方法。</span></p>
+</div>
+
+</div>
+</section>
+
+<!-- ===== CH 3: DATA PIPELINE ===== -->
+<section class="ch" id="ch3">
+<div class="wrap">
+<div class="ch-hd">
+  <div class="ch-n"><span class="le">Chapter 3</span><span class="lc">第三章</span></div>
+  <h2 class="ch-t"><span class="le">The Data Pipeline: From Simulation to Training Set</span><span class="lc">数据流程：从模拟到训练集</span></h2>
+  <p class="ch-sub"><span class="le">Before any ML can happen, you need data. Here's exactly how researchers build their training datasets — with real numbers.</span><span class="lc">在任何机器学习之前，你需要数据。这是研究人员如何构建训练数据集的确切过程——带有真实数字。</span></p>
+</div>
+
+<!-- Simulation methods -->
+<div class="gc rv">
+  <div class="gc-t">🖥️ <span class="le">Step 1: Physics Simulation</span><span class="lc">步骤一：物理模拟</span></div>
+  <p><span class="le">Researchers generate training data by running physics simulations. Each simulation takes one <span class="term" data-tip="The set of design parameters: material types, thicknesses, particle sizes, geometric dimensions, etc.">structure</span> and computes its full optical <span class="term" data-tip="A vector of 200–500 numbers, each representing reflectance or emissivity at one wavelength point.">spectrum</span>.</span><span class="lc">研究人员通过运行物理模拟生成训练数据。每次模拟取一个<span class="term" data-tip="设计参数集：材料类型、厚度、颗粒尺寸、几何尺寸等。">结构</span>，计算其完整的光学<span class="term" data-tip="一个200-500个数字的向量，每个数字代表一个波长点的反射率或发射率。">光谱</span>。</span></p>
+  
+  <div class="g3" style="margin-top:18px">
+    <div style="background:var(--bg1);padding:16px;border-radius:10px;border:1px solid var(--gb)">
+      <h4 style="color:var(--cy);margin-bottom:8px">TMM</h4>
+      <p style="font-size:.88rem"><span class="le">Transfer Matrix Method. For multilayer films. Analytical solution — very fast (~1ms per spectrum). Used by <a href="https://github.com/FoleyLab/wptherml" target="_blank">WPTherml</a> library.</span><span class="lc">传递矩阵法。用于多层薄膜。解析解——非常快（每个光谱约1ms）。由 <a href="https://github.com/FoleyLab/wptherml" target="_blank">WPTherml</a> 库使用。</span></p>
+    </div>
+    <div style="background:var(--bg1);padding:16px;border-radius:10px;border:1px solid var(--gb)">
+      <h4 style="color:var(--cy);margin-bottom:8px">FDTD</h4>
+      <p style="font-size:.88rem"><span class="le">Finite-Difference Time-Domain. For complex 2D/3D structures. Solves Maxwell's equations numerically. Slow (~minutes per spectrum). Used by <a href="https://github.com/NanoComp/meep" target="_blank">Meep (MIT)</a>.</span><span class="lc">时域有限差分法。用于复杂的2D/3D结构。数值求解麦克斯韦方程。较慢（每个光谱约数分钟）。由 <a href="https://github.com/NanoComp/meep" target="_blank">Meep (MIT)</a> 使用。</span></p>
+    </div>
+    <div style="background:var(--bg1);padding:16px;border-radius:10px;border:1px solid var(--gb)">
+      <h4 style="color:var(--cy);margin-bottom:8px"><span class="le">Mie Theory</span><span class="lc">米氏散射理论</span></h4>
+      <p style="font-size:.88rem"><span class="le">Analytical solution for spherical particles. For particle-filled polymers. Fast per particle, combined with Monte Carlo for composites. Used by <a href="https://github.com/refetaliyalcin/ColorRCMC" target="_blank">ColorRCMC</a>.</span><span class="lc">球形颗粒的解析解。用于颗粒填充聚合物。单颗粒计算快，与蒙特卡洛结合用于复合材料。由 <a href="https://github.com/refetaliyalcin/ColorRCMC" target="_blank">ColorRCMC</a> 使用。</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- Training dataset -->
+<div class="gc rv">
+  <div class="gc-t">📁 <span class="le">Step 2: What the Training Dataset Actually Looks Like</span><span class="lc">步骤二：训练数据集的实际样子</span></div>
+  <p><span class="le">Here's a realistic view of what researchers create. Each row is one simulation run:</span><span class="lc">这是研究人员创建的真实数据视图。每行是一次模拟运行：</span></p>
+  
+  <div class="lab">
+    <div class="lab-bar"><div class="ld" style="background:var(--gn)"></div> <span class="le">training_data.csv — 10,000 rows × 206 columns (Multilayer Film Dataset)</span><span class="lc">training_data.csv — 10,000行 × 206列（多层薄膜数据集）</span></div>
+    <div class="lab-body" style="overflow-x:auto">
+      <table class="dtbl" style="font-size:.78rem">
+        <thead>
+          <tr>
+            <th>sample_id</th><th>mat_L1</th><th>t_L1 (nm)</th><th>mat_L2</th><th>t_L2 (nm)</th><th>mat_L3</th><th>t_L3 (nm)</th>
+            <th>…</th><th>R(0.3μm)</th><th>R(0.5μm)</th><th>R(1.0μm)</th><th>…</th><th>ε(8μm)</th><th>ε(10μm)</th><th>ε(13μm)</th><th>…</th>
+            <th>R̄_solar</th><th>ε̄_window</th><th>P_cool (W/m²)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>0001</td><td>SiO₂</td><td>185</td><td>TiO₂</td><td>42</td><td>SiO₂</td><td>310</td><td>…</td>
+              <td>0.94</td><td>0.97</td><td>0.96</td><td>…</td><td>0.88</td><td>0.93</td><td>0.91</td><td>…</td>
+              <td>0.953</td><td>0.908</td><td>87.3</td></tr>
+          <tr><td>0002</td><td>HfO₂</td><td>120</td><td>SiO₂</td><td>280</td><td>TiO₂</td><td>65</td><td>…</td>
+              <td>0.91</td><td>0.92</td><td>0.89</td><td>…</td><td>0.75</td><td>0.82</td><td>0.78</td><td>…</td>
+              <td>0.907</td><td>0.783</td><td>52.1</td></tr>
+          <tr><td>0003</td><td>Al₂O₃</td><td>95</td><td>SiO₂</td><td>450</td><td>HfO₂</td><td>38</td><td>…</td>
+              <td>0.88</td><td>0.93</td><td>0.91</td><td>…</td><td>0.92</td><td>0.96</td><td>0.89</td><td>…</td>
+              <td>0.924</td><td>0.921</td><td>95.7</td></tr>
+          <tr><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td>
+              <td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td>
+              <td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td><td style="color:var(--tx2)">…</td></tr>
+          <tr><td>10000</td><td>SiO₂</td><td>340</td><td>Si₃N₄</td><td>78</td><td>Ag</td><td>150</td><td>…</td>
+              <td>0.96</td><td>0.98</td><td>0.95</td><td>…</td><td>0.91</td><td>0.95</td><td>0.90</td><td>…</td>
+              <td>0.961</td><td>0.919</td><td>102.4</td></tr>
+        </tbody>
+      </table>
+      <p style="color:var(--tx2);font-size:.8rem;margin-top:10px"><span class="le"><strong>Left columns</strong> = structure parameters (ML input). <strong>Middle columns</strong> = full spectrum at 200 wavelength points (ML output). <strong>Right columns</strong> = integrated performance metrics. Each row took ~1ms (TMM) to ~5min (FDTD) to compute.</span><span class="lc"><strong>左侧列</strong> = 结构参数（ML输入）。<strong>中间列</strong> = 200个波长点的完整光谱（ML输出）。<strong>右侧列</strong> = 综合性能指标。每行计算耗时约1ms（TMM）至约5分钟（FDTD）。</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- Data shape -->
+<div class="gc rv">
+  <div class="gc-t">📐 <span class="le">The Shape of the Data</span><span class="lc">数据的形状</span></div>
+  <div class="g2">
+    <div>
+      <h4 style="color:var(--or);margin-bottom:10px"><span class="le">Input X — Structure Parameters</span><span class="lc">输入 X — 结构参数</span></h4>
+      <div class="lab">
+        <div class="lab-bar"><div class="ld" style="background:var(--or)"></div> <span class="le">Shape: (10000, 6-20)</span><span class="lc">形状：(10000, 6-20)</span></div>
+        <div class="lab-body">
+<pre><span class="cm"># For a 5-layer film / 5层薄膜:</span>
+X = [
+  [<span class="st">"SiO₂"</span>, <span class="num">185</span>, <span class="st">"TiO₂"</span>, <span class="num">42</span>, <span class="st">"SiO₂"</span>, <span class="num">310</span>, ...],  <span class="cm"># sample 1</span>
+  [<span class="st">"HfO₂"</span>, <span class="num">120</span>, <span class="st">"SiO₂"</span>, <span class="num">280</span>, <span class="st">"TiO₂"</span>, <span class="num">65</span>, ...],   <span class="cm"># sample 2</span>
+  ...  <span class="cm"># 10,000 total</span>
+]
+<span class="cm"># One-hot: SiO₂→[1,0,0,0,0], TiO₂→[0,1,0,0,0], ...</span>
+<span class="cm"># Thicknesses normalized / 厚度归一化到0-1</span></pre>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h4 style="color:var(--cy);margin-bottom:10px"><span class="le">Output Y — Spectrum</span><span class="lc">输出 Y — 光谱</span></h4>
+      <div class="lab">
+        <div class="lab-bar"><div class="ld" style="background:var(--cy)"></div> <span class="le">Shape: (10000, 200)</span><span class="lc">形状：(10000, 200)</span></div>
+        <div class="lab-body">
+<pre><span class="cm"># 200 wavelength pts, 0.3–25 μm:</span>
+Y = [
+  [<span class="num">0.94</span>, <span class="num">0.95</span>, <span class="num">0.97</span>, ..., <span class="num">0.88</span>, <span class="num">0.93</span>, ...],  <span class="cm"># spectrum 1</span>
+  [<span class="num">0.91</span>, <span class="num">0.92</span>, <span class="num">0.89</span>, ..., <span class="num">0.75</span>, <span class="num">0.82</span>, ...],  <span class="cm"># spectrum 2</span>
+  ...  <span class="cm"># 10,000 total</span>
+]
+<span class="cm"># Each ∈ [0, 1] = reflectance/emissivity</span>
+<span class="cm"># λ: [0.3, 0.42, ..., 8.0, 10.0, 13.0, ..., 25.0] μm</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="margin-top:14px;color:var(--tx2)"><span class="le">This is the core data shape everything else builds on. Forward prediction: X → Y. Optimization: search over X. Inverse design: Y → X.</span><span class="lc">这是所有其他工作的核心数据形状。正向预测：X → Y。优化：搜索X空间。逆向设计：Y → X。</span></p>
+</div>
+
+<!-- Real papers data -->
+<div class="gc rv">
+  <div class="gc-t">📑 <span class="le">Real Dataset Sizes from Published Papers</span><span class="lc">已发表论文的真实数据集规模</span></div>
+  <table class="dtbl">
+    <thead class="le">
+      <tr><th>Paper / Group</th><th>Structure Type</th><th>Simulation</th><th>Samples</th><th>Input Dims</th><th>Output Dims</th></tr>
+    </thead>
+    <thead class="lc">
+      <tr><th>论文/课题组</th><th>结构类型</th><th>模拟方法</th><th>样本数</th><th>输入维度</th><th>输出维度</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Peurifoy et al. (2018)</td><td><span class="le">Core-shell nanoparticles</span><span class="lc">核壳纳米颗粒</span></td><td>T-matrix</td><td>50,000</td><td>8</td><td>201</td></tr>
+      <tr><td>Su et al. (2023)</td><td><span class="le">Metasurface emitter</span><span class="lc">超表面发射器</span></td><td>FDTD</td><td>~2,000</td><td>4</td><td>200</td></tr>
+      <tr><td><span class="le">XGBoost aerogel study</span><span class="lc">XGBoost气凝胶研究</span></td><td><span class="le">RC aerogel</span><span class="lc">辐射制冷气凝胶</span></td><td><span class="le">Experiment</span><span class="lc">实验</span></td><td>31</td><td>5</td><td>3</td></tr>
+      <tr><td>Keawmuang et al. (2024)</td><td><span class="le">Colored multilayer</span><span class="lc">彩色多层薄膜</span></td><td>TMM</td><td>40,000</td><td>12</td><td>200+3</td></tr>
+      <tr><td>PSO pyramid (2025)</td><td><span class="le">Truncated pyramids</span><span class="lc">截锥金字塔</span></td><td>FDTD+NN</td><td>5,000</td><td>6</td><td>100</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+</section>
+
+<!-- ===== CH 4: THREE-TIER ML ===== -->
+<section class="ch" id="ch4">
+<div class="wrap">
+<div class="ch-hd">
+  <div class="ch-n"><span class="le">Chapter 4</span><span class="lc">第四章</span></div>
+  <h2 class="ch-t"><span class="le">The Three-Tier ML Framework</span><span class="lc">三层机器学习框架</span></h2>
+  <p class="ch-sub"><span class="le">Forward prediction → optimization → generation. Each tier builds on the last.</span><span class="lc">正向预测 → 优化 → 生成。每一层建立在前一层之上。</span></p>
+</div>
+
+<div class="tleg rv">
+  <div class="tleg-i"><div class="tleg-d" style="background:var(--cy)"></div> <span class="le">Tier 1: Forward Prediction</span><span class="lc">第一层：正向预测</span></div>
+  <div class="tleg-i"><div class="tleg-d" style="background:var(--or)"></div> <span class="le">Tier 2: Optimization</span><span class="lc">第二层：优化</span></div>
+  <div class="tleg-i"><div class="tleg-d" style="background:var(--mg)"></div> <span class="le">Tier 3: Inverse/Generative</span><span class="lc">第三层：逆向/生成</span></div>
+</div>
+
+<!-- TIER 1 -->
+<div class="gc rv">
+  <h3 style="color:var(--cy);margin-bottom:16px"><span class="le">Tier 1: Forward Prediction — "Given this structure, what's its performance?"</span><span class="lc">第一层：正向预测——"给定这个结构，性能如何？"</span></h3>
+  <p><span class="le">Train a model on (structure → spectrum) pairs. Once trained, it replaces the slow simulator — predicting any new design's spectrum in <strong>milliseconds</strong> instead of minutes. This is the <span class="term" data-tip="A fast ML model trained to approximate an expensive physics simulation.">"surrogate model"</span>.</span><span class="lc">在（结构 → 光谱）数据对上训练模型。训练完成后，它替代缓慢的模拟器——以<strong>毫秒</strong>而非分钟预测任何新设计的光谱。这就是<span class="term" data-tip="经过训练以近似昂贵物理模拟的快速ML模型。因其代替真实模拟而称为'代理'。">"代理模型"</span>。</span></p>
+
+  <!-- Peurifoy workflow -->
+  <div class="lab" style="margin-top:20px">
+    <div class="lab-bar"><div class="ld" style="background:var(--gn)"></div> <span class="le">REAL EXAMPLE: Peurifoy et al. 2018 (Science Advances) — </span><span class="lc">真实案例：Peurifoy等 2018（Science Advances）— </span><a href="https://github.com/iguanaus/ScatterNet" target="_blank" style="color:var(--cy)">GitHub: ScatterNet</a></div>
+    <div class="lab-body">
+      <div class="steps">
+        <div class="stp">
+          <h4><span class="le">Generate 50,000 training samples via T-matrix simulation</span><span class="lc">通过T矩阵模拟生成50,000个训练样本</span></h4>
+          <p style="font-size:.9rem"><span class="le">Input: 8 numbers (shell thicknesses of SiO₂/TiO₂ nanoparticle). Output: 201-point scattering spectrum.</span><span class="lc">输入：8个数字（SiO₂/TiO₂纳米颗粒的壳层厚度）。输出：201点散射光谱。</span></p>
+        </div>
+        <div class="stp">
+          <h4><span class="le">Train a 4-layer ANN (8→250→250→250→201)</span><span class="lc">训练4层ANN（8→250→250→250→201）</span></h4>
+          <p style="font-size:.9rem"><span class="le">40,000 for training, 10,000 for testing. Training: ~30 min on GPU.</span><span class="lc">40,000个用于训练，10,000个用于测试。训练时间：GPU上约30分钟。</span></p>
+        </div>
+        <div class="stp">
+          <h4><span class="le">Result: R² = 0.997 — near-perfect predictions in 0.2ms each</span><span class="lc">结果：R² = 0.997——每次预测仅需0.2ms，近乎完美</span></h4>
+          <p style="font-size:.9rem"><span class="le">Each T-matrix simulation took ~10 sec. The ANN surrogate is <strong>50,000× faster</strong>.</span><span class="lc">每次T矩阵模拟需约10秒。ANN代理模型快了<strong>50,000倍</strong>。</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="g3" style="margin-top:24px">
+    <div class="mc t1">
+      <h4>KNN</h4>
+      <div class="tag"><span class="le">Simplest | No training needed</span><span class="lc">最简单 | 无需训练</span></div>
+      <p style="font-size:.88rem"><span class="le">Finds K most similar known designs, averages their spectra. Used for metasurface radiative coolers.</span><span class="lc">找到K个最相似的已知设计，平均其光谱。用于超表面辐射冷却器。</span></p>
+      <p style="font-size:.82rem;color:var(--tx2);margin-top:8px"><span class="le">Limitation: Needs well-sampled design space. Can't extrapolate.</span><span class="lc">局限：需要良好采样的设计空间。无法外推。</span></p>
+    </div>
+    <div class="mc t1">
+      <h4><span class="le">Random Forest</span><span class="lc">随机森林</span></h4>
+      <div class="tag"><span class="le">Robust | Shows feature importance</span><span class="lc">鲁棒 | 显示特征重要性</span></div>
+      <p style="font-size:.88rem"><span class="le">100 decision trees vote on prediction. Bonus: tells you which parameters matter most.</span><span class="lc">100棵决策树投票预测。额外优势：告诉你哪些参数最重要。</span></p>
+      <p style="font-size:.82rem;color:var(--tx2);margin-top:8px"><span class="le">Key use: rapid screening — evaluate 100K designs, full-simulate only top 5%.</span><span class="lc">关键用途：快速筛选——评估10万个设计，仅全面模拟前5%。</span></p>
+    </div>
+    <div class="mc t1">
+      <h4>XGBoost</h4>
+      <div class="tag"><span class="le">Best for tabular data | Explainable</span><span class="lc">表格数据最佳 | 可解释</span></div>
+      <p style="font-size:.88rem"><span class="le">Sequential trees, each fixing previous errors. Combined with SHAP for explanation.</span><span class="lc">序列决策树，每棵修正前一棵的错误。结合SHAP进行解释。</span></p>
+      <p style="font-size:.82rem;color:var(--tx2);margin-top:8px"><span class="le">Unique: both predictor AND explainer — guides what to optimize first.</span><span class="lc">独特之处：既是预测器又是解释器——指导优先优化什么。</span></p>
+    </div>
+    <div class="mc t1">
+      <h4><span class="le">ANN (Neural Network)</span><span class="lc">ANN（人工神经网络）</span></h4>
+      <div class="tag"><span class="le">Universal workhorse | Millisecond inference</span><span class="lc">通用主力 | 毫秒级推理</span></div>
+      <p style="font-size:.88rem"><span class="le">The primary surrogate model. Predicts full 200-point spectrum. Peurifoy et al.: R²=0.997.</span><span class="lc">主要的代理模型。预测完整的200点光谱。Peurifoy等：R²=0.997。</span></p>
+      <p style="font-size:.82rem;color:var(--tx2);margin-top:8px"><span class="le">The "simulation → ANN surrogate → optimization" pipeline is the field's backbone.</span><span class="lc">"模拟 → ANN代理 → 优化"流程是该领域的骨干。</span></p>
+    </div>
+    <div class="mc t1">
+      <h4>CNN</h4>
+      <div class="tag"><span class="le">Spectral pattern expert</span><span class="lc">光谱模式专家</span></div>
+      <p style="font-size:.88rem"><span class="le">Convolutional filters detect peaks, slopes, plateaus in spectra. Superior to ANN when spectral shape matters.</span><span class="lc">卷积滤波器检测光谱中的峰、斜率和平台。当光谱形状重要时优于ANN。</span></p>
+      <p style="font-size:.82rem;color:var(--tx2);margin-top:8px"><span class="le">Input is 1D spectrum treated like a signal → conv layers detect "spectral fingerprints."</span><span class="lc">输入是1D光谱，视为信号 → 卷积层检测"光谱指纹"。</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- TIER 2 -->
+<div class="gc rv">
+  <h3 style="color:var(--or);margin-bottom:16px"><span class="le">Tier 2: Optimization — "What's the best design?"</span><span class="lc">第二层：优化——"最佳设计是什么？"</span></h3>
+  <p><span class="le">Now that we have a fast surrogate, we can search the design space. These algorithms propose candidates, the surrogate evaluates them instantly, and the algorithm converges on the best.</span><span class="lc">有了快速代理模型，我们可以搜索设计空间。这些算法提出候选方案，代理模型即时评估，算法收敛到最优解。</span></p>
+
+  <!-- PSO workflow -->
+  <div class="lab" style="margin-top:20px">
+    <div class="lab-bar"><div class="ld" style="background:var(--or)"></div> <span class="le">REAL WORKFLOW: FDTD → Neural Network → Adaptive PSO (2025)</span><span class="lc">真实工作流：FDTD → 神经网络 → 自适应PSO（2025）</span></div>
+    <div class="lab-body">
+      <div class="steps">
+        <div class="stp">
+          <h4><span class="le">Stage 1: Generate 5,000 FDTD simulations of truncated pyramids</span><span class="lc">阶段一：生成5,000次截锥金字塔FDTD模拟</span></h4>
+          <p style="font-size:.9rem"><span class="le">6 params: base width, top width, height, period, material, substrate. Output: atmospheric window emissivity.</span><span class="lc">6个参数：底部宽度、顶部宽度、高度、周期、材料、基底。输出：大气窗口发射率。</span></p>
+        </div>
+        <div class="stp">
+          <h4><span class="le">Stage 2: Train ANN surrogate — R² = 0.99841</span><span class="lc">阶段二：训练ANN代理模型 — R² = 0.99841</span></h4>
+          <p style="font-size:.9rem"><span class="le">Predicts emissivity in 0.1 ms (vs. ~8 min for FDTD). Now we can evaluate millions of candidates.</span><span class="lc">0.1ms预测发射率（FDTD需约8分钟）。现在可以评估数百万个候选方案。</span></p>
+        </div>
+        <div class="stp">
+          <h4><span class="le">Stage 3: Adaptive PSO searches 500,000 candidates via surrogate</span><span class="lc">阶段三：自适应PSO通过代理模型搜索500,000个候选方案</span></h4>
+          <p style="font-size:.9rem"><span class="le">50 particles × 10,000 iterations. Finds near-unity atmospheric window emissivity.</span><span class="lc">50个粒子 × 10,000次迭代。找到接近1的大气窗口发射率。</span></p>
+        </div>
+        <div class="stp">
+          <h4><span class="le">Stage 4: Verify top 10 with full FDTD → 118.17 W/m² net cooling</span><span class="lc">阶段四：用完整FDTD验证前10名 → 118.17 W/m²净冷却</span></h4>
+          <p style="font-size:.9rem"><span class="le">Only 10 expensive sims for final verification. Total: 5,010 FDTD runs instead of millions.</span><span class="lc">仅需10次昂贵模拟进行最终验证。总计：5,010次FDTD运行而非数百万次。</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g3" style="margin-top:24px">
+    <div class="mc t2">
+      <h4><span class="le">Genetic Algorithm (GA)</span><span class="lc">遗传算法（GA）</span></h4>
+      <div class="tag"><span class="le">Evolution-inspired | Mixed variables</span><span class="lc">进化启发 | 混合变量</span></div>
+      <p style="font-size:.88rem"><span class="le">Breeds designs like dogs: keep best, crossbreed, mutate. <strong>Best for multilayer films</strong> (discrete material + continuous thickness).</span><span class="lc">像育种一样培育设计：保留最优、交叉、变异。<strong>最适合多层薄膜</strong>（离散材料 + 连续厚度）。</span></p>
+      <p style="font-size:.82rem;color:var(--tx2);margin-top:8px"><span class="le">Result: GA + TMM → 97.18% solar reflectance for colored cooler.</span><span class="lc">结果：GA + TMM → 彩色冷却器97.18%太阳反射率。</span></p>
+    </div>
+    <div class="mc t2">
+      <h4><span class="le">Particle Swarm (PSO)</span><span class="lc">粒子群优化（PSO）</span></h4>
+      <div class="tag"><span class="le">Swarm intelligence | Fast convergence</span><span class="lc">群体智能 | 快速收敛</span></div>
+      <p style="font-size:.88rem"><span class="le">Particles move through design space, sharing knowledge. <strong>Best for continuous parameters</strong>: geometry, particle sizes.</span><span class="lc">粒子在设计空间中移动，共享知识。<strong>最适合连续参数</strong>：几何形状、颗粒尺寸。</span></p>
+      <p style="font-size:.82rem;color:var(--tx2);margin-top:8px"><span class="le">Result: PSO → 118.17 W/m² cooling, near-unity emissivity.</span><span class="lc">结果：PSO → 118.17 W/m²冷却功率，接近1的发射率。</span></p>
+    </div>
+    <div class="mc t2">
+      <h4><span class="le">Bayesian Optimization (BO)</span><span class="lc">贝叶斯优化（BO）</span></h4>
+      <div class="tag"><span class="le">Most sample-efficient | &lt;100 evaluations</span><span class="lc">最高样本效率 | &lt;100次评估</span></div>
+      <p style="font-size:.88rem"><span class="le">Builds probability model, picks the one next experiment that teaches the most. <strong>Best when each sim costs hours.</strong></span><span class="lc">构建概率模型，选择信息量最大的下一个实验。<strong>最适合每次模拟耗时数小时的场景。</strong></span></p>
+      <p style="font-size:.82rem;color:var(--tx2);margin-top:8px"><span class="le">Guo et al. (2020): first BO in RC, found optimum using &lt;1% of design space.</span><span class="lc">郭等（2020）：RC领域首次BO应用，仅搜索&lt;1%设计空间即找到最优解。</span></p>
+    </div>
+  </div>
+
+  <div class="an" style="margin-top:18px">
+    <h4><span class="le">🎯 When to use which optimizer</span><span class="lc">🎯 何时使用哪种优化器</span></h4>
+    <p><span class="le"><strong>GA</strong> when you need to choose materials (discrete) — multilayer films.<br>
+       <strong>PSO</strong> when all variables are continuous — geometry tuning.<br>
+       <strong>BO</strong> when you can only afford &lt;100 evaluations.</span><span class="lc"><strong>GA</strong>：需要选择材料（离散变量）时——多层薄膜。<br>
+       <strong>PSO</strong>：所有变量都是连续的时候——几何调优。<br>
+       <strong>BO</strong>：只能负担&lt;100次评估时。</span></p>
+  </div>
+</div>
+
+<!-- TIER 3 -->
+<div class="gc rv">
+  <h3 style="color:var(--mg);margin-bottom:16px"><span class="le">Tier 3: Inverse/Generative Design — "Create me a structure for this target"</span><span class="lc">第三层：逆向/生成设计——"为这个目标创建一个结构"</span></h3>
+  <p><span class="le">The frontier. Instead of searching, <strong>directly generate</strong> new structures from performance targets.</span><span class="lc">前沿领域。不再搜索，而是从性能目标<strong>直接生成</strong>新结构。</span></p>
+
+  <!-- Tandem NN example -->
+  <div class="lab" style="margin-top:20px">
+    <div class="lab-bar"><div class="ld" style="background:var(--mg)"></div> <span class="le">REAL EXAMPLE: Keawmuang et al. 2024 — Colored RC Inverse Design</span><span class="lc">真实案例：Keawmuang等 2024 — 彩色辐射冷却逆向设计</span></div>
+    <div class="lab-body">
+      <div class="g2">
+        <div>
+          <h4 style="color:var(--mg);margin-bottom:10px"><span class="le">User specifies target:</span><span class="lc">用户指定目标：</span></h4>
+<pre>target = {
+  <span class="st">"CIE_x"</span>: <span class="num">0.312</span>,     <span class="cm"># color / 颜色坐标</span>
+  <span class="st">"CIE_y"</span>: <span class="num">0.319</span>,     <span class="cm"># → "cool white" / 冷白色</span>
+  <span class="st">"R_solar"</span>: <span class="num">0.92</span>,    <span class="cm"># solar reflectance / 太阳反射率</span>
+  <span class="st">"ε_window"</span>: <span class="num">0.90</span>,   <span class="cm"># atm window / 大气窗口</span>
+  <span class="st">"P_cool"</span>: <span class="num">85.0</span>      <span class="cm"># W/m² target / 目标</span>
+}</pre>
+        </div>
+        <div>
+          <h4 style="color:var(--gn);margin-bottom:10px"><span class="le">Tandem NN outputs structure:</span><span class="lc">Tandem NN输出结构：</span></h4>
+<pre>structure = {
+  <span class="st">"layers"</span>: <span class="num">5</span>,
+  <span class="st">"materials"</span>: [<span class="st">"SiO₂"</span>,<span class="st">"TiO₂"</span>,<span class="st">"SiO₂"</span>,<span class="st">"Ag"</span>,<span class="st">"Si₃N₄"</span>],
+  <span class="st">"thicknesses_nm"</span>: [<span class="num">85</span>, <span class="num">42</span>, <span class="num">210</span>, <span class="num">20</span>, <span class="num">55</span>]
+}
+<span class="cm"># Verified ✓ / 已验证 ✓</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g3" style="margin-top:24px">
+    <div class="mc t3">
+      <h4>Tandem NN</h4>
+      <div class="tag"><span class="le">Forward + Inverse chained</span><span class="lc">正向 + 逆向串联</span></div>
+      <p style="font-size:.88rem"><span class="le">Inverse network proposes → frozen forward network validates. Solves the "many solutions" ambiguity.</span><span class="lc">逆向网络提议 → 冻结的正向网络验证。解决"多解"歧义问题。</span></p>
+    </div>
+    <div class="mc t3">
+      <h4>GAN</h4>
+      <div class="tag"><span class="le">Adversarial generation</span><span class="lc">对抗生成</span></div>
+      <p style="font-size:.88rem"><span class="le">Generator creates structures, discriminator judges if realistic. Competition produces sophisticated designs.</span><span class="lc">生成器创建结构，判别器判断其是否真实。竞争产生精巧的设计。</span></p>
+    </div>
+    <div class="mc t3">
+      <h4>VAE</h4>
+      <div class="tag"><span class="le">Latent space navigation</span><span class="lc">潜在空间导航</span></div>
+      <p style="font-size:.88rem"><span class="le">Compresses designs to organized latent space. Navigate it to find diverse solutions. Provides uncertainty estimates.</span><span class="lc">将设计压缩到有组织的潜在空间。导航其中找到多样化的解决方案。提供不确定性估计。</span></p>
+    </div>
+    <div class="mc t3">
+      <h4><span class="le">Diffusion Models</span><span class="lc">扩散模型</span></h4>
+      <div class="tag"><span class="le">SOTA generation quality</span><span class="lc">最优生成质量</span></div>
+      <p style="font-size:.88rem"><span class="le">Learns to denoise random noise into valid structures. Most stable training, highest quality.</span><span class="lc">学习从随机噪声去噪生成有效结构。训练最稳定，质量最高。</span></p>
+    </div>
+    <div class="mc t3">
+      <h4><span class="le">DRL (Reinforcement Learning)</span><span class="lc">DRL（强化学习）</span></h4>
+      <div class="tag"><span class="le">Sequential layer-by-layer</span><span class="lc">逐层顺序设计</span></div>
+      <p style="font-size:.88rem"><span class="le">Agent builds structure one layer at a time, gets reward for improvement. Natural for multilayer deposition.</span><span class="lc">智能体逐层构建结构，根据改进获得奖励。自然适合多层沉积工艺。</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- Closed Loop -->
+<div class="gc rv">
+  <div class="gc-t">🔄 <span class="le">The Complete Closed Loop</span><span class="lc">完整的闭环系统</span></div>
+  <canvas id="loopCanvas" height="280" style="width:100%"></canvas>
+  <p style="text-align:center;color:var(--tx2);font-size:.88rem;margin-top:14px"><span class="le">Each tier feeds into the next: simulation → surrogate → optimization → generative → validated by simulation</span><span class="lc">每层输入到下一层：模拟 → 代理模型 → 优化 → 生成 → 由模拟验证</span></p>
+</div>
+
+</div>
+</section>
+
+<!-- ===== CH 5: REAL RESEARCH ===== -->
+<section class="ch" id="ch5">
+<div class="wrap">
+<div class="ch-hd">
+  <div class="ch-n"><span class="le">Chapter 5</span><span class="lc">第五章</span></div>
+  <h2 class="ch-t"><span class="le">Real Research: A Day in the Lab</span><span class="lc">真实研究：实验室中的一天</span></h2>
+  <p class="ch-sub"><span class="le">Let's walk through actual research workflows — what tools they use, what screens they see, what decisions they make.</span><span class="lc">让我们走过实际的研究工作流程——他们使用什么工具，看到什么界面，做出什么决定。</span></p>
+</div>
+
+<!-- Case Study 1 -->
+<div class="gc rv">
+  <div class="gc-t">🧪 <span class="le">Case Study 1: Designing a Colored Radiative Cooler</span><span class="lc">案例研究1：设计彩色辐射冷却器</span></div>
+  <p style="margin-bottom:16px"><span class="le"><strong>Goal:</strong> A building facade that looks <span style="color:#5588ff;font-weight:700">blue</span>, reflects &gt;90% sunlight, and cools 8°C below ambient.</span><span class="lc"><strong>目标：</strong>一个看起来是<span style="color:#5588ff;font-weight:700">蓝色</span>的建筑外墙，反射&gt;90%阳光，并在环境温度以下冷却8°C。</span></p>
+  
+  <div class="steps">
+    <div class="stp">
+      <h4><span class="le">Generate Training Data with WPTherml</span><span class="lc">使用WPTherml生成训练数据</span></h4>
+      <p style="font-size:.9rem"><span class="le">Randomly sample 40,000 5-layer films from {SiO₂, TiO₂, HfO₂, Al₂O₃, Si₃N₄} with thicknesses 10–500 nm on Ag reflector. Compute via TMM. Total: ~40 seconds on a laptop.</span><span class="lc">从{SiO₂、TiO₂、HfO₂、Al₂O₃、Si₃N₄}随机采样40,000个5层薄膜，厚度10-500 nm，Ag反射层。TMM计算。总计：笔记本电脑上约40秒。</span></p>
+    </div>
+    <div class="stp">
+      <h4><span class="le">Train Tandem Neural Network</span><span class="lc">训练Tandem神经网络</span></h4>
+      <p style="font-size:.9rem"><span class="le">Forward: structure (12 params) → spectrum (200 pts) + CIE color. R²&gt;0.99 after 200 epochs (~15 min GPU). Then chain inverse net.</span><span class="lc">正向：结构（12参数）→ 光谱（200点）+ CIE颜色。200轮后R²&gt;0.99（GPU约15分钟）。然后串联逆向网络。</span></p>
+    </div>
+    <div class="stp">
+      <h4><span class="le">Input Target Specs</span><span class="lc">输入目标规格</span></h4>
+      <div class="lab" style="margin:10px 0">
+        <div class="lab-bar"><div class="ld" style="background:var(--cy)"></div> target_specification.json</div>
+        <div class="lab-body">
+<pre>{
+  <span class="st">"color"</span>: { <span class="st">"CIE_x"</span>: <span class="num">0.18</span>, <span class="st">"CIE_y"</span>: <span class="num">0.16</span> },  <span class="cm">// blue / 蓝色</span>
+  <span class="st">"solar_reflectance_min"</span>: <span class="num">0.90</span>,
+  <span class="st">"atm_window_emissivity_min"</span>: <span class="num">0.88</span>,
+  <span class="st">"visible_transmittance"</span>: <span class="num">0.0</span>   <span class="cm">// opaque / 不透明</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+    <div class="stp">
+      <h4><span class="le">Inverse Net Generates 50 Candidate Structures</span><span class="lc">逆向网络生成50个候选结构</span></h4>
+      <p style="font-size:.9rem"><span class="le">Forward net scores each. Top 5 verified by full TMM. Best: SiO₂(92nm)/TiO₂(38nm)/SiO₂(285nm)/HfO₂(61nm)/Ag(150nm) → 91.3% solar reflectance, 89.7% window emissivity.</span><span class="lc">正向网络为每个评分。前5名由完整TMM验证。最佳：SiO₂(92nm)/TiO₂(38nm)/SiO₂(285nm)/HfO₂(61nm)/Ag(150nm) → 91.3%太阳反射率，89.7%窗口发射率。</span></p>
+    </div>
+    <div class="stp">
+      <h4><span class="le">Fabricate and Test</span><span class="lc">制造与测试</span></h4>
+      <p style="font-size:.9rem"><span class="le">Electron-beam evaporation deposits layers. Outdoor test → 7.8°C below ambient at solar noon. Paper published.</span><span class="lc">电子束蒸发沉积各层。室外测试 → 正午太阳下低于环境温度7.8°C。论文发表。</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- Case Study 2 -->
+<div class="gc rv">
+  <div class="gc-t">🧪 <span class="le">Case Study 2: ScatterNet — The Foundational Paper</span><span class="lc">案例研究2：ScatterNet——奠基性论文</span></div>
+  <p style="margin-bottom:12px"><span class="le">Peurifoy et al. (2018, <em>Science Advances</em>): proved neural networks can predict &amp; inverse-design nanophotonic structures. <strong>1,300+ citations</strong>.</span><span class="lc">Peurifoy等（2018，<em>Science Advances</em>）：证明神经网络可以预测和逆向设计纳米光子结构。<strong>1,300+引用</strong>。</span></p>
+  
+  <div class="g2">
+    <div style="background:var(--bg1);padding:16px;border-radius:10px;border:1px solid var(--gb)">
+      <h4 style="color:var(--cy);margin-bottom:8px"><span class="le">Forward Model</span><span class="lc">正向模型</span></h4>
+      <p style="font-size:.88rem"><span class="le">Input: 8 shell thicknesses → Output: 201-point spectrum</span><span class="lc">输入：8个壳层厚度 → 输出：201点光谱</span></p>
+      <p style="font-size:.88rem"><span class="le">Architecture: Dense(8→250→250→250→201)</span><span class="lc">架构：Dense(8→250→250→250→201)</span></p>
+      <p style="font-size:.88rem;color:var(--gn);margin-top:8px"><span class="le">R² = 0.997, 0.2 ms inference (50,000× faster than sim)</span><span class="lc">R² = 0.997，0.2ms推理（比模拟快50,000倍）</span></p>
+    </div>
+    <div style="background:var(--bg1);padding:16px;border-radius:10px;border:1px solid var(--gb)">
+      <h4 style="color:var(--mg);margin-bottom:8px"><span class="le">Inverse Model</span><span class="lc">逆向模型</span></h4>
+      <p style="font-size:.88rem"><span class="le">Input: 201-point target → Output: 8 thicknesses</span><span class="lc">输入：201点目标光谱 → 输出：8个厚度</span></p>
+      <p style="font-size:.88rem"><span class="le">Tandem: Inverse → Frozen Forward → spectral loss</span><span class="lc">串联：逆向 → 冻结正向 → 光谱损失</span></p>
+      <p style="font-size:.88rem;color:var(--gn);margin-top:8px"><span class="le">Reproduces target spectrum within 2% error</span><span class="lc">在2%误差内再现目标光谱</span></p>
+    </div>
+  </div>
+  <p style="font-size:.88rem;margin-top:14px;color:var(--tx2)"><span class="le">Code: <a href="https://github.com/iguanaus/ScatterNet" target="_blank">github.com/iguanaus/ScatterNet</a></span><span class="lc">代码：<a href="https://github.com/iguanaus/ScatterNet" target="_blank">github.com/iguanaus/ScatterNet</a></span></p>
+</div>
+
+<!-- Performance Numbers -->
+<div class="gc rv">
+  <div class="gc-t">🏆 <span class="le">State-of-the-Art Performance</span><span class="lc">当前最优性能</span></div>
+  <div class="g2">
+    <div class="gc" style="border-left:3px solid var(--gn)">
+      <h4 style="color:var(--gn)"><span class="le">🏆 Net Cooling</span><span class="lc">🏆 净冷却功率</span></h4>
+      <p style="font-size:1.8rem;font-weight:700">118.17 W/m²</p>
+      <p style="font-size:.88rem;color:var(--tx2);margin-top:6px"><span class="le">PSO-optimized multilayer grating (2025).</span><span class="lc">PSO优化的多层光栅（2025）。</span></p>
+    </div>
+    <div class="gc" style="border-left:3px solid var(--cy)">
+      <h4 style="color:var(--cy)"><span class="le">☀️ Solar Reflectance</span><span class="lc">☀️ 太阳反射率</span></h4>
+      <p style="font-size:1.8rem;font-weight:700">97.18%</p>
+      <p style="font-size:.88rem;color:var(--tx2);margin-top:6px"><span class="le">GA-optimized DMDMD multilayer (2024).</span><span class="lc">GA优化的DMDMD多层薄膜（2024）。</span></p>
+    </div>
+    <div class="gc" style="border-left:3px solid var(--mg)">
+      <h4 style="color:var(--mg)"><span class="le">🌡️ Sub-Ambient Cooling</span><span class="lc">🌡️ 亚环境温度冷却</span></h4>
+      <p style="font-size:1.8rem;font-weight:700">8–12°C</p>
+      <p style="font-size:.88rem;color:var(--tx2);margin-top:6px"><span class="le">Below ambient under direct sunlight.</span><span class="lc">直射阳光下低于环境温度。</span></p>
+    </div>
+    <div class="gc" style="border-left:3px solid var(--yl)">
+      <h4 style="color:var(--yl)"><span class="le">🔬 Emissivity</span><span class="lc">🔬 发射率</span></h4>
+      <p style="font-size:1.8rem;font-weight:700">&gt;95%</p>
+      <p style="font-size:.88rem;color:var(--tx2);margin-top:6px"><span class="le">In 8–13 μm band, PSO-optimized pyramids.</span><span class="lc">8-13 μm波段，PSO优化截锥金字塔。</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- Material-Model mapping -->
+<div class="gc rv">
+  <div class="gc-t">📊 <span class="le">Which ML Method for Which Material?</span><span class="lc">哪种ML方法用于哪种材料？</span></div>
+  <div style="overflow-x:auto">
+    <table class="dtbl">
+      <thead class="le">
+        <tr><th>Material System</th><th>Best Forward</th><th>Best Optimizer</th><th>Inverse Design</th><th>Key Papers</th></tr>
+      </thead>
+      <thead class="lc">
+        <tr><th>材料体系</th><th>最佳正向模型</th><th>最佳优化器</th><th>逆向设计</th><th>关键论文</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="le">Particle-filled polymers</span><span class="lc">颗粒填充聚合物</span></td><td>RF, ANN</td><td>PSO</td><td><span class="le">CNN-based</span><span class="lc">基于CNN</span></td><td>Kim 2024</td></tr>
+        <tr><td><span class="le">Multilayer films</span><span class="lc">多层薄膜</span></td><td>ANN, CNN</td><td>GA</td><td>Tandem NN, DRL</td><td>Keawmuang 2024</td></tr>
+        <tr><td><span class="le">Colored/transparent</span><span class="lc">彩色/透明</span></td><td>Tandem NN</td><td>GA, BO</td><td>GAN, VAE</td><td>Guan 2023</td></tr>
+        <tr><td><span class="le">Metasurfaces</span><span class="lc">超表面</span></td><td>KNN, CNN</td><td>PSO, BO</td><td>DRL</td><td>Ding 2024</td></tr>
+        <tr><td><span class="le">Aerogels</span><span class="lc">气凝胶</span></td><td>XGBoost</td><td>GA</td><td style="color:var(--tx2)"><span class="le">Not explored yet</span><span class="lc">尚未探索</span></td><td>ref [32]</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+</section>
+
+<!-- ===== CH 6: FUTURE ===== -->
+<section class="ch" id="ch6">
+<div class="wrap">
+<div class="ch-hd">
+  <div class="ch-n"><span class="le">Chapter 6</span><span class="lc">第六章</span></div>
+  <h2 class="ch-t"><span class="le">The Frontier &amp; Open Challenges</span><span class="lc">前沿与开放挑战</span></h2>
+  <p class="ch-sub"><span class="le">Where the field is headed, what's holding it back, and the open problems that make this an exciting research area.</span><span class="lc">该领域的走向、阻碍因素，以及使其成为令人兴奋的研究领域的开放问题。</span></p>
+</div>
+
+<div class="gc rv">
+  <div class="gc-t">⚠️ <span class="le">Current Bottlenecks</span><span class="lc">当前瓶颈</span></div>
+  <div class="g2">
+    <div>
+      <h4 style="color:var(--or);margin-bottom:8px"><span class="le">1. No Public Benchmark Datasets</span><span class="lc">1. 没有公共基准数据集</span></h4>
+      <p style="font-size:.92rem"><span class="le">Every group generates their own data. Zero datasets on Kaggle/Zenodo. Can't fairly compare methods.</span><span class="lc">每个课题组自己生成数据。Kaggle/Zenodo上没有相关数据集。无法公平比较方法。</span></p>
+      
+      <h4 style="color:var(--or);margin-bottom:8px;margin-top:16px"><span class="le">2. Simulation-to-Reality Gap</span><span class="lc">2. 模拟与现实的差距</span></h4>
+      <p style="font-size:.92rem"><span class="le">ML predicts idealized performance. Real materials have defects. A 95% sim result may be 82% fabricated.</span><span class="lc">ML预测理想化性能。真实材料有缺陷。模拟95%的结果制造后可能只有82%。</span></p>
+    </div>
+    <div>
+      <h4 style="color:var(--or);margin-bottom:8px"><span class="le">3. Limited Generalization</span><span class="lc">3. 有限的泛化能力</span></h4>
+      <p style="font-size:.92rem"><span class="le">A model trained on multilayers won't work for metasurfaces. No transfer learning yet. Retrain from scratch each time.</span><span class="lc">在多层薄膜上训练的模型不适用于超表面。尚无迁移学习。每次都需从头训练。</span></p>
+      
+      <h4 style="color:var(--or);margin-bottom:8px;margin-top:16px"><span class="le">4. Multi-Objective Reality</span><span class="lc">4. 多目标现实</span></h4>
+      <p style="font-size:.92rem"><span class="le">Real products need cooling + durability + cost + color simultaneously. Current papers optimize 1–2 targets.</span><span class="lc">真实产品需要同时满足冷却+耐久性+成本+颜色。目前论文仅优化1-2个目标。</span></p>
+    </div>
+  </div>
+</div>
+
+<div class="gc rv">
+  <div class="gc-t">🚀 <span class="le">Frontier Research Directions</span><span class="lc">前沿研究方向</span></div>
+  <div class="tl">
+    <div class="tl-i">
+      <h4><span class="le">Foundation Models for Materials</span><span class="lc">材料基础模型</span></h4>
+      <p style="font-size:.92rem"><span class="le">Pre-train on millions of structures (like GPT for materials), fine-tune for RC.</span><span class="lc">在数百万种结构上预训练（类似材料领域的GPT），然后微调用于辐射制冷。</span></p>
+    </div>
+    <div class="tl-i">
+      <h4><span class="le">Active Learning with Real Experiments</span><span class="lc">结合真实实验的主动学习</span></h4>
+      <p style="font-size:.92rem"><span class="le">ML proposes most informative design → lab fabricates → data feeds back. Closes sim-to-real gap.</span><span class="lc">ML建议信息量最大的设计 → 实验室制造 → 数据反馈。弥合模拟与现实的差距。</span></p>
+    </div>
+    <div class="tl-i">
+      <h4><span class="le">Physics-Informed Neural Networks (PINNs)</span><span class="lc">物理信息神经网络（PINNs）</span></h4>
+      <p style="font-size:.92rem"><span class="le">Embed Maxwell's equations into loss function. Guarantees physical validity outside training domain.</span><span class="lc">将麦克斯韦方程嵌入损失函数。保证训练域外的物理有效性。</span></p>
+    </div>
+    <div class="tl-i">
+      <h4><span class="le">Diffusion Models for Freeform Structures</span><span class="lc">自由形态结构的扩散模型</span></h4>
+      <p style="font-size:.92rem"><span class="le">Generate new topologies beyond parameterized templates. 2D metasurfaces, 3D architectures no human would conceive.</span><span class="lc">生成超越参数化模板的新拓扑。2D超表面、人类无法想到的3D架构。</span></p>
+    </div>
+    <div class="tl-i">
+      <h4><span class="le">Quantum-Accelerated Optimization</span><span class="lc">量子加速优化</span></h4>
+      <p style="font-size:.92rem"><span class="le">Kim et al. (2022): quantum annealing + active ML for transparent RC. May unlock intractable design spaces.</span><span class="lc">Kim等（2022）：量子退火 + 主动ML用于透明辐射冷却。可能解锁难以处理的设计空间。</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- Final Quiz -->
+<div class="qz rv">
+  <h4 style="color:var(--mg);margin-bottom:14px;font-size:1.2rem"><span class="le">🎓 Final Understanding Check</span><span class="lc">🎓 最终理解检查</span></h4>
+  <p style="font-size:1.05rem;margin-bottom:14px"><span class="le">A researcher wants to design a blue radiative cooler facade. Compute budget: laptop + GPU. Which workflow?</span><span class="lc">研究人员想设计蓝色辐射冷却外墙。计算预算：笔记本+GPU。哪种工作流程？</span></p>
+  <div class="qo" data-ok="0"><span class="le">Run FDTD on 10²⁷ random combinations and pick the best</span><span class="lc">对10²⁷个随机组合运行FDTD并选择最好的</span></div>
+  <div class="qo" data-ok="1"><span class="le">Generate 40K with WPTherml (TMM), train Tandem NN, input blue + cooling target, get structure in seconds</span><span class="lc">用WPTherml（TMM）生成4万个样本，训练Tandem NN，输入蓝色+冷却目标，几秒获得结构</span></div>
+  <div class="qo" data-ok="0"><span class="le">Use KNN with 50 manually designed structures from literature</span><span class="lc">使用文献中50个手动设计的结构进行KNN</span></div>
+  <div class="qfb"></div>
+</div>
+
+<!-- Open Source Resources -->
+<div class="gc rv">
+  <div class="gc-t">🔗 <span class="le">Start Here: Open Source Tools</span><span class="lc">从这里开始：开源工具</span></div>
+  <table class="dtbl">
+    <thead class="le">
+      <tr><th>Repository</th><th>What It Does</th><th>Language</th></tr>
+    </thead>
+    <thead class="lc">
+      <tr><th>仓库</th><th>功能</th><th>语言</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><a href="https://github.com/iguanaus/ScatterNet" target="_blank">ScatterNet</a></td><td><span class="le">ANN spectral prediction + inverse design</span><span class="lc">ANN光谱预测 + 逆向设计</span></td><td>MATLAB+Python</td></tr>
+      <tr><td><a href="https://github.com/FoleyLab/wptherml" target="_blank">WPTherml</a></td><td><span class="le">TMM for multilayer spectra — training data generation</span><span class="lc">多层薄膜TMM光谱 — 训练数据生成</span></td><td>Python</td></tr>
+      <tr><td><a href="https://github.com/FiodarM/InvDesignNet" target="_blank">InvDesignNet</a></td><td><span class="le">Forward + inverse NN for gratings (~1GB dataset)</span><span class="lc">光栅正向+逆向NN（含约1GB数据集）</span></td><td>Python</td></tr>
+      <tr><td><a href="https://github.com/NanoComp/meep" target="_blank">Meep (MIT)</a></td><td><span class="le">Open-source FDTD with adjoint optimization</span><span class="lc">开源FDTD，含伴随优化</span></td><td>C++/Python</td></tr>
+      <tr><td><a href="https://github.com/refetaliyalcin/ColorRCMC" target="_blank">ColorRCMC</a></td><td><span class="le">Mie theory + Monte Carlo for colored RC</span><span class="lc">米氏散射+蒙特卡洛用于彩色RC</span></td><td>MATLAB</td></tr>
+      <tr><td><a href="https://refractiveindex.info" target="_blank">refractiveindex.info</a></td><td><span class="le">n(λ), k(λ) for thousands of materials</span><span class="lc">数千种材料的n(λ)、k(λ)数据</span></td><td><span class="le">Database</span><span class="lc">数据库</span></td></tr>
+      <tr><td><a href="https://hitran.org" target="_blank">HITRAN</a></td><td><span class="le">Atmospheric molecular absorption data</span><span class="lc">大气分子吸收数据</span></td><td><span class="le">Database</span><span class="lc">数据库</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+</section>
+
+<!-- ===== COMPLETION ===== -->
+<section class="ch" id="ch7" style="min-height:auto;padding:80px 32px;text-align:center">
+<div class="wrap rv">
+  <h2 style="font-size:2.2rem;margin-bottom:16px"><span class="le">🎓 You're Ready</span><span class="lc">🎓 你已准备好了</span></h2>
+  <p style="font-size:1.1rem;color:var(--tx2);max-width:680px;margin:0 auto 28px"><span class="le">You now understand: the physics (atmospheric window, Planck radiation, net cooling power), the materials (particles, multilayers, metasurfaces), the data (what structures and spectra look like), the ML pipeline (surrogate → optimizer → generative), and real research workflows.</span><span class="lc">你现在理解了：物理学（大气窗口、普朗克辐射、净冷却功率）、材料（颗粒、多层膜、超表面）、数据（结构和光谱的实际样子）、ML流程（代理模型 → 优化器 → 生成模型），以及真实的研究工作流程。</span></p>
+
+  <div class="gc" style="max-width:600px;margin:0 auto;text-align:left">
+    <h4 style="color:var(--cy);margin-bottom:14px"><span class="le">💬 Peer-Level Conversation Starters</span><span class="lc">💬 同行级对话开场白</span></h4>
+    <ul style="color:var(--tx2);list-style:none;font-size:.95rem">
+      <li style="margin-bottom:10px"><span class="le">→ "What surrogate model are you using — ANN or CNN for spectral mapping? What R² on held-out data?"</span><span class="lc">→ "你使用什么代理模型——ANN还是CNN做光谱映射？保留测试集上的R²是多少？"</span></li>
+      <li style="margin-bottom:10px"><span class="le">→ "Have you considered BO for colored cooler constraints? Multi-objective acquisition seems ideal."</span><span class="lc">→ "你考虑过用BO处理彩色冷却器约束吗？多目标采集函数似乎很理想。"</span></li>
+      <li style="margin-bottom:10px"><span class="le">→ "How are you handling the sim-to-real gap? Retraining on experimental data?"</span><span class="lc">→ "你如何弥合模拟与现实的差距？在实验数据上重新训练吗？"</span></li>
+      <li style="margin-bottom:10px"><span class="le">→ "The Tandem NN handles one-to-many ambiguity elegantly. Exploring diffusion models next?"</span><span class="lc">→ "Tandem NN优雅地处理了一对多歧义。下一步探索扩散模型吗？"</span></li>
+      <li><span class="le">→ "What's your dataset size? Peurifoy used 50K — seeing diminishing returns?"</span><span class="lc">→ "你的数据集多大？Peurifoy用了5万——有没有看到收益递减？"</span></li>
+    </ul>
+  </div>
+</div>
+</section>
+
+</main>
+
+<footer>
+  <p style="color:var(--tx2)"><span class="le">Based on "Machine-Learning-Driven Advances in Radiative Cooling Material Design" · Built to make you an expert</span><span class="lc">基于《机器学习驱动的辐射制冷材料设计进展》 · 让你成为专家</span></p>
+</footer>
+
+<script>
+// ====== LANGUAGE SYSTEM ======
+let lang = 'en';
+const lb = document.getElementById('lb');
+function setLang() {
+  if (lang === 'cn') {
+    document.body.classList.add('cn');
+    lb.textContent = 'English';
+  } else {
+    document.body.classList.remove('cn');
+    lb.textContent = '中文';
+  }
+  // Redraw canvases with new language
+  drawAtm(); drawIdeal(); drawLoop();
+}
+lb.onclick = () => { lang = lang==='en'?'cn':'en'; setLang(); };
+
+// ====== PROGRESS BAR ======
+window.addEventListener('scroll', () => {
+  const s = document.documentElement.scrollTop;
+  const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  document.getElementById('progBar').style.width = (s/h*100)+'%';
+});
+
+// ====== NAV DOTS ======
+const chs = document.querySelectorAll('.ch');
+const dotsEl = document.getElementById('dots');
+chs.forEach((c,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot';
+  d.title = 'Ch '+(i+1);
+  d.onclick = () => c.scrollIntoView({behavior:'smooth'});
+  dotsEl.appendChild(d);
+});
+
+// ====== SCROLL REVEAL ======
+const rvs = document.querySelectorAll('.rv');
+const rvObs = new IntersectionObserver(es => { es.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); }); },{threshold:.08});
+rvs.forEach(r => rvObs.observe(r));
+
+// ====== QUIZZES ======
+document.querySelectorAll('.qz').forEach(qz => {
+  const opts = qz.querySelectorAll('.qo');
+  const fb = qz.querySelector('.qfb');
+  opts.forEach(o => o.addEventListener('click', function() {
+    opts.forEach(op => { op.classList.remove('ok','no'); if(op.dataset.ok==='1') op.classList.add('ok'); else if(op===this) op.classList.add('no'); });
+    fb.className = 'qfb show';
+    const correct = this.dataset.ok==='1';
+    fb.style.background = correct?'rgba(34,197,94,.1)':'rgba(255,68,51,.08)';
+    fb.style.border = '1px solid '+(correct?'var(--gn)':'#f43');
+    fb.innerHTML = correct
+      ? '<strong style="color:var(--gn)">✓ '+(lang==='en'?'Correct!':'正确！')+'</strong> '+(lang==='en'?'You understand the core framework.':'你理解了核心框架。')
+      : '<strong style="color:#f43">✗ '+(lang==='en'?'Not quite.':'不太对。')+'</strong> '+(lang==='en'?'Think about the three-tier framework!':'想想三层框架！');
+  }));
+});
+
+// ====== SCROLL TO ======
+function go(id) { document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+// ====== HERO CANVAS ======
+const hc = document.getElementById('hc');
+const hx = hc.getContext('2d');
+function resizeHC() { hc.width=hc.offsetWidth; hc.height=hc.offsetHeight; }
+resizeHC(); window.addEventListener('resize', resizeHC);
+
+const pts = [];
+for(let i=0;i<80;i++) pts.push({x:Math.random(),y:0.7+Math.random()*.25,vx:(Math.random()-.5)*.0003,vy:-Math.random()*.002-.0005,sz:Math.random()*2.5+.8,a:Math.random()*.4+.2,h:180+Math.random()*50});
+function animH() {
+  hx.fillStyle='rgba(8,8,24,.12)';
+  hx.fillRect(0,0,hc.width,hc.height);
+  pts.forEach(p => {
+    p.x+=p.vx; p.y+=p.vy; p.a-=.0015;
+    if(p.y<0||p.a<=0){p.x=Math.random();p.y=.7+Math.random()*.2;p.a=Math.random()*.4+.2;}
+    hx.beginPath();
+    hx.arc(p.x*hc.width,p.y*hc.height,p.sz,0,Math.PI*2);
+    hx.fillStyle=`hsla(${p.h},100%,60%,${p.a})`;
+    hx.fill();
+  });
+  requestAnimationFrame(animH);
+}
+animH();
+
+// ====== ATMOSPHERIC TRANSMITTANCE CHART ======
+function drawAtm() {
+  const c = document.getElementById('atmCanvas');
+  if(!c) return;
+  const w = c.parentElement.offsetWidth - 32;
+  c.width = w; c.height = 320;
+  const x = c.getContext('2d');
+  const pad = {l:60,r:20,t:30,b:50};
+  const gw = w-pad.l-pad.r, gh = 320-pad.t-pad.b;
+
+  const wls = [], trans = [];
+  for(let wl=2;wl<=25;wl+=0.1) {
+    wls.push(wl);
+    let t = 0;
+    if(wl>2.5&&wl<3.3) t = 0.02;
+    else if(wl>5.5&&wl<7.5) t = 0.05;
+    else if(wl>3.3&&wl<4.0) t = 0.6;
+    else if(wl>4.0&&wl<4.3) t = 0.15;
+    else if(wl>4.3&&wl<5.5) t = 0.7;
+    else if(wl>=8&&wl<=9.5) t = 0.85 + Math.random()*0.05;
+    else if(wl>9.5&&wl<=10) t = 0.70 + Math.random()*0.05;
+    else if(wl>10&&wl<=13) t = 0.80 + Math.random()*0.05;
+    else if(wl>13&&wl<15) t = 0.3;
+    else if(wl>=15) t = 0.05 + Math.random()*0.05;
+    else t = 0.75 + Math.random()*0.1;
+    trans.push(Math.max(0, Math.min(1, t)));
+  }
+
+  x.fillStyle = '#10102a'; x.fillRect(0,0,w,320);
+  const x8 = pad.l + ((8-2)/23)*gw, x13 = pad.l + ((13-2)/23)*gw;
+  x.fillStyle = 'rgba(0,212,255,0.08)'; x.fillRect(x8, pad.t, x13-x8, gh);
+
+  x.strokeStyle = 'rgba(255,255,255,.06)'; x.lineWidth = 1;
+  for(let i=0;i<=4;i++){const yy=pad.t+(gh/4)*i;x.beginPath();x.moveTo(pad.l,yy);x.lineTo(pad.l+gw,yy);x.stroke();}
+
+  x.beginPath(); x.strokeStyle='rgba(0,212,255,.8)'; x.lineWidth=2;
+  wls.forEach((wl,i)=>{const px=pad.l+((wl-2)/23)*gw,py=pad.t+gh-trans[i]*gh;i===0?x.moveTo(px,py):x.lineTo(px,py);});
+  x.stroke();
+  x.lineTo(pad.l+gw,pad.t+gh);x.lineTo(pad.l,pad.t+gh);x.closePath();x.fillStyle='rgba(0,212,255,.1)';x.fill();
+
+  x.font='bold 13px Segoe UI';x.textAlign='center';x.fillStyle='#00d4ff';
+  x.fillText(lang==='en'?'ATMOSPHERIC WINDOW':'大气窗口',(x8+x13)/2,pad.t+20);
+  x.fillText('8–13 μm',(x8+x13)/2,pad.t+36);
+
+  x.strokeStyle='rgba(0,212,255,.3)';x.setLineDash([4,4]);
+  x.beginPath();x.moveTo(x8,pad.t);x.lineTo(x8,pad.t+gh);x.stroke();
+  x.beginPath();x.moveTo(x13,pad.t);x.lineTo(x13,pad.t+gh);x.stroke();
+  x.setLineDash([]);
+
+  x.fillStyle='#9999bb';x.font='12px Segoe UI';x.textAlign='center';
+  x.fillText(lang==='en'?'Wavelength (μm)':'波长 (μm)',pad.l+gw/2,320-8);
+  for(let wl=2;wl<=25;wl+=2){const px=pad.l+((wl-2)/23)*gw;x.fillText(wl+'',px,pad.t+gh+18);x.beginPath();x.moveTo(px,pad.t+gh);x.lineTo(px,pad.t+gh+4);x.strokeStyle='#555';x.stroke();}
+  x.textAlign='right';
+  x.fillText(lang==='en'?'Transmittance':'透过率',pad.l-8,pad.t-10);
+  for(let i=0;i<=4;i++){const v=i/4,yy=pad.t+gh-v*gh;x.fillText((v*100).toFixed(0)+'%',pad.l-8,yy+4);}
+  x.font='10px Segoe UI';x.textAlign='center';x.fillStyle='#ff6666';
+  x.fillText('CO₂',pad.l+((4.2-2)/23)*gw,pad.t+gh-8);
+  x.fillText('H₂O',pad.l+((6.5-2)/23)*gw,pad.t+gh-8);
+  x.fillText('H₂O',pad.l+((2.7-2)/23)*gw,pad.t+gh-8);
+}
+
+// ====== IDEAL SPECTRUM CHART ======
+function drawIdeal() {
+  const c = document.getElementById('idealSpecCanvas');
+  if(!c) return;
+  const w = c.parentElement.offsetWidth - 56;
+  c.width = w; c.height = 300;
+  const x = c.getContext('2d');
+  const pad = {l:55,r:20,t:25,b:50};
+  const gw = w-pad.l-pad.r, gh = 300-pad.t-pad.b;
+
+  x.fillStyle='#10102a';x.fillRect(0,0,w,300);
+  const wls=[];for(let wl=0.3;wl<=25;wl+=(wl<2.5?0.05:0.2))wls.push(wl);
+  function toX(wl){return pad.l+(Math.log10(wl/0.3)/Math.log10(25/0.3))*gw;}
+  function toY(v){return pad.t+gh-v*gh;}
+
+  x.fillStyle='rgba(250,204,21,.06)';x.fillRect(toX(0.3),pad.t,toX(2.5)-toX(0.3),gh);
+  x.fillStyle='rgba(0,212,255,.06)';x.fillRect(toX(8),pad.t,toX(13)-toX(8),gh);
+  x.font='11px Segoe UI';x.textAlign='center';
+  x.fillStyle='#facc15';x.fillText(lang==='en'?'SOLAR BAND':'太阳波段',(toX(0.3)+toX(2.5))/2,pad.t+14);
+  x.fillStyle='#00d4ff';x.fillText(lang==='en'?'ATM WINDOW':'大气窗口',(toX(8)+toX(13))/2,pad.t+14);
+
+  x.beginPath();x.strokeStyle='#00a0ff';x.lineWidth=2.5;
+  wls.forEach((wl,i)=>{let v;if(wl<2.5)v=0.97;else if(wl<7.5)v=0.05;else if(wl<=13)v=0.95;else v=0.05;i===0?x.moveTo(toX(wl),toY(v)):x.lineTo(toX(wl),toY(v));});
+  x.stroke();
+
+  x.beginPath();x.strokeStyle='#f97316';x.lineWidth=2;
+  wls.forEach((wl,i)=>{let v;if(wl<0.4)v=0.88;else if(wl<0.7)v=0.96;else if(wl<2.5)v=0.93-(wl-0.7)*0.02;else if(wl<5)v=0.15+Math.sin(wl*2)*0.05;else if(wl<8)v=0.35+Math.sin(wl)*0.1;else if(wl<=13)v=0.85+Math.sin(wl*0.5)*0.05;else v=0.60+Math.sin(wl*0.3)*0.1;v+=(Math.random()-.5)*0.02;i===0?x.moveTo(toX(wl),toY(Math.max(0,Math.min(1,v)))):x.lineTo(toX(wl),toY(Math.max(0,Math.min(1,v))));});
+  x.stroke();
+
+  x.strokeStyle='rgba(255,255,255,.05)';x.lineWidth=1;
+  for(let i=0;i<=4;i++){const yy=pad.t+(gh/4)*i;x.beginPath();x.moveTo(pad.l,yy);x.lineTo(pad.l+gw,yy);x.stroke();}
+  x.fillStyle='#9999bb';x.font='11px Segoe UI';x.textAlign='center';
+  [0.3,0.5,1,2,5,8,10,13,20,25].forEach(wl=>{const px=toX(wl);x.fillText(wl<1?wl.toFixed(1):wl+'',px,pad.t+gh+18);x.beginPath();x.moveTo(px,pad.t+gh);x.lineTo(px,pad.t+gh+4);x.strokeStyle='#555';x.lineWidth=1;x.stroke();});
+  x.fillText(lang==='en'?'Wavelength (μm)':'波长 (μm)',pad.l+gw/2,300-6);
+  x.textAlign='right';
+  for(let i=0;i<=4;i++){const v=i/4;x.fillText((v*100).toFixed(0)+'%',pad.l-6,pad.t+gh-v*gh+4);}
+  x.save();x.translate(14,pad.t+gh/2);x.rotate(-Math.PI/2);x.textAlign='center';
+  x.fillText(lang==='en'?'Reflectance / Emissivity':'反射率 / 发射率',0,0);x.restore();
+  x.font='12px Segoe UI';x.textAlign='left';
+  x.fillStyle='#00a0ff';x.fillRect(pad.l+gw-180,pad.t+gh-40,14,3);
+  x.fillText(lang==='en'?'Ideal spectrum':'理想光谱',pad.l+gw-160,pad.t+gh-36);
+  x.fillStyle='#f97316';x.fillRect(pad.l+gw-180,pad.t+gh-24,14,3);
+  x.fillText(lang==='en'?'BaSO₄ paint (real)':'BaSO₄涂料（实际）',pad.l+gw-160,pad.t+gh-20);
+}
+
+// ====== CLOSED LOOP CANVAS ======
+function drawLoop() {
+  const c = document.getElementById('loopCanvas');
+  if(!c) return;
+  c.width = c.parentElement.offsetWidth - 56; c.height = 280;
+  const x = c.getContext('2d');
+  const cx = c.width/2, cy = 140, r = Math.min(cx,cy)-50;
+  x.fillStyle='#10102a';x.fillRect(0,0,c.width,280);
+
+  const nodes = lang==='en'
+    ? ['Physics\nSimulation','Train\nSurrogate','Optimize','Generate\nNew Designs','Validate\n& Fabricate']
+    : ['物理\n模拟','训练\n代理模型','优化','生成\n新设计','验证\n& 制造'];
+  const cols = ['#f97316','#00d4ff','#f97316','#d946ef','#22c55e'];
+
+  nodes.forEach((n,i) => {
+    const ang = (i/nodes.length)*Math.PI*2-Math.PI/2;
+    const nx = cx+Math.cos(ang)*r, ny = cy+Math.sin(ang)*r;
+    x.beginPath();x.arc(nx,ny,32,0,Math.PI*2);
+    x.fillStyle='rgba(255,255,255,.04)';x.fill();
+    x.strokeStyle=cols[i];x.lineWidth=2;x.stroke();
+    x.fillStyle='#eeeeff';x.font='11px Segoe UI';x.textAlign='center';
+    n.split('\n').forEach((l,li,arr)=>{x.fillText(l,nx,ny+(li-(arr.length-1)/2)*13);});
+    const nextAng=((i+1)/nodes.length)*Math.PI*2-Math.PI/2;
+    x.beginPath();x.arc(cx,cy,r-2,ang+.3,nextAng-.3);
+    x.strokeStyle='rgba(255,255,255,.15)';x.lineWidth=2;x.stroke();
+  });
+  x.fillStyle='#9999bb';x.font='12px Segoe UI';x.textAlign='center';
+  x.fillText(lang==='en'?'Closed Loop':'闭环系统',cx,cy+4);
+}
+
+// ====== MATERIAL MINI-CANVASES ======
+function drawPart() {
+  const c=document.getElementById('cv_part');if(!c)return;const x=c.getContext('2d');
+  x.fillStyle='#10102a';x.fillRect(0,0,200,140);
+  x.fillStyle='rgba(80,140,255,.2)';x.fillRect(15,15,170,110);
+  x.strokeStyle='#00d4ff';x.strokeRect(15,15,170,110);
+  for(let i=0;i<14;i++){const px=25+Math.random()*150,py=25+Math.random()*90,pr=4+Math.random()*8;x.beginPath();x.arc(px,py,pr,0,Math.PI*2);x.fillStyle=`rgba(255,255,255,${.4+Math.random()*.5})`;x.fill();}
+  x.fillStyle='#9999bb';x.font='9px Segoe UI';x.textAlign='center';x.fillText('SiO₂/TiO₂ in PDMS',100,135);
+}
+function drawML() {
+  const c=document.getElementById('cv_ml');if(!c)return;const x=c.getContext('2d');
+  x.fillStyle='#10102a';x.fillRect(0,0,200,140);
+  const cols=['#ff6b6b','#4ecdc4','#ffe66d','#95e1d3','#f38181','#aa96da','#ffd93d'];
+  for(let i=0;i<7;i++){x.fillStyle=cols[i];x.fillRect(25,15+i*16,150,14);}
+  x.fillStyle='#666';x.fillRect(25,15+7*16,150,14);
+  x.fillStyle='#9999bb';x.font='9px Segoe UI';x.textAlign='left';
+  x.fillText('SiO₂',180,26);x.fillText('HfO₂',180,42);x.fillText('TiO₂',180,58);x.fillText('Ag ↓',180,120);
+}
+function drawMeta() {
+  const c=document.getElementById('cv_meta');if(!c)return;const x=c.getContext('2d');
+  x.fillStyle='#10102a';x.fillRect(0,0,200,140);
+  x.fillStyle='#333';x.fillRect(15,100,170,25);
+  for(let i=0;i<6;i++){const px=30+i*24;x.beginPath();x.moveTo(px-7,100);x.lineTo(px,45+Math.random()*15);x.lineTo(px+7,100);x.closePath();x.fillStyle=`hsl(${180+i*12},65%,55%)`;x.fill();}
+  x.fillStyle='#9999bb';x.font='9px Segoe UI';x.textAlign='center';x.fillText(lang==='en'?'Truncated pyramids':'截锥金字塔',100,135);
+}
+
+// ====== INIT ======
+setTimeout(()=>{drawAtm();drawIdeal();drawLoop();drawPart();drawML();drawMeta();},300);
+window.addEventListener('resize',()=>{resizeHC();drawAtm();drawIdeal();drawLoop();});
+</script>
+</body>
+</html>

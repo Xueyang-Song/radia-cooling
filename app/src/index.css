@@ -1,0 +1,289 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: light;
+  --font-sans: 'Space Grotesk', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --radius: 0.9rem;
+  --background: oklch(0.97 0.02 90);
+  --foreground: oklch(0.25 0.05 140);
+  --card: oklch(0.985 0.015 90 / 0.9);
+  --card-foreground: oklch(0.25 0.05 140);
+  --primary: oklch(0.45 0.12 145);
+  --primary-foreground: oklch(0.97 0.02 90);
+  --secondary: oklch(0.93 0.03 95);
+  --secondary-foreground: oklch(0.32 0.07 145);
+  --muted: oklch(0.52 0.03 145);
+  --line: oklch(0.88 0.03 95);
+  --accent: oklch(0.45 0.12 145);
+  --accent-soft: oklch(0.9 0.04 145 / 0.5);
+  --accent-warm: oklch(0.64 0.16 52);
+  --accent-warm-soft: oklch(0.88 0.06 52 / 0.45);
+  --panel-shadow: 0 22px 60px rgba(15, 31, 24, 0.08);
+  --paper: var(--background);
+  --paper-deep: oklch(0.93 0.03 95);
+  --panel: color-mix(in oklab, white 82%, var(--card));
+  --panel-strong: color-mix(in oklab, white 92%, var(--card));
+  --panel-muted: color-mix(in oklab, var(--secondary) 72%, white);
+  --app-frame: oklch(0.935 0.02 95);
+  --app-shell: color-mix(in oklab, white 76%, var(--card));
+  --sidebar: oklch(0.96 0.025 92);
+  --sidebar-foreground: oklch(0.25 0.05 140);
+  --sidebar-primary: oklch(0.45 0.12 145);
+  --sidebar-primary-foreground: oklch(0.97 0.02 90);
+  --sidebar-accent: oklch(0.91 0.04 95);
+  --sidebar-accent-foreground: oklch(0.35 0.08 145);
+  --sidebar-border: oklch(0.88 0.03 95);
+  --terminal-surface: oklch(0.23 0.03 250);
+  --terminal-foreground: oklch(0.93 0.02 250);
+  --ink: var(--foreground);
+}
+
+html.dark {
+  color-scheme: dark;
+  --background: oklch(0.18 0.03 145);
+  --foreground: oklch(0.92 0.025 90);
+  --card: oklch(0.22 0.035 145 / 0.92);
+  --card-foreground: oklch(0.92 0.025 90);
+  --primary: oklch(0.75 0.1 95);
+  --primary-foreground: oklch(0.2 0.04 145);
+  --secondary: oklch(0.25 0.035 145);
+  --secondary-foreground: oklch(0.88 0.02 90);
+  --muted: oklch(0.74 0.02 95);
+  --line: oklch(0.3 0.04 145);
+  --accent: oklch(0.75 0.1 95);
+  --accent-soft: oklch(0.28 0.04 145 / 0.8);
+  --accent-warm: oklch(0.78 0.12 78);
+  --accent-warm-soft: oklch(0.3 0.05 52 / 0.8);
+  --panel-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  --paper: var(--background);
+  --paper-deep: oklch(0.2 0.035 145);
+  --panel: oklch(0.22 0.03 145 / 0.95);
+  --panel-strong: oklch(0.255 0.03 145 / 0.98);
+  --panel-muted: oklch(0.205 0.028 145 / 0.94);
+  --app-frame: oklch(0.16 0.028 145);
+  --app-shell: oklch(0.19 0.03 145 / 0.97);
+  --sidebar: oklch(0.2 0.035 145);
+  --sidebar-foreground: oklch(0.92 0.025 90);
+  --sidebar-primary: oklch(0.75 0.1 95);
+  --sidebar-primary-foreground: oklch(0.2 0.04 145);
+  --sidebar-accent: oklch(0.28 0.04 145);
+  --sidebar-accent-foreground: oklch(0.88 0.02 90);
+  --sidebar-border: oklch(0.3 0.04 145);
+  --terminal-surface: oklch(0.19 0.03 250);
+  --terminal-foreground: oklch(0.94 0.02 245);
+  --ink: var(--foreground);
+}
+
+html[data-locale='zh-Hans'] {
+  --font-sans: 'Space Grotesk', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif;
+  --font-serif: 'Noto Serif CJK SC', 'Source Han Serif SC', 'Songti SC', 'STSong', serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(circle at top left, color-mix(in oklab, var(--primary) 24%, transparent), transparent 32%),
+    radial-gradient(circle at 85% 0%, color-mix(in oklab, var(--accent-warm) 18%, transparent), transparent 24%),
+    linear-gradient(180deg, color-mix(in oklab, var(--app-frame) 96%, white) 0%, var(--app-frame) 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 220ms ease,
+    color 220ms ease,
+    background-image 220ms ease;
+}
+
+main :where(section, article, div, aside, header, footer, p, h1, h2, h3, h4, li, span, a, code, pre, button) {
+  min-width: 0;
+}
+
+:where(p, h1, h2, h3, h4, h5, h6, li, a, code, pre, td, th, span) {
+  overflow-wrap: anywhere;
+}
+
+:where(img, canvas, svg, iframe, video, table, pre) {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.surface-card {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--panel-shadow);
+}
+
+.surface-card-strong {
+  border: 1px solid var(--line);
+  background: var(--panel-strong);
+  box-shadow: var(--panel-shadow);
+}
+
+.surface-inset {
+  border: 1px solid var(--line);
+  background: var(--panel-muted);
+}
+
+.surface-hero {
+  border: 1px solid color-mix(in oklab, var(--primary) 22%, var(--line));
+  background: linear-gradient(180deg, color-mix(in oklab, var(--primary) 8%, var(--panel-strong)) 0%, var(--panel) 100%);
+  box-shadow: var(--panel-shadow);
+}
+
+.surface-terminal {
+  border: 1px solid color-mix(in oklab, var(--line) 85%, var(--terminal-surface));
+  background: linear-gradient(180deg, color-mix(in oklab, var(--terminal-surface) 94%, black) 0%, color-mix(in oklab, var(--terminal-surface) 100%, black) 100%);
+  color: var(--terminal-foreground);
+  box-shadow: var(--panel-shadow);
+}
+
+.app-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--primary) 40%, var(--line)) transparent;
+}
+
+.app-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.app-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--primary) 34%, var(--line));
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.app-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.markdown-body {
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  line-height: 1.1;
+}
+
+.markdown-body h1 {
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
+}
+
+.markdown-body h2 {
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+}
+
+.markdown-body h3 {
+  font-size: 1.25rem;
+}
+
+.markdown-body p,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body blockquote,
+.markdown-body table {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 1.25rem;
+}
+
+.markdown-body li + li {
+  margin-top: 0.35rem;
+}
+
+.markdown-body code {
+  border-radius: 0.55rem;
+  background: color-mix(in oklab, var(--panel-muted) 88%, transparent);
+  padding: 0.18rem 0.45rem;
+  font-size: 0.92rem;
+}
+
+.markdown-body pre {
+  overflow-x: auto;
+  border-radius: 1.25rem;
+  background: var(--terminal-surface);
+  padding: 1rem;
+  color: var(--terminal-foreground);
+}
+
+.markdown-body pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.markdown-body blockquote {
+  border-left: 4px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 1rem 1.25rem;
+  color: var(--muted);
+}
+
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  border-radius: 1rem;
+}
+
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--line);
+  padding: 0.8rem;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.markdown-body th {
+  background: var(--panel-muted);
+}
+
+.markdown-body hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 2rem 0;
+}

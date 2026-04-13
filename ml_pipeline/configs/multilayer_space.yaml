@@ -1,0 +1,34 @@
+project_name: multilayer_daytime_rc
+seed: 123
+
+backend:
+  default: mock
+
+structure:
+  functional_layers: 5
+  dielectric_materials:
+    - SiO2
+    - TiO2
+    - HfO2
+    - Al2O3
+    - Si3N4
+  reflector_material: Ag
+  reflector_thickness_nm: 150.0
+  thickness_nm:
+    min: 40.0
+    max: 500.0
+  allow_adjacent_duplicates: false
+
+spectrum:
+  wavelength_um:
+    start: 0.3
+    stop: 25.0
+    points: 256
+
+targets:
+  solar_band_um: [0.3, 2.5]
+  atmospheric_window_um: [8.0, 13.0]
+  cooling_proxy:
+    solar_penalty_weight: 100.0
+    window_gain_weight: 120.0
+    thickness_penalty_weight: 0.01

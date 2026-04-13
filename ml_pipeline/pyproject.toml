@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rcml-pipeline"
+version = "0.1.0"
+description = "Radiative cooling multilayer ML pipeline scaffold"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+train = [
+    "pandas>=2.2",
+    "scikit-learn>=1.4",
+    "xgboost>=2.0",
+    "torch>=2.3",
+]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+rcml-generate = "rcml.cli.generate_dataset:main"
+rcml-train-baseline = "rcml.cli.train_baseline:main"
+rcml-train-spectral = "rcml.cli.train_spectral_surrogate:main"
+rcml-train-inverse = "rcml.cli.train_inverse_design:main"
+rcml-propose-design = "rcml.cli.propose_inverse_design:main"
+rcml-train-torch-forward = "rcml.cli.train_torch_forward:main"
+rcml-train-tandem = "rcml.cli.train_tandem:main"
+rcml-verify-candidates = "rcml.cli.verify_candidates:main"
+rcml-train-cvae = "rcml.cli.train_conditional_vae:main"
+rcml-train-diffusion = "rcml.cli.train_conditional_diffusion:main"
+rcml-rank-candidates = "rcml.cli.rank_candidates:main"
+rcml-train-rank-calibrator = "rcml.cli.train_rank_calibrator:main"
+rcml-rank-proposal-pool = "rcml.cli.rank_proposal_pool:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

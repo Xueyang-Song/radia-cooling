@@ -1,0 +1,3154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine Learning Models — Visual Explainer | ML模型可视化教程</title>
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0c12;
+  --bg2: #12151f;
+  --bg3: #181c2a;
+  --card: #151926;
+  --border: #252a3e;
+  --text: #c8cdd8;
+  --text-dim: #6e7587;
+  --heading: #eaeff8;
+  --accent: #6c8cff;
+  --accent2: #a78bfa;
+  --green: #34d399;
+  --orange: #fb923c;
+  --pink: #f472b6;
+  --cyan: #22d3ee;
+  --red: #f87171;
+  --yellow: #fbbf24;
+  --radius: 18px;
+  --shadow: 0 10px 40px rgba(0,0,0,.55);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 7px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 700px 450px at 25% 35%, rgba(108,140,255,.14), transparent),
+    radial-gradient(ellipse 550px 380px at 75% 55%, rgba(167,139,250,.11), transparent),
+    radial-gradient(ellipse 400px 300px at 50% 80%, rgba(52,211,153,.06), transparent);
+  pointer-events: none;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 800;
+  color: var(--heading);
+  letter-spacing: -1px;
+  margin-bottom: .6rem;
+  position: relative;
+}
+.hero h1 span {
+  background: linear-gradient(135deg, var(--accent), var(--accent2), var(--pink));
+  background-size: 200% 200%;
+  animation: gradientShift 6s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes gradientShift {
+  0%,100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.hero .subtitle {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: var(--text-dim);
+  max-width: 660px;
+  margin-bottom: 2.5rem;
+  line-height: 1.8;
+}
+.hero .scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  animation: bobble 2.5s ease-in-out infinite;
+  color: var(--text-dim);
+  font-size: .85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .4rem;
+}
+.hero .scroll-hint svg { width: 22px; height: 22px; stroke: var(--accent); }
+@keyframes bobble { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(10px); } }
+
+/* ===== NAV BAR ===== */
+.sticky-nav {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  z-index: 100;
+  background: rgba(10,12,18,.88);
+  backdrop-filter: blur(16px) saturate(1.2);
+  border-bottom: 1px solid var(--border);
+  transform: translateY(-100%);
+  transition: transform .35s ease;
+}
+.sticky-nav.visible { transform: translateY(0); }
+.sticky-nav .inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .6rem 1.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.sticky-nav .inner::-webkit-scrollbar { display: none; }
+.sticky-nav .nav-link {
+  white-space: nowrap;
+  font-size: .78rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: .25rem .6rem;
+  border-radius: 6px;
+  transition: all .2s;
+  font-weight: 500;
+}
+.sticky-nav .nav-link:hover, .sticky-nav .nav-link.active { color: var(--accent); background: rgba(108,140,255,.12); }
+.nav-logo { font-weight: 700; color: var(--heading); font-size: .85rem; margin-right: auto; flex-shrink: 0; }
+
+/* ===== LANGUAGE TOGGLE ===== */
+.lang-toggle {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+  background: rgba(108,140,255,.08);
+  border: 1px solid rgba(108,140,255,.2);
+  border-radius: 20px;
+  padding: .2rem .25rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.lang-btn {
+  font-size: .72rem;
+  font-weight: 600;
+  padding: .22rem .5rem;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all .2s;
+  color: var(--text-dim);
+  background: transparent;
+  border: none;
+  font-family: inherit;
+}
+.lang-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+.lang-btn:hover:not(.active) {
+  color: var(--accent);
+}
+
+/* Hide content based on language */
+[data-lang-cn] { display: none; }
+html[lang="zh"] [data-lang-en] { display: none; }
+html[lang="zh"] [data-lang-cn] { display: inline; }
+html[lang="zh"] span[data-lang-cn],
+html[lang="zh"] p[data-lang-cn],
+html[lang="zh"] h1[data-lang-cn],
+html[lang="zh"] h2[data-lang-cn],
+html[lang="zh"] h3[data-lang-cn],
+html[lang="zh"] h4[data-lang-cn],
+html[lang="zh"] li[data-lang-cn],
+html[lang="zh"] div[data-lang-cn] { display: block; }
+html[lang="zh"] span[data-lang-cn] { display: inline; }
+html[lang="zh"] td[data-lang-cn],
+html[lang="zh"] th[data-lang-cn] { display: table-cell; }
+
+/* Hero language toggle (always visible) */
+.hero-lang-toggle {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+  background: rgba(108,140,255,.08);
+  border: 1px solid rgba(108,140,255,.2);
+  border-radius: 20px;
+  padding: .25rem .3rem;
+  z-index: 50;
+}
+.hero-lang-toggle .lang-btn {
+  font-size: .75rem;
+  font-weight: 600;
+  padding: .28rem .6rem;
+  border-radius: 14px;
+  cursor: pointer;
+  color: var(--text-dim);
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  transition: all .2s;
+}
+.hero-lang-toggle .lang-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+.hero-lang-toggle .lang-btn:hover:not(.active) {
+  color: var(--accent);
+}
+
+/* ===== CONTAINER ===== */
+.container { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
+
+/* ===== SECTION & CARD ===== */
+section { padding: 5rem 0 3rem; }
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--accent);
+  margin-bottom: .75rem;
+}
+.section-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: dotPulse 2s ease infinite; }
+@keyframes dotPulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+section h2 {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 800;
+  color: var(--heading);
+  margin-bottom: .6rem;
+}
+section .lead { color: var(--text-dim); font-size: 1.05rem; max-width: 640px; margin-bottom: 2rem; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s, box-shadow .3s;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--pink));
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity .4s;
+}
+.card:hover::before { opacity: 1; }
+.card:hover { border-color: rgba(108,140,255,.25); box-shadow: 0 12px 48px rgba(0,0,0,.6), 0 0 0 1px rgba(108,140,255,.08); }
+.card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--heading);
+  margin-bottom: .35rem;
+}
+.card .tag {
+  display: inline-block;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: .2rem .6rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}
+.tag-traditional { background: rgba(52,211,153,.12); color: var(--green); }
+.tag-neural { background: rgba(108,140,255,.12); color: var(--accent); }
+.tag-optimizer { background: rgba(251,146,60,.12); color: var(--orange); }
+.tag-generative { background: rgba(244,114,182,.12); color: var(--pink); }
+
+.card p { margin-bottom: 1rem; }
+.card strong { color: var(--heading); }
+
+/* ===== VIZ CANVAS CONTAINERS ===== */
+.viz-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin: 1.5rem 0;
+  overflow: hidden;
+  position: relative;
+  transition: border-color .3s;
+}
+.viz-box:hover { border-color: rgba(108,140,255,.2); }
+.viz-box canvas { display: block; width: 100%; }
+.viz-label {
+  position: absolute;
+  bottom: 10px;
+  right: 14px;
+  font-size: .65rem;
+  color: var(--text-dim);
+  opacity: .5;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+.viz-box:hover .viz-label { opacity: .8; }
+
+/* Pause overlay */
+.viz-box .pause-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: rgba(20,23,34,.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: .7rem;
+  padding: .25rem .55rem;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .3s, color .2s, border-color .2s;
+  z-index: 5;
+  font-family: inherit;
+}
+.viz-box:hover .pause-btn { opacity: 1; }
+.pause-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ===== ANALOGY BOX ===== */
+.analogy {
+  background: linear-gradient(135deg, rgba(108,140,255,.06), rgba(167,139,250,.04));
+  border-left: 3px solid var(--accent);
+  padding: 1rem 1.25rem;
+  border-radius: 0 10px 10px 0;
+  margin: 1rem 0 1.5rem;
+  font-style: italic;
+  color: var(--text);
+}
+.analogy::before { content: '💡 '; font-style: normal; }
+
+/* ===== PROS / CONS ===== */
+.pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+.pros, .cons { padding: .8rem 1rem; border-radius: 10px; font-size: .9rem; }
+.pros { background: rgba(52,211,153,.06); border: 1px solid rgba(52,211,153,.18); }
+.cons { background: rgba(248,113,113,.06); border: 1px solid rgba(248,113,113,.18); }
+.pros h4 { color: var(--green); font-size: .78rem; margin-bottom: .4rem; text-transform: uppercase; letter-spacing: .5px; }
+.cons h4 { color: var(--red); font-size: .78rem; margin-bottom: .4rem; text-transform: uppercase; letter-spacing: .5px; }
+.pros li, .cons li { margin-left: 1rem; margin-bottom: .25rem; }
+@media (max-width: 600px) { .pros-cons { grid-template-columns: 1fr; } }
+
+/* ===== PAPER USE ===== */
+.paper-use {
+  background: rgba(167,139,250,.06);
+  border: 1px solid rgba(167,139,250,.18);
+  border-radius: 10px;
+  padding: .8rem 1rem;
+  font-size: .9rem;
+  margin: 1rem 0;
+}
+.paper-use::before { content: '📄 In the paper: '; font-weight: 700; color: var(--accent2); }
+
+/* ===== PIPELINE ===== */
+.pipeline {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 2rem 0;
+  overflow-x: auto;
+  padding-bottom: .5rem;
+}
+.pipeline-stage {
+  flex: 1;
+  min-width: 200px;
+  padding: 1.5rem 1.2rem;
+  text-align: center;
+  position: relative;
+  border: 1px solid var(--border);
+  transition: background .3s;
+}
+.pipeline-stage:hover { filter: brightness(1.15); }
+.pipeline-stage:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.pipeline-stage:last-child  { border-radius: 0 var(--radius) var(--radius) 0; }
+.pipeline-stage h4 { font-size: .85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: .5rem; }
+.pipeline-stage ul { list-style: none; font-size: .85rem; }
+.pipeline-stage ul li { margin-bottom: .2rem; }
+.stage1 { background: rgba(52,211,153,.05); }
+.stage1 h4 { color: var(--green); }
+.stage2 { background: rgba(251,146,60,.05); }
+.stage2 h4 { color: var(--orange); }
+.stage3 { background: rgba(244,114,182,.05); }
+.stage3 h4 { color: var(--pink); }
+.pipeline-arrow {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  color: var(--text-dim);
+  padding: 0 .3rem;
+}
+
+/* ===== COMPARISON TABLE ===== */
+.comp-table-wrap { overflow-x: auto; margin: 2rem 0; border-radius: 12px; border: 1px solid var(--border); }
+.comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .82rem;
+}
+.comp-table th, .comp-table td {
+  padding: .6rem .75rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+.comp-table th {
+  background: var(--bg3);
+  color: var(--heading);
+  font-weight: 700;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+.comp-table tr:hover td { background: rgba(108,140,255,.04); }
+.comp-table td:first-child { font-weight: 600; color: var(--heading); white-space: nowrap; }
+
+/* ===== REVEAL ANIMATIONS ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-dim);
+  font-size: .78rem;
+  border-top: 1px solid var(--border);
+  margin-top: 4rem;
+}
+footer a { color: var(--accent); text-decoration: none; }
+
+/* ===== TOOLTIP ===== */
+.canvas-tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: rgba(20,23,34,.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: .78rem;
+  padding: .4rem .7rem;
+  border-radius: 8px;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity .15s;
+  max-width: 220px;
+  line-height: 1.4;
+}
+.canvas-tooltip.show { opacity: 1; }
+
+/* ===== BACK TO TOP ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(108,140,255,.15);
+  border: 1px solid rgba(108,140,255,.3);
+  color: var(--accent);
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .3s, transform .3s, background .2s;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+.back-to-top.show { opacity: 1; }
+.back-to-top:hover { background: rgba(108,140,255,.25); transform: translateY(-2px); }
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--pink));
+  z-index: 150;
+  transition: width .1s linear;
+  width: 0%;
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div id="tooltip" class="canvas-tooltip"></div>
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- ==================== STICKY NAV ==================== -->
+<nav class="sticky-nav" id="stickyNav">
+  <div class="inner">
+    <span class="nav-logo"><span data-lang-en>ML Visual Guide</span><span data-lang-cn>ML可视化指南</span></span>
+    <a class="nav-link" href="#intro"><span data-lang-en>Intro</span><span data-lang-cn>简介</span></a>
+    <a class="nav-link" href="#knn">KNN</a>
+    <a class="nav-link" href="#rf"><span data-lang-en>Random Forest</span><span data-lang-cn>随机森林</span></a>
+    <a class="nav-link" href="#xgb">XGBoost</a>
+    <a class="nav-link" href="#ann">ANN</a>
+    <a class="nav-link" href="#cnn">CNN</a>
+    <a class="nav-link" href="#tandem"><span data-lang-en>Tandem NN</span><span data-lang-cn>串联网络</span></a>
+    <a class="nav-link" href="#optimizers"><span data-lang-en>Optimizers</span><span data-lang-cn>优化器</span></a>
+    <a class="nav-link" href="#vae">VAE</a>
+    <a class="nav-link" href="#gan">GAN</a>
+    <a class="nav-link" href="#diffusion"><span data-lang-en>Diffusion</span><span data-lang-cn>扩散模型</span></a>
+    <a class="nav-link" href="#drl">DRL</a>
+    <a class="nav-link" href="#pipeline"><span data-lang-en>Pipeline</span><span data-lang-cn>流程</span></a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="zh">中文</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero" id="hero">
+  <div class="hero-lang-toggle">
+    <button class="lang-btn active" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="zh">中文</button>
+  </div>
+  <h1 data-lang-en>Machine Learning Models<br><span>Visually Explained</span></h1>
+  <h1 data-lang-cn>机器学习模型<br><span>可视化解读</span></h1>
+  <p class="subtitle" data-lang-en>An interactive, animated guide to every ML model used in radiative cooling material design — explained clearly, from scratch.</p>
+  <p class="subtitle" data-lang-cn>一份交互式动画指南，深入浅出地讲解辐射制冷材料设计中使用的每一种机器学习模型。</p>
+  <div class="scroll-hint">
+    <span data-lang-en>Scroll to explore</span>
+    <span data-lang-cn>向下滚动探索</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+  <canvas id="heroBg" style="position:absolute;inset:0;z-index:-1;"></canvas>
+</header>
+
+<!-- ==================== INTRO ==================== -->
+<section id="intro">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot"></span> <span data-lang-en>Chapter 0</span><span data-lang-cn>第〇章</span></div>
+    <h2 data-lang-en>What Is Machine Learning?</h2>
+    <h2 data-lang-cn>什么是机器学习？</h2>
+    <p class="lead" data-lang-en>Teaching computers to recognize patterns in data so they can make predictions — without being explicitly programmed for every case.</p>
+    <p class="lead" data-lang-cn>教会计算机识别数据中的模式并进行预测——无需为每种情况显式编程。</p>
+  </div>
+
+  <div class="card reveal">
+    <h3 data-lang-en>The Core Idea</h3>
+    <h3 data-lang-cn>核心思想</h3>
+    <p data-lang-en><strong>Input</strong> = features you feed to the model (particle size, layer thickness…)<br>
+       <strong>Output</strong> = prediction (solar reflectance, cooling power…)<br>
+       <strong>Training</strong> = showing thousands of examples so the model learns the pattern<br>
+       <strong>Inference</strong> = using the trained model on new, unseen inputs</p>
+    <p data-lang-cn><strong>输入</strong> = 模型的特征量（粒径、层厚度…）<br>
+       <strong>输出</strong> = 预测结果（太阳反射率、制冷功率…）<br>
+       <strong>训练</strong> = 展示数千个样本，让模型学习规律<br>
+       <strong>推理</strong> = 对新数据应用已训练的模型</p>
+
+    <div class="viz-box">
+      <canvas id="vizIntro" height="260"></canvas>
+      <button class="pause-btn" data-target="vizIntro"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Click to retrain</span>
+      <span class="viz-label" data-lang-cn>点击重新训练</span>
+    </div>
+
+    <div class="analogy" data-lang-en>Imagine tasting 1,000 coffees, recording beans, roast time, water temp, and grind size. Eventually you'd <em>feel</em> which combos make great coffee — even recipes you've never tried. ML does that with math.</div>
+    <div class="analogy" data-lang-cn>想象你品尝了1000杯咖啡，记录豆子、烘焙时间、水温和研磨大小。最终你会<em>直觉</em>地知道什么组合能做出好咖啡——即使是你没试过的配方。机器学习用数学做同样的事。</div>
+  </div>
+
+  <div class="card reveal">
+    <h3 data-lang-en>Three Learning Paradigms</h3>
+    <h3 data-lang-cn>三种学习范式</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem;">
+      <div style="padding:1rem;border-radius:10px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.18);">
+        <h4 style="color:var(--green);margin-bottom:.3rem;" data-lang-en>Supervised</h4>
+        <h4 style="color:var(--green);margin-bottom:.3rem;" data-lang-cn>监督学习</h4>
+        <p style="font-size:.85rem;" data-lang-en>Learns from labeled examples (input → known output). Used for <em>predicting</em> cooling performance.</p>
+        <p style="font-size:.85rem;" data-lang-cn>从带标签的样本学习（输入→已知输出）。用于<em>预测</em>制冷性能。</p>
+      </div>
+      <div style="padding:1rem;border-radius:10px;background:rgba(108,140,255,.06);border:1px solid rgba(108,140,255,.18);">
+        <h4 style="color:var(--accent);margin-bottom:.3rem;" data-lang-en>Unsupervised</h4>
+        <h4 style="color:var(--accent);margin-bottom:.3rem;" data-lang-cn>无监督学习</h4>
+        <p style="font-size:.85rem;" data-lang-en>Finds hidden patterns without labels. Not a main focus of this paper.</p>
+        <p style="font-size:.85rem;" data-lang-cn>在无标签情况下发现隐藏模式。非本文重点。</p>
+      </div>
+      <div style="padding:1rem;border-radius:10px;background:rgba(244,114,182,.06);border:1px solid rgba(244,114,182,.18);">
+        <h4 style="color:var(--pink);margin-bottom:.3rem;" data-lang-en>Generative</h4>
+        <h4 style="color:var(--pink);margin-bottom:.3rem;" data-lang-cn>生成式学习</h4>
+        <p style="font-size:.85rem;" data-lang-en>Creates new data samples. Used for <em>inverse design</em> — generating material structures from target performance.</p>
+        <p style="font-size:.85rem;" data-lang-cn>生成新的数据样本。用于<em>逆向设计</em>——从目标性能生成材料结构。</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== KNN ==================== -->
+<section id="knn">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--green)"></span> <span data-lang-en>Traditional ML</span><span data-lang-cn>传统机器学习</span></div>
+    <h2 data-lang-en>K-Nearest Neighbors (KNN)</h2>
+    <h2 data-lang-cn>K近邻算法 (KNN)</h2>
+    <p class="lead" data-lang-en>The simplest ML algorithm. Find the K most similar examples you already know and average their answers.</p>
+    <p class="lead" data-lang-cn>最简单的机器学习算法。找到你已知的K个最相似样本，取其答案的平均值。</p>
+  </div>
+
+  <div class="card reveal">
+    <span class="tag tag-traditional"><span data-lang-en>Traditional ML</span><span data-lang-cn>传统ML</span></span>
+    <h3 data-lang-en>How It Works</h3>
+    <h3 data-lang-cn>工作原理</h3>
+    <p data-lang-en>When a new data point comes in, KNN measures the "distance" to every known example, picks the K closest, and averages their outputs. No training phase — it just memorizes the data.</p>
+    <p data-lang-cn>当新数据点输入时，KNN测量到每个已知样本的"距离"，选取最近的K个，然后对其输出取平均。无训练阶段——只需记忆数据。</p>
+
+    <div class="viz-box">
+      <canvas id="vizKnn" height="380"></canvas>
+      <button class="pause-btn" data-target="vizKnn"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Click to classify a new point</span>
+      <span class="viz-label" data-lang-cn>点击新增数据点</span>
+    </div>
+
+    <div class="analogy" data-lang-en>You move to a new neighborhood and want to guess your house price. Look at the 5 most similar houses nearby and average their prices. That's KNN.</div>
+    <div class="analogy" data-lang-cn>你搬到新社区想估算房价，查看附近5套最相似的房子并取平均价格——这就是KNN。</div>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4 data-lang-en>✦ Strengths</h4>
+        <h4 data-lang-cn>✦ 优势</h4>
+        <ul>
+          <li data-lang-en>Dead simple to understand & implement</li>
+          <li data-lang-cn>极易理解和实现</li>
+          <li data-lang-en>No training phase — just memorize data</li>
+          <li data-lang-cn>无需训练——只需记忆数据</li>
+          <li data-lang-en>Works well when relationships are smooth</li>
+          <li data-lang-cn>当关系平滑时效果良好</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4 data-lang-en>✦ Weaknesses</h4>
+        <h4 data-lang-cn>✦ 劣势</h4>
+        <ul>
+          <li data-lang-en>Slow with large datasets</li>
+          <li data-lang-cn>大数据集下速度慢</li>
+          <li data-lang-en>Struggles with many input variables</li>
+          <li data-lang-cn>难以处理高维输入</li>
+          <li data-lang-en>Doesn't learn abstract patterns</li>
+          <li data-lang-cn>无法学习抽象模式</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="paper-use" data-lang-en><strong>Su et al.</strong> (Solar Energy Materials & Solar Cells, 2023) applied KNN to predict optimal structure parameters and absorption/emission performance of <strong>metasurface daytime radiative coolers</strong>. <strong>Ding et al.</strong> (ACS Materials Letters, 2024) used KNN for the design of <strong>biomimetic radiative cooling metamaterials</strong>, demonstrating that KNN works well for parametrically clear structures where "similar geometry → similar spectrum" holds.</div>
+    <div class="paper-use" data-lang-cn><strong>Su等人</strong>（Solar Energy Materials & Solar Cells, 2023）应用KNN预测<strong>超表面日间辐射制冷器</strong>的最优结构参数和吸收/发射性能。<strong>Ding等人</strong>（ACS Materials Letters, 2024）将KNN用于<strong>仿生辐射制冷超材料</strong>的设计，证明KNN在参数清晰的结构中效果良好——"相似几何→相似光谱"。</div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== RANDOM FOREST ==================== -->
+<section id="rf">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--green)"></span> <span data-lang-en>Traditional ML</span><span data-lang-cn>传统机器学习</span></div>
+    <h2 data-lang-en>Random Forest</h2>
+    <h2 data-lang-cn>随机森林</h2>
+    <p class="lead" data-lang-en>A committee of many decision trees that each vote on the answer. Wisdom of the crowd.</p>
+    <p class="lead" data-lang-cn>由众多决策树组成的委员会，每棵树对答案投票——集体智慧。</p>
+  </div>
+
+  <div class="card reveal">
+    <span class="tag tag-traditional"><span data-lang-en>Traditional ML</span><span data-lang-cn>传统ML</span></span>
+    <h3 data-lang-en>How It Works</h3>
+    <h3 data-lang-cn>工作原理</h3>
+    <p data-lang-en>A single decision tree is a flowchart of yes/no questions. A Random Forest builds <strong>hundreds</strong> of trees, each on a random subset, then averages their votes. The averaging smooths out individual quirks.</p>
+    <p data-lang-cn>单棵决策树是一个是/否问题的流程图。随机森林构建<strong>数百棵</strong>树，每棵树基于随机子集训练，然后取平均。集成平均可消除个体偏差。</p>
+
+    <div class="viz-box">
+      <canvas id="vizRf" height="400"></canvas>
+      <button class="pause-btn" data-target="vizRf"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Watch the forest vote</span>
+      <span class="viz-label" data-lang-cn>观察森林投票</span>
+    </div>
+
+    <div class="analogy" data-lang-en>Ask 100 friends to each guess tomorrow's temperature, but each friend only sees 70% of the weather data. Their average is usually better than any single guess.</div>
+    <div class="analogy" data-lang-cn>让100位朋友各自预测明天气温，但每人只看到70%的天气数据。他们的平均值通常优于任何单一猜测。</div>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4 data-lang-en>✦ Strengths</h4>
+        <h4 data-lang-cn>✦ 优势</h4>
+        <ul>
+          <li data-lang-en>Handles non-linear relationships</li>
+          <li data-lang-cn>能处理非线性关系</li>
+          <li data-lang-en>Tells you which features matter most</li>
+          <li data-lang-cn>可揭示最重要的特征</li>
+          <li data-lang-en>Resistant to overfitting</li>
+          <li data-lang-cn>抗过拟合能力强</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4 data-lang-en>✦ Weaknesses</h4>
+        <h4 data-lang-cn>✦ 劣势</h4>
+        <ul>
+          <li data-lang-en>Can be slow with huge datasets</li>
+          <li data-lang-cn>大数据集下可能较慢</li>
+          <li data-lang-en>Less effective for very complex patterns</li>
+          <li data-lang-cn>对极复杂模式效果有限</li>
+          <li data-lang-en>Bad at extrapolation</li>
+          <li data-lang-cn>外推能力差</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="paper-use" data-lang-en><strong>Su et al.</strong> used RF for metasurface radiative cooler prediction and design enhancement. <strong>Shi et al.</strong> (Atmosphere, 2025) applied RF to predict <strong>scattering efficiency in the 0.3–2.5 μm solar band</strong> for passive daytime radiative cooling particles, demonstrating RF's ability to handle complex non-linear relationships and provide <strong>feature importance rankings</strong> — showing which particle parameters most influence cooling.</div>
+    <div class="paper-use" data-lang-cn><strong>Su等人</strong>将RF用于超表面辐射制冷器的预测和设计增强。<strong>Shi等人</strong>（Atmosphere, 2025）应用RF预测被动日间辐射制冷颗粒在<strong>0.3–2.5 μm太阳波段的散射效率</strong>，展示了RF处理复杂非线性关系并提供<strong>特征重要性排序</strong>的能力——显示哪些颗粒参数对制冷影响最大。</div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== XGBOOST ==================== -->
+<section id="xgb">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--green)"></span> <span data-lang-en>Traditional ML</span><span data-lang-cn>传统机器学习</span></div>
+    <h2>XGBoost</h2>
+    <p class="lead" data-lang-en>Builds trees <em>sequentially</em> — each new tree corrects the mistakes of all previous trees. The king of structured data.</p>
+    <p class="lead" data-lang-cn><em>顺序</em>构建决策树——每棵新树专门修正前序树的错误。结构化数据之王。</p>
+  </div>
+
+  <div class="card reveal">
+    <span class="tag tag-traditional"><span data-lang-en>Traditional ML</span><span data-lang-cn>传统ML</span></span>
+    <h3 data-lang-en>How It Works</h3>
+    <h3 data-lang-cn>工作原理</h3>
+    <p data-lang-en>Unlike Random Forest (parallel trees), XGBoost builds trees one at a time. Each new tree specifically targets the <strong>errors</strong> left by all prior trees. The final prediction is the sum of all trees' contributions.</p>
+    <p data-lang-cn>与随机森林（并行树）不同，XGBoost逐棵构建树。每棵新树专门针对前序树留下的<strong>残差</strong>。最终预测是所有树贡献之和。</p>
+
+    <div class="viz-box">
+      <canvas id="vizXgb" height="340"></canvas>
+      <button class="pause-btn" data-target="vizXgb"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Watch error correction in action</span>
+      <span class="viz-label" data-lang-cn>观察残差修正过程</span>
+    </div>
+
+    <div class="analogy" data-lang-en>Take an exam, review only the questions you got wrong, study just those topics, retake. XGBoost does this hundreds of times.</div>
+    <div class="analogy" data-lang-cn>参加考试，只复习做错的题目，专攻那些知识点，再考。XGBoost重复这个过程数百次。</div>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4 data-lang-en>✦ Strengths</h4>
+        <h4 data-lang-cn>✦ 优势</h4>
+        <ul>
+          <li data-lang-en>Often best-performing on tabular data</li>
+          <li data-lang-cn>通常是表格数据上性能最优的算法</li>
+          <li data-lang-en>Very fast (parallelized)</li>
+          <li data-lang-cn>非常快（并行化）</li>
+          <li data-lang-en>Feature importance / SHAP explainability</li>
+          <li data-lang-cn>支持特征重要性/SHAP可解释性</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4 data-lang-en>✦ Weaknesses</h4>
+        <h4 data-lang-cn>✦ 劣势</h4>
+        <ul>
+          <li data-lang-en>More hyperparameters to tune</li>
+          <li data-lang-cn>需调节更多超参数</li>
+          <li data-lang-en>Can overfit on very small datasets</li>
+          <li data-lang-cn>小数据集易过拟合</li>
+          <li data-lang-en>Not ideal for raw spectral curves</li>
+          <li data-lang-cn>不太适合原始光谱曲线</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="paper-use" data-lang-en><strong>Yuan et al.</strong> (Gels, 2025) used optimized XGBoost to predict <strong>thermal properties of radiative cooling aerogels</strong> with the highest accuracy among all tested models. Crucially, they combined XGBoost with <strong>SHAP analysis</strong> to identify which input factors most influence cooling performance — serving as both a <strong>predictor AND explainer</strong>. This dual role makes XGBoost uniquely valuable for understanding the physics driving RC performance.</div>
+    <div class="paper-use" data-lang-cn><strong>Yuan等人</strong>（Gels, 2025）使用优化的XGBoost预测<strong>辐射制冷气凝胶的热性能</strong>，在所有测试模型中精度最高。关键的是，他们将XGBoost与<strong>SHAP分析</strong>结合，识别哪些输入因素对制冷性能影响最大——既是<strong>预测器又是解释器</strong>。这种双重角色使XGBoost在理解辐射制冷物理机制方面具有独特价值。</div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== ANN ==================== -->
+<section id="ann">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--accent)"></span> <span data-lang-en>Neural Networks</span><span data-lang-cn>神经网络</span></div>
+    <h2 data-lang-en>Artificial Neural Network (ANN)</h2>
+    <h2 data-lang-cn>人工神经网络 (ANN)</h2>
+    <p class="lead" data-lang-en>Layers of artificial neurons that transform input through learned mathematical operations. The foundation of deep learning.</p>
+    <p class="lead" data-lang-cn>多层人工神经元通过学习的数学运算变换输入——深度学习的基础。</p>
+  </div>
+
+  <div class="card reveal">
+    <span class="tag tag-neural"><span data-lang-en>Neural Network</span><span data-lang-cn>神经网络</span></span>
+    <h3 data-lang-en>How It Works</h3>
+    <h3 data-lang-cn>工作原理</h3>
+    <p data-lang-en>Data flows from input → hidden layers → output. Each neuron multiplies inputs by learned <strong>weights</strong>, sums them, and applies a non-linear activation function. During training, <strong>backpropagation</strong> adjusts all weights to reduce error.</p>
+    <p data-lang-cn>数据从输入→隐藏层→输出。每个神经元将输入乘以学习的<strong>权重</strong>，求和后应用非线性激活函数。训练时，<strong>反向传播</strong>调整所有权重以减小误差。</p>
+
+    <div class="viz-box">
+      <canvas id="vizAnn" height="420"></canvas>
+      <button class="pause-btn" data-target="vizAnn"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Watch data flow through the network</span>
+      <span class="viz-label" data-lang-cn>观察数据在网络中流动</span>
+    </div>
+
+    <div class="analogy" data-lang-en>An assembly line where each worker takes the previous worker's product, modifies it slightly, and passes it forward. After thousands of practice runs, the line produces exactly what's needed.</div>
+    <div class="analogy" data-lang-cn>流水线上每位工人拿到上一位的产品，稍作修改后传递下去。经过数千次练习，流水线能精确生产所需产品。</div>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4 data-lang-en>✦ Strengths</h4>
+        <h4 data-lang-cn>✦ 优势</h4>
+        <ul>
+          <li data-lang-en>Learns complex non-linear relationships</li>
+          <li data-lang-cn>能学习复杂非线性关系</li>
+          <li data-lang-en>Great surrogate for physics simulations</li>
+          <li data-lang-cn>是物理仿真的优秀代理模型</li>
+          <li data-lang-en>Handles multiple inputs & outputs</li>
+          <li data-lang-cn>可处理多输入多输出</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4 data-lang-en>✦ Weaknesses</h4>
+        <h4 data-lang-cn>✦ 劣势</h4>
+        <ul>
+          <li data-lang-en>Needs more data than traditional ML</li>
+          <li data-lang-cn>需要比传统ML更多的数据</li>
+          <li data-lang-en>"Black box" — hard to interpret</li>
+          <li data-lang-cn>"黑箱"——难以解释</li>
+          <li data-lang-en>Must tune architecture carefully</li>
+          <li data-lang-cn>需仔细调整网络架构</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="paper-use" data-lang-en><strong>Fei et al.</strong> (Renewable Energy, 2024) used ANN to predict <strong>long-term radiative cooling performance of windows</strong> across different tropical cities and climate conditions. The foundational work by <strong>Peurifoy et al.</strong> (Science Advances, 2018) demonstrated that ANN can effectively learn nanophotonic electromagnetic responses, establishing the "50,000 simulations → train ANN → use as fast surrogate" paradigm now standard in RC research. ANN replaces expensive FDTD/TMM simulations, enabling <strong>millisecond predictions</strong> vs. minutes per evaluation.</div>
+    <div class="paper-use" data-lang-cn><strong>Fei等人</strong>（Renewable Energy, 2024）使用ANN预测不同热带城市和气候条件下<strong>窗户的长期辐射制冷性能</strong>。<strong>Peurifoy等人</strong>（Science Advances, 2018）的奠基性工作证明ANN可有效学习纳米光子电磁响应，建立了"50,000次仿真→训练ANN→用作快速代理"的范式，现已成为辐射制冷研究的标准方法。ANN替代昂贵的FDTD/TMM仿真，实现<strong>毫秒级预测</strong>（原需数分钟）。</div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== CNN ==================== -->
+<section id="cnn">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--accent)"></span> <span data-lang-en>Neural Networks</span><span data-lang-cn>神经网络</span></div>
+    <h2 data-lang-en>Convolutional Neural Network (CNN)</h2>
+    <h2 data-lang-cn>卷积神经网络 (CNN)</h2>
+    <p class="lead" data-lang-en>Slides a small window across data to detect local patterns — perfect for spectral data where peaks, dips, and plateaus matter.</p>
+    <p class="lead" data-lang-cn>在数据上滑动小窗口检测局部模式——非常适合光谱数据，因为峰值、谷值和平台区都很重要。</p>
+  </div>
+
+  <div class="card reveal">
+    <span class="tag tag-neural"><span data-lang-en>Neural Network</span><span data-lang-cn>神经网络</span></span>
+    <h3 data-lang-en>How It Works</h3>
+    <h3 data-lang-cn>工作原理</h3>
+    <p data-lang-en>A spectrum is a 1D sequence. CNN slides small <strong>filters</strong> (kernels) across it to detect features — peaks, dips, edges. Multiple layers combine basic features into complex patterns like "high solar reflectance + atmospheric window emission."</p>
+    <p data-lang-cn>光谱是一维序列。CNN在其上滑动小<strong>滤波器</strong>（卷积核）检测特征——峰值、谷值、边缘。多层网络将基础特征组合成复杂模式，如"高太阳反射率+大气窗口发射"。</p>
+
+    <div class="viz-box">
+      <canvas id="vizCnn" height="380"></canvas>
+      <button class="pause-btn" data-target="vizCnn"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Watch the filter slide across the spectrum</span>
+      <span class="viz-label" data-lang-cn>观察滤波器在光谱上滑动</span>
+    </div>
+
+    <div class="analogy" data-lang-en>When you read text, your eyes slide across groups of letters to recognize words. CNN does the same with spectral data, recognizing "spectral words."</div>
+    <div class="analogy" data-lang-cn>阅读时眼睛扫过字母组来识别单词。CNN对光谱数据做同样的事——识别"光谱词汇"。</div>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4 data-lang-en>✦ Strengths</h4>
+        <h4 data-lang-cn>✦ 优势</h4>
+        <ul>
+          <li data-lang-en>Excellent at local pattern detection</li>
+          <li data-lang-cn>局部模式检测能力出色</li>
+          <li data-lang-en>Parameter-efficient (shared filters)</li>
+          <li data-lang-cn>参数高效（滤波器共享）</li>
+          <li data-lang-en>Automatically learns important features</li>
+          <li data-lang-cn>自动学习重要特征</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4 data-lang-en>✦ Weaknesses</h4>
+        <h4 data-lang-cn>✦ 劣势</h4>
+        <ul>
+          <li data-lang-en>Needs more training data</li>
+          <li data-lang-cn>需要更多训练数据</li>
+          <li data-lang-en>Less interpretable</li>
+          <li data-lang-cn>可解释性较差</li>
+          <li data-lang-en>Architecture requires expertise</li>
+          <li data-lang-cn>架构设计需要专业知识</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="paper-use" data-lang-en><strong>Kim et al.</strong> (Optics Express, 2024) applied CNN for <strong>deep learning-assisted inverse design of nanoparticle-embedded radiative coolers</strong>. CNN's convolution filters automatically detect critical spectral features: <strong>solar band behavior (0.3–2.5 μm)</strong>, <strong>atmospheric window emission (8–13 μm)</strong>, and transition bands. This makes CNN the bridge between forward prediction and generative inverse design — essential when spectral <em>shape</em> matters, not just integrated metrics.</div>
+    <div class="paper-use" data-lang-cn><strong>Kim等人</strong>（Optics Express, 2024）将CNN应用于<strong>纳米颗粒嵌入式辐射制冷器的深度学习辅助逆向设计</strong>。CNN的卷积滤波器自动检测关键光谱特征：<strong>太阳波段行为（0.3–2.5 μm）</strong>、<strong>大气窗口发射（8–13 μm）</strong>和过渡波段。这使CNN成为正向预测和生成式逆向设计之间的桥梁——当光谱<em>形状</em>而非仅积分指标重要时必不可少。</div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== TANDEM NN ==================== -->
+<section id="tandem">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--accent)"></span> <span data-lang-en>Neural Networks</span><span data-lang-cn>神经网络</span></div>
+    <h2 data-lang-en>Tandem Neural Network</h2>
+    <h2 data-lang-cn>串联神经网络</h2>
+    <p class="lead" data-lang-en>Chains a forward + inverse network to solve the one-to-many problem in inverse design.</p>
+    <p class="lead" data-lang-cn>将正向网络与逆向网络串联，解决逆向设计中的"一对多"问题。</p>
+  </div>
+
+  <div class="card reveal">
+    <span class="tag tag-neural"><span data-lang-en>Neural Network</span><span data-lang-cn>神经网络</span></span>
+    <h3 data-lang-en>The One-to-Many Problem</h3>
+    <h3 data-lang-cn>"一对多"问题</h3>
+    <p data-lang-en><strong>Forward:</strong> one structure → one spectrum (unique). <strong>Inverse:</strong> one target spectrum → MANY possible structures (ambiguous!). Direct inverse training fails because contradictory examples confuse the network.</p>
+    <p data-lang-cn><strong>正向：</strong>一个结构→一个光谱（唯一）。<strong>逆向：</strong>一个目标光谱→多个可能结构（歧义！）。直接逆向训练会失败，因为矛盾的样本会混淆网络。</p>
+
+    <h3 style="margin-top:1.5rem;" data-lang-en>The Tandem Solution</h3>
+    <h3 style="margin-top:1.5rem;" data-lang-cn>串联网络解决方案</h3>
+    <p data-lang-en>Train a forward net first, freeze it, then chain an inverse net before it. The inverse net proposes a structure, and the frozen forward net checks if it produces the target spectrum. The loss is measured at the spectral output — the inverse net just needs to find <em>any</em> structure that works.</p>
+    <p data-lang-cn>首先训练正向网络并冻结参数，然后将逆向网络串联在其前面。逆向网络提出一个结构，冻结的正向网络检查它是否产生目标光谱。损失在光谱输出端测量——逆向网络只需找到<em>任意一个</em>可行结构即可。</p>
+
+    <div class="viz-box">
+      <canvas id="vizTandem" height="320"></canvas>
+      <button class="pause-btn" data-target="vizTandem"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Inverse → Forward → Compare</span>
+      <span class="viz-label" data-lang-cn>逆向→正向→对比</span>
+    </div>
+
+    <div class="analogy" data-lang-en>Instead of asking "what recipe makes this exact cake?" (hard, many recipes), you ask "find me a recipe, and I'll check if the cake tastes right" (easier, just optimize taste).</div>
+    <div class="analogy" data-lang-cn>不问"什么配方能做出这款蛋糕？"（困难，多种配方），而是"给我一个配方，我检查蛋糕口味对不对"（更容易，只需优化口味）。</div>
+
+    <div class="paper-use" data-lang-en><strong>Keawmuang et al.</strong> (Solar Energy Materials & Solar Cells, 2024) used tandem deep neural networks for <strong>inverse design of colored daytime radiative coolers</strong>. <strong>Li et al.</strong> (Progress in Organic Coatings, 2025) combined <strong>bidirectional neural networks with genetic algorithms</strong> for intelligent design of colored passive cooling multilayer films, achieving both <strong>target color fidelity AND cooling performance</strong> simultaneously — a multi-objective constraint that traditional methods struggle to satisfy.</div>
+    <div class="paper-use" data-lang-cn><strong>Keawmuang等人</strong>（Solar Energy Materials & Solar Cells, 2024）使用串联深度神经网络进行<strong>彩色日间辐射制冷器的逆向设计</strong>。<strong>Li等人</strong>（Progress in Organic Coatings, 2025）将<strong>双向神经网络与遗传算法</strong>结合，智能设计彩色被动制冷多层薄膜，同时实现<strong>目标颜色保真度和制冷性能</strong>——这是传统方法难以满足的多目标约束。</div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== OPTIMIZERS ==================== -->
+<section id="optimizers">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--orange)"></span> <span data-lang-en>Optimization</span><span data-lang-cn>优化算法</span></div>
+    <h2 data-lang-en>Optimization Algorithms</h2>
+    <h2 data-lang-cn>优化算法</h2>
+    <p class="lead" data-lang-en>Search algorithms that find the best design parameters. Combined with ML surrogates: the ML model predicts fast, the optimizer searches smart.</p>
+    <p class="lead" data-lang-cn>寻找最优设计参数的搜索算法。与ML代理模型结合：ML快速预测，优化器智能搜索。</p>
+  </div>
+
+  <!-- GA -->
+  <div class="card reveal" id="ga">
+    <span class="tag tag-optimizer"><span data-lang-en>Optimizer</span><span data-lang-cn>优化器</span></span>
+    <h3 data-lang-en>Genetic Algorithm (GA)</h3>
+    <h3 data-lang-cn>遗传算法 (GA)</h3>
+    <p data-lang-en>Mimics biological evolution: a population of designs evolves via <strong>selection</strong>, <strong>crossover</strong>, and <strong>mutation</strong>. The fittest survive and reproduce.</p>
+    <p data-lang-cn>模拟生物进化：设计种群通过<strong>选择</strong>、<strong>交叉</strong>和<strong>变异</strong>进化。最适者存活并繁殖。</p>
+
+    <div class="viz-box">
+      <canvas id="vizGa" height="380"></canvas>
+      <button class="pause-btn" data-target="vizGa"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Watch evolution in action</span>
+      <span class="viz-label" data-lang-cn>观察进化过程</span>
+    </div>
+
+    <div class="analogy" data-lang-en>Breeding dogs — pick the fastest, breed them together, occasional random mutations. After many generations: championship greyhounds.</div>
+    <div class="analogy" data-lang-cn>培育赛狗——选择最快的，让它们交配，偶尔发生随机变异。经过多代：冠军级灵缇犬。</div>
+
+    <p data-lang-en><strong>Key strength:</strong> Naturally handles <em>mixed discrete + continuous</em> variables. Choosing from {SiO₂, TiO₂, Al₂O₃} AND optimizing thickness? GA does both.</p>
+    <p data-lang-cn><strong>核心优势：</strong>天然处理<em>离散+连续混合</em>变量。从{SiO₂, TiO₂, Al₂O₃}中选材料且优化厚度？GA两者兼顾。</p>
+    <p data-lang-en><strong>NSGA-II variant:</strong> Multi-objective — finds a Pareto front (trade-off curve) for solar reflectance vs. IR emission vs. aesthetics.</p>
+    <p data-lang-cn><strong>NSGA-II变体：</strong>多目标优化——找到太阳反射率、红外发射率和美观度之间的帕累托前沿（权衡曲线）。</p>
+
+    <div class="paper-use" data-lang-en><strong>You et al.</strong> combined <strong>GA + Transfer Matrix Method</strong> for flexible multilayer RC film optimization, using radiative cooling power density as the fitness function. <strong>Kim et al.</strong> used GA for multilayer daytime RC structure optimization (layer count, materials, thickness). <strong>Mira et al.</strong> applied memetic algorithm (GA + local refinement) for selective passive daytime radiative coolers. <strong>2025 results:</strong> GA optimized DMDMD transparent colored radiative coolers achieving high visible transmittance + near-IR reflection + atmospheric window emission; metasurface + multilayer designs reached <strong>91.87% solar reflectance and 111.7 W/m² net cooling power</strong>.</div>
+    <div class="paper-use" data-lang-cn><strong>You等人</strong>将<strong>GA与传输矩阵法</strong>结合进行柔性多层辐射制冷薄膜优化，以辐射制冷功率密度为适应度函数。<strong>Kim等人</strong>用GA优化多层日间辐射制冷结构（层数、材料、厚度）。<strong>Mira等人</strong>应用模因算法（GA+局部精修）优化选择性被动日间辐射制冷器。<strong>2025年成果：</strong>GA优化DMDMD透明彩色辐射制冷器，实现高可见光透过率+近红外反射+大气窗口发射；超表面+多层设计达到<strong>91.87%太阳反射率和111.7 W/m²净制冷功率</strong>。</div>
+  </div>
+
+  <!-- PSO -->
+  <div class="card reveal" id="pso">
+    <span class="tag tag-optimizer"><span data-lang-en>Optimizer</span><span data-lang-cn>优化器</span></span>
+    <h3 data-lang-en>Particle Swarm Optimization (PSO)</h3>
+    <h3 data-lang-cn>粒子群优化 (PSO)</h3>
+    <p data-lang-en>Simulates a flock of birds. Each "particle" (candidate design) has position and velocity, attracted toward its own best find and the swarm's best find.</p>
+    <p data-lang-cn>模拟鸟群。每个"粒子"（候选设计）有位置和速度，被自身最优位置和群体最优位置吸引。</p>
+
+    <div class="viz-box">
+      <canvas id="vizPso" height="380"></canvas>
+      <button class="pause-btn" data-target="vizPso"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Watch the swarm converge</span>
+      <span class="viz-label" data-lang-cn>观察粒子群收敛</span>
+    </div>
+
+    <div class="analogy" data-lang-en>A flock of birds looking for a lake. Each remembers the wettest area it found AND knows the wettest area any bird found. They drift toward good areas while still exploring.</div>
+    <div class="analogy" data-lang-cn>一群鸟在寻找湖泊。每只鸟记住自己找到的最湿润区域，也知道任何鸟找到的最湿润区域。它们向好区域漂移，同时继续探索。</div>
+
+    <p data-lang-en><strong>Best for:</strong> Continuous parameters — particle size, film thickness, period, fill fraction.</p>
+    <p data-lang-cn><strong>最适合：</strong>连续参数——粒径、膜厚、周期、填充率。</p>
+
+    <div class="paper-use" data-lang-en><strong>Liu et al.</strong> (2025-2026) developed a <strong>"FDTD → Neural Network → Adaptive PSO" three-stage pipeline</strong> for truncated pyramid RC microstructures, achieving <strong>R² = 0.99841</strong> for atmospheric window emissivity prediction and near-unity optimal emission. <strong>Chae et al.</strong> used PSO for inorganic multilayer selective emitter layer thickness optimization. <strong>Bu & Bao</strong> applied PSO to nanoparticle coating design targeting efficient RC with minimum thickness. This "surrogate + PSO" workflow reduces expensive FDTD calls while maintaining high accuracy.</div>
+    <div class="paper-use" data-lang-cn><strong>Liu等人</strong>（2025-2026）开发了<strong>"FDTD→神经网络→自适应PSO"三级流程</strong>用于截锥形辐射制冷微结构，大气窗口发射率预测达到<strong>R² = 0.99841</strong>，最优发射率接近1。<strong>Chae等人</strong>用PSO优化无机多层选择性发射体的层厚。<strong>Bu和Bao</strong>将PSO应用于纳米颗粒涂层设计，在最小厚度下实现高效辐射制冷。这种"代理模型+PSO"流程在保持高精度的同时减少了昂贵的FDTD调用。</div>
+  </div>
+
+  <!-- BO -->
+  <div class="card reveal" id="bo">
+    <span class="tag tag-optimizer"><span data-lang-en>Optimizer</span><span data-lang-cn>优化器</span></span>
+    <h3 data-lang-en>Bayesian Optimization (BO)</h3>
+    <h3 data-lang-cn>贝叶斯优化 (BO)</h3>
+    <p data-lang-en>The most <strong>sample-efficient</strong> optimizer. Designed for when each evaluation is very expensive. Builds a probabilistic model that tracks both expected performance AND uncertainty, then picks the single best next point to try.</p>
+    <p data-lang-cn>最<strong>样本高效</strong>的优化器。专为每次评估非常昂贵的场景设计。构建概率模型同时追踪预期性能和不确定性，然后选择最值得尝试的下一个点。</p>
+
+    <div class="viz-box">
+      <canvas id="vizBo" height="380"></canvas>
+      <button class="pause-btn" data-target="vizBo"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Explore vs Exploit</span>
+      <span class="viz-label" data-lang-cn>探索与利用</span>
+    </div>
+
+    <div class="analogy" data-lang-en>Looking for the best restaurant in a city. Try 5 random ones, then each time ask: "Given what I know, which restaurant would teach me the most?" You find the best in ~20 tries instead of 500.</div>
+    <div class="analogy" data-lang-cn>在城市里找最好的餐厅。先随机试5家，然后每次问："根据我所知，哪家餐厅能让我学到最多？"你在约20次尝试而非500次后找到最好的。</div>
+
+    <div class="paper-use" data-lang-en><strong>Guo et al.</strong> (Optics Letters, 2020) pioneered <strong>RCWA + Bayesian Optimization</strong> for RC, finding highly selective atmospheric window emitter structures using <strong>&lt;1% of the candidate space</strong>. <strong>Gunay & Shiomi</strong> extended BO to colored radiative coolers, achieving "color + cooling performance" multi-objective optimization with minimal evaluations. BO + FDTD was also used for VO₂ phase-change multilayer automatic search. BO excels when each simulation costs hours — finding optimal designs with ~100 evaluations instead of thousands.</div>
+    <div class="paper-use" data-lang-cn><strong>Guo等人</strong>（Optics Letters, 2020）首创<strong>RCWA+贝叶斯优化</strong>用于辐射制冷，使用<strong>不到1%的候选空间</strong>就找到高选择性大气窗口发射结构。<strong>Gunay和Shiomi</strong>将BO扩展到彩色辐射制冷器，以最少评估实现"颜色+制冷性能"多目标优化。BO+FDTD还用于VO₂相变多层结构的自动搜索。当每次仿真需要数小时时，BO表现出色——用约100次评估而非数千次找到最优设计。</div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== VAE ==================== -->
+<section id="vae">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--pink)"></span> <span data-lang-en>Generative Models</span><span data-lang-cn>生成模型</span></div>
+    <h2 data-lang-en>Variational Autoencoder (VAE)</h2>
+    <h2 data-lang-cn>变分自编码器 (VAE)</h2>
+    <p class="lead" data-lang-en>Compresses designs into a compact code, then reconstructs. New designs are generated by sampling from the organized latent space.</p>
+    <p class="lead" data-lang-cn>将设计压缩成紧凑编码，然后重建。通过从有组织的潜在空间采样生成新设计。</p>
+  </div>
+
+  <div class="card reveal">
+    <span class="tag tag-generative"><span data-lang-en>Generative</span><span data-lang-cn>生成式</span></span>
+    <h3 data-lang-en>How It Works</h3>
+    <h3 data-lang-cn>工作原理</h3>
+    <p data-lang-en><strong>Encoder:</strong> compresses a design into a small latent code (e.g., 10 numbers).<br>
+       <strong>Decoder:</strong> reconstructs a design from the code.<br>
+       <strong>Generation:</strong> sample a new point in latent space → decode → brand new design!</p>
+    <p data-lang-cn><strong>编码器：</strong>将设计压缩成小的潜在编码（如10个数字）。<br>
+       <strong>解码器：</strong>从编码重建设计。<br>
+       <strong>生成：</strong>在潜在空间采样新点→解码→全新设计！</p>
+
+    <div class="viz-box">
+      <canvas id="vizVae" height="380"></canvas>
+      <button class="pause-btn" data-target="vizVae"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Encode → Latent Space → Decode</span>
+      <span class="viz-label" data-lang-cn>编码→潜在空间→解码</span>
+    </div>
+
+    <div class="analogy" data-lang-en>A fashion designer who studies thousands of dresses, learns the "essence" of what makes a dress, then sketches new dresses by tweaking that essence.</div>
+    <div class="analogy" data-lang-cn>一位时装设计师研究数千件裙子，学习裙子的"精髓"，然后通过调整这种精髓来设计新裙子。</div>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4 data-lang-en>✦ Strengths</h4>
+        <h4 data-lang-cn>✦ 优势</h4>
+        <ul>
+          <li data-lang-en>Diverse new designs, not just the "single best"</li>
+          <li data-lang-cn>生成多样化设计，而非仅"唯一最优"</li>
+          <li data-lang-en>Smooth latent space — interpolation works</li>
+          <li data-lang-cn>潜在空间平滑——可插值</li>
+          <li data-lang-en>Provides uncertainty via probabilistic formulation</li>
+          <li data-lang-cn>通过概率公式提供不确定性</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4 data-lang-en>✦ Weaknesses</h4>
+        <h4 data-lang-cn>✦ 劣势</h4>
+        <ul>
+          <li data-lang-en>Outputs can be "blurry" (tend toward average)</li>
+          <li data-lang-cn>输出可能"模糊"（趋向平均）</li>
+          <li data-lang-en>Quality usually lower than GANs</li>
+          <li data-lang-cn>质量通常低于GAN</li>
+          <li data-lang-en>Tricky loss balancing during training</li>
+          <li data-lang-cn>训练时损失平衡困难</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="paper-use" data-lang-en>VAE enables exploration of <strong>diverse candidate structures</strong> beyond the training set. For RC inverse design, VAE's smooth latent space allows <strong>interpolation between known good designs</strong> — sampling between "high solar reflectance" and "high IR emission" regions can yield balanced designs. Positioned as a key generative approach alongside GAN for discovering novel RC materials not reachable by optimization alone.</div>
+    <div class="paper-use" data-lang-cn>VAE能够探索训练集之外的<strong>多样化候选结构</strong>。对于辐射制冷逆向设计，VAE的平滑潜在空间允许在<strong>已知优良设计之间插值</strong>——在"高太阳反射率"和"高红外发射率"区域之间采样可产生平衡设计。与GAN并列为发现仅靠优化无法到达的新型辐射制冷材料的关键生成方法。</div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== GAN ==================== -->
+<section id="gan">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--pink)"></span> <span data-lang-en>Generative Models</span><span data-lang-cn>生成模型</span></div>
+    <h2 data-lang-en>Generative Adversarial Network (GAN)</h2>
+    <h2 data-lang-cn>生成对抗网络 (GAN)</h2>
+    <p class="lead" data-lang-en>Two networks compete: a Generator creates fake designs, a Discriminator detects fakes. The competition drives ever-better generation.</p>
+    <p class="lead" data-lang-cn>两个网络竞争：生成器创造假设计，判别器检测假货。竞争驱动不断改进的生成能力。</p>
+  </div>
+
+  <div class="card reveal">
+    <span class="tag tag-generative"><span data-lang-en>Generative</span><span data-lang-cn>生成式</span></span>
+    <h3 data-lang-en>How It Works</h3>
+    <h3 data-lang-cn>工作原理</h3>
+    <p data-lang-en><strong>Generator:</strong> takes random noise + target spec, produces a design.<br>
+       <strong>Discriminator:</strong> judges "real simulation data" vs. "Generator's fake."<br>
+       They train together in a minimax game until fakes are indistinguishable from real data.</p>
+    <p data-lang-cn><strong>生成器：</strong>接收随机噪声+目标规格，产生设计。<br>
+       <strong>判别器：</strong>判断"真实仿真数据"还是"生成器的假货"。<br>
+       它们在极小极大博弈中共同训练，直到假货与真实数据无法区分。</p>
+
+    <div class="viz-box">
+      <canvas id="vizGan" height="400"></canvas>
+      <button class="pause-btn" data-target="vizGan"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Generator vs Discriminator</span>
+      <span class="viz-label" data-lang-cn>生成器 vs 判别器</span>
+    </div>
+
+    <div class="analogy" data-lang-en>An art forger (Generator) vs. an art detective (Discriminator). The forger keeps improving until even experts can't tell forgeries from genuine paintings.</div>
+    <div class="analogy" data-lang-cn>一位艺术伪造者（生成器）对阵艺术侦探（判别器）。伪造者不断进步，直到连专家也无法区分赝品和真品。</div>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4 data-lang-en>✦ Strengths</h4>
+        <h4 data-lang-cn>✦ 优势</h4>
+        <ul>
+          <li data-lang-en>Very high-quality, realistic designs</li>
+          <li data-lang-cn>非常高质量、逼真的设计</li>
+          <li data-lang-en>Handles complex multi-modal spaces</li>
+          <li data-lang-cn>能处理复杂多模态空间</li>
+          <li data-lang-en>Sharper outputs than VAEs</li>
+          <li data-lang-cn>输出比VAE更清晰</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4 data-lang-en>✦ Weaknesses</h4>
+        <h4 data-lang-cn>✦ 劣势</h4>
+        <ul>
+          <li data-lang-en>Training is notoriously unstable</li>
+          <li data-lang-cn>训练出了名的不稳定</li>
+          <li data-lang-en>Mode collapse risk</li>
+          <li data-lang-cn>有模式崩溃风险</li>
+          <li data-lang-en>No uncertainty estimates</li>
+          <li data-lang-cn>无法提供不确定性估计</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="paper-use" data-lang-en><strong>Guan et al.</strong> (ACS Photonics, 2023) demonstrated <strong>ML-enabled inverse design of radiative cooling films with on-demand transmissive color</strong>. <strong>Le et al.</strong> (Solar Energy Materials & Solar Cells, 2024) developed <strong>AI-enabled design of extraordinary daytime RC materials</strong>. Conditional GANs can accept multi-objective specs like <strong>"95% solar reflectance + 90% emissivity in 8-13 μm + blue color"</strong> and generate structures meeting all targets — representing the <strong>cutting-edge frontier</strong> of RC inverse design.</div>
+    <div class="paper-use" data-lang-cn><strong>Guan等人</strong>（ACS Photonics, 2023）展示了<strong>实现按需透射颜色的辐射制冷薄膜ML逆向设计</strong>。<strong>Le等人</strong>（Solar Energy Materials & Solar Cells, 2024）开发了<strong>AI驱动的超常日间辐射制冷材料设计</strong>。条件GAN可接受多目标规格，如<strong>"95%太阳反射率+8-13μm波段90%发射率+蓝色"</strong>，并生成满足所有目标的结构——代表辐射制冷逆向设计的<strong>前沿</strong>。</div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== DIFFUSION ==================== -->
+<section id="diffusion">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--pink)"></span> <span data-lang-en>Generative Models</span><span data-lang-cn>生成模型</span></div>
+    <h2 data-lang-en>Diffusion Models</h2>
+    <h2 data-lang-cn>扩散模型</h2>
+    <p class="lead" data-lang-en>Learn to reverse a destruction process: gradually add noise until data becomes static, then train a network to denoise step by step.</p>
+    <p class="lead" data-lang-cn>学习逆转破坏过程：逐渐添加噪声直到数据变成静态噪音，然后训练网络逐步去噪。</p>
+  </div>
+
+  <div class="card reveal">
+    <span class="tag tag-generative"><span data-lang-en>Generative</span><span data-lang-cn>生成式</span></span>
+    <h3 data-lang-en>How It Works</h3>
+    <h3 data-lang-cn>工作原理</h3>
+    <p data-lang-en><strong>Forward:</strong> gradually add noise to a real design → pure random static.<br>
+       <strong>Reverse:</strong> starting from static, a learned denoiser removes noise step by step → clean design emerges.</p>
+    <p data-lang-cn><strong>正向：</strong>逐渐向真实设计添加噪声→纯随机静态噪音。<br>
+       <strong>逆向：</strong>从静态噪音开始，学习的去噪器逐步去除噪声→清晰设计浮现。</p>
+
+    <div class="viz-box">
+      <canvas id="vizDiffusion" height="320"></canvas>
+      <button class="pause-btn" data-target="vizDiffusion"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Noise → Denoise → Design</span>
+      <span class="viz-label" data-lang-cn>噪声→去噪→设计</span>
+    </div>
+
+    <div class="pros-cons">
+      <div class="pros">
+        <h4 data-lang-en>✦ Strengths</h4>
+        <h4 data-lang-cn>✦ 优势</h4>
+        <ul>
+          <li data-lang-en>State-of-the-art generation quality</li>
+          <li data-lang-cn>最先进的生成质量</li>
+          <li data-lang-en>More stable training than GANs</li>
+          <li data-lang-cn>训练比GAN更稳定</li>
+          <li data-lang-en>Naturally handles diverse solutions</li>
+          <li data-lang-cn>天然处理多样化解决方案</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4 data-lang-en>✦ Weaknesses</h4>
+        <h4 data-lang-cn>✦ 劣势</h4>
+        <ul>
+          <li data-lang-en>Slow generation (many denoising steps)</li>
+          <li data-lang-cn>生成慢（需多步去噪）</li>
+          <li data-lang-en>Requires very large datasets</li>
+          <li data-lang-cn>需要非常大的数据集</li>
+          <li data-lang-en>Computationally expensive</li>
+          <li data-lang-cn>计算成本高</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="paper-use" data-lang-en>Diffusion models represent the <strong>emerging frontier</strong> alongside GANs/VAEs. While not yet widely applied in RC specifically, they have already shown remarkable success in <strong>nanophotonics and materials science</strong>. The paper positions diffusion as a promising direction for generating complex RC structures with superior quality and diversity compared to earlier generative approaches.</div>
+    <div class="paper-use" data-lang-cn>扩散模型代表了与GAN/VAE并列的<strong>新兴前沿</strong>。虽然在辐射制冷领域尚未广泛应用，但它们在<strong>纳米光子学和材料科学</strong>中已展现出卓越成功。论文将扩散模型定位为生成复杂辐射制冷结构的有前途方向，其质量和多样性优于早期生成方法。</div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== DRL ==================== -->
+<section id="drl">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--pink)"></span> <span data-lang-en>Generative Models</span><span data-lang-cn>生成模型</span></div>
+    <h2 data-lang-en>Deep Reinforcement Learning (DRL)</h2>
+    <h2 data-lang-cn>深度强化学习 (DRL)</h2>
+    <p class="lead" data-lang-en>Treats design as a game: an agent takes sequential actions (add a layer, pick a material) and gets rewards for how close it gets to target performance.</p>
+    <p class="lead" data-lang-cn>将设计视为游戏：智能体依次采取行动（添加一层、选择材料）并根据与目标性能的接近程度获得奖励。</p>
+  </div>
+
+  <div class="card reveal">
+    <span class="tag tag-generative"><span data-lang-en>Generative</span><span data-lang-cn>生成式</span></span>
+    <h3 data-lang-en>How It Works</h3>
+    <h3 data-lang-cn>工作原理</h3>
+    <p data-lang-en><strong>State:</strong> current partial design (layers built so far).<br>
+       <strong>Action:</strong> choose next material + thickness.<br>
+       <strong>Reward:</strong> how well the final design meets the target spectrum.<br>
+       Through trial and error, the agent learns a policy that maximizes cumulative reward.</p>
+    <p data-lang-cn><strong>状态：</strong>当前部分设计（已构建的层）。<br>
+       <strong>动作：</strong>选择下一层材料+厚度。<br>
+       <strong>奖励：</strong>最终设计满足目标光谱的程度。<br>
+       通过试错，智能体学习一个最大化累积奖励的策略。</p>
+
+    <div class="viz-box">
+      <canvas id="vizDrl" height="380"></canvas>
+      <button class="pause-btn" data-target="vizDrl"><span data-lang-en>⏸ Pause</span><span data-lang-cn>⏸ 暂停</span></button>
+      <span class="viz-label" data-lang-en>Watch the agent build layer by layer</span>
+      <span class="viz-label" data-lang-cn>观察智能体逐层构建</span>
+    </div>
+
+    <div class="analogy" data-lang-en>Playing a turn-based strategy game where each "turn" you add one layer to a multilayer film. The game score is the cooling performance — the AI learns the best sequence of moves.</div>
+    <div class="analogy" data-lang-cn>玩回合制策略游戏，每"回合"向多层薄膜添加一层。游戏得分是制冷性能——AI学习最佳动作序列。</div>
+
+    <div class="paper-use" data-lang-en><strong>Yu et al.</strong> developed a <strong>general deep learning framework for emissivity engineering</strong> using Deep Q-Network (DQN). DRL naturally handles the <strong>sequential, decision-based nature of multilayer film design</strong> — the agent learns which material to add next given the current stack. This approach excels at exploring the vast <strong>combinatorial space of layer arrangements</strong> that would be intractable for brute-force search.</div>
+    <div class="paper-use" data-lang-cn><strong>Yu等人</strong>使用深度Q网络（DQN）开发了<strong>发射率工程通用深度学习框架</strong>。DRL天然处理多层薄膜设计的<strong>顺序决策特性</strong>——智能体学习给定当前堆叠后应添加什么材料。这种方法擅长探索暴力搜索无法处理的庞大<strong>层排列组合空间</strong>。</div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== PIPELINE ==================== -->
+<section id="pipeline">
+<div class="container">
+  <div class="reveal">
+    <div class="section-badge"><span class="dot" style="background:var(--accent2)"></span> <span data-lang-en>Putting It All Together</span><span data-lang-cn>融会贯通</span></div>
+    <h2 data-lang-en>The ML-Driven Design Pipeline</h2>
+    <h2 data-lang-cn>机器学习驱动的设计流程</h2>
+    <p class="lead" data-lang-en>How all these models work together in a typical radiative cooling research workflow.</p>
+    <p class="lead" data-lang-cn>在典型辐射制冷研究流程中，所有这些模型如何协同工作。</p>
+  </div>
+
+  <div class="card reveal">
+    <div class="pipeline">
+      <div class="pipeline-stage stage1">
+        <h4 data-lang-en>1. Data & Surrogate</h4>
+        <h4 data-lang-cn>1. 数据与代理</h4>
+        <ul>
+          <li data-lang-en>Simulation data (FDTD / TMM)</li>
+          <li data-lang-cn>仿真数据 (FDTD / TMM)</li>
+          <li data-lang-en>Train ANN / CNN surrogate</li>
+          <li data-lang-cn>训练ANN/CNN代理模型</li>
+          <li data-lang-en>XGBoost for feature importance</li>
+          <li data-lang-cn>XGBoost分析特征重要性</li>
+        </ul>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-stage stage2">
+        <h4 data-lang-en>2. Optimization</h4>
+        <h4 data-lang-cn>2. 优化搜索</h4>
+        <ul>
+          <li data-lang-en>GA / PSO for parameter search</li>
+          <li data-lang-cn>GA/PSO参数搜索</li>
+          <li data-lang-en>BO for sample-efficient tuning</li>
+          <li data-lang-cn>BO高效样本调优</li>
+          <li data-lang-en>Multi-objective (NSGA-II)</li>
+          <li data-lang-cn>多目标优化 (NSGA-II)</li>
+        </ul>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-stage stage3">
+        <h4 data-lang-en>3. Inverse / Generative</h4>
+        <h4 data-lang-cn>3. 逆向/生成</h4>
+        <ul>
+          <li data-lang-en>Tandem NN for inverse design</li>
+          <li data-lang-cn>串联网络逆向设计</li>
+          <li data-lang-en>GAN / VAE for novel structures</li>
+          <li data-lang-cn>GAN/VAE生成新结构</li>
+          <li data-lang-en>DRL for sequential build</li>
+          <li data-lang-cn>DRL顺序构建</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="card reveal">
+    <h3 data-lang-en>Model Comparison At a Glance</h3>
+    <h3 data-lang-cn>模型对比一览</h3>
+    <div class="comp-table-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th><span data-lang-en>Model</span><span data-lang-cn>模型</span></th>
+            <th><span data-lang-en>Type</span><span data-lang-cn>类型</span></th>
+            <th><span data-lang-en>Best For</span><span data-lang-cn>最适用于</span></th>
+            <th><span data-lang-en>Data Needs</span><span data-lang-cn>数据需求</span></th>
+            <th><span data-lang-en>Speed</span><span data-lang-cn>速度</span></th>
+            <th><span data-lang-en>Interpretability</span><span data-lang-cn>可解释性</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>KNN</td><td><span data-lang-en>Traditional</span><span data-lang-cn>传统</span></td><td><span data-lang-en>Small datasets, quick baseline</span><span data-lang-cn>小数据集、快速基线</span></td><td><span data-lang-en>Low</span><span data-lang-cn>低</span></td><td><span data-lang-en>Fast (infer) / Slow (large N)</span><span data-lang-cn>快(推理)/慢(大N)</span></td><td><span data-lang-en>High</span><span data-lang-cn>高</span></td></tr>
+          <tr><td><span data-lang-en>Random Forest</span><span data-lang-cn>随机森林</span></td><td><span data-lang-en>Traditional</span><span data-lang-cn>传统</span></td><td><span data-lang-en>Tabular data, feature ranking</span><span data-lang-cn>表格数据、特征排序</span></td><td><span data-lang-en>Medium</span><span data-lang-cn>中</span></td><td><span data-lang-en>Fast</span><span data-lang-cn>快</span></td><td><span data-lang-en>Medium</span><span data-lang-cn>中</span></td></tr>
+          <tr><td>XGBoost</td><td><span data-lang-en>Traditional</span><span data-lang-cn>传统</span></td><td><span data-lang-en>Structured data, competitions</span><span data-lang-cn>结构化数据、竞赛</span></td><td><span data-lang-en>Medium</span><span data-lang-cn>中</span></td><td><span data-lang-en>Fast</span><span data-lang-cn>快</span></td><td><span data-lang-en>Medium (SHAP)</span><span data-lang-cn>中(SHAP)</span></td></tr>
+          <tr><td>ANN</td><td><span data-lang-en>Neural Net</span><span data-lang-cn>神经网络</span></td><td><span data-lang-en>Surrogate modeling</span><span data-lang-cn>代理建模</span></td><td><span data-lang-en>Medium–High</span><span data-lang-cn>中-高</span></td><td><span data-lang-en>Very fast (infer)</span><span data-lang-cn>极快(推理)</span></td><td><span data-lang-en>Low</span><span data-lang-cn>低</span></td></tr>
+          <tr><td>CNN</td><td><span data-lang-en>Neural Net</span><span data-lang-cn>神经网络</span></td><td><span data-lang-en>Spectral / spatial data</span><span data-lang-cn>光谱/空间数据</span></td><td><span data-lang-en>High</span><span data-lang-cn>高</span></td><td><span data-lang-en>Fast (infer)</span><span data-lang-cn>快(推理)</span></td><td><span data-lang-en>Low</span><span data-lang-cn>低</span></td></tr>
+          <tr><td><span data-lang-en>Tandem NN</span><span data-lang-cn>串联网络</span></td><td><span data-lang-en>Neural Net</span><span data-lang-cn>神经网络</span></td><td><span data-lang-en>Inverse design</span><span data-lang-cn>逆向设计</span></td><td><span data-lang-en>High</span><span data-lang-cn>高</span></td><td><span data-lang-en>Fast (infer)</span><span data-lang-cn>快(推理)</span></td><td><span data-lang-en>Low</span><span data-lang-cn>低</span></td></tr>
+          <tr><td>GA</td><td><span data-lang-en>Optimizer</span><span data-lang-cn>优化器</span></td><td><span data-lang-en>Mixed variable optimization</span><span data-lang-cn>混合变量优化</span></td><td>–</td><td><span data-lang-en>Moderate</span><span data-lang-cn>中等</span></td><td><span data-lang-en>High</span><span data-lang-cn>高</span></td></tr>
+          <tr><td>PSO</td><td><span data-lang-en>Optimizer</span><span data-lang-cn>优化器</span></td><td><span data-lang-en>Continuous parameters</span><span data-lang-cn>连续参数</span></td><td>–</td><td><span data-lang-en>Fast</span><span data-lang-cn>快</span></td><td><span data-lang-en>High</span><span data-lang-cn>高</span></td></tr>
+          <tr><td>BO</td><td><span data-lang-en>Optimizer</span><span data-lang-cn>优化器</span></td><td><span data-lang-en>Expensive evaluations</span><span data-lang-cn>昂贵评估</span></td><td>–</td><td><span data-lang-en>Few evaluations</span><span data-lang-cn>少量评估</span></td><td><span data-lang-en>High</span><span data-lang-cn>高</span></td></tr>
+          <tr><td>VAE</td><td><span data-lang-en>Generative</span><span data-lang-cn>生成式</span></td><td><span data-lang-en>Diverse design exploration</span><span data-lang-cn>多样化设计探索</span></td><td><span data-lang-en>High</span><span data-lang-cn>高</span></td><td><span data-lang-en>Fast (gen)</span><span data-lang-cn>快(生成)</span></td><td><span data-lang-en>Medium</span><span data-lang-cn>中</span></td></tr>
+          <tr><td>GAN</td><td><span data-lang-en>Generative</span><span data-lang-cn>生成式</span></td><td><span data-lang-en>High-quality generation</span><span data-lang-cn>高质量生成</span></td><td><span data-lang-en>High</span><span data-lang-cn>高</span></td><td><span data-lang-en>Fast (gen)</span><span data-lang-cn>快(生成)</span></td><td><span data-lang-en>Low</span><span data-lang-cn>低</span></td></tr>
+          <tr><td><span data-lang-en>Diffusion</span><span data-lang-cn>扩散模型</span></td><td><span data-lang-en>Generative</span><span data-lang-cn>生成式</span></td><td><span data-lang-en>State-of-art generation</span><span data-lang-cn>最先进生成</span></td><td><span data-lang-en>Very High</span><span data-lang-cn>极高</span></td><td><span data-lang-en>Slow (gen)</span><span data-lang-cn>慢(生成)</span></td><td><span data-lang-en>Low</span><span data-lang-cn>低</span></td></tr>
+          <tr><td>DRL</td><td><span data-lang-en>Generative</span><span data-lang-cn>生成式</span></td><td><span data-lang-en>Sequential decisions</span><span data-lang-cn>顺序决策</span></td><td><span data-lang-en>Medium</span><span data-lang-cn>中</span></td><td><span data-lang-en>Slow (train)</span><span data-lang-cn>慢(训练)</span></td><td><span data-lang-en>Medium</span><span data-lang-cn>中</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>
+  <p data-lang-en>ML Models Visual Explainer — Radiative Cooling Material Design</p>
+  <p data-lang-cn>机器学习模型可视化教程 — 辐射制冷材料设计</p>
+  <p style="margin-top:.4rem;" data-lang-en>Built with vanilla HTML, CSS &amp; Canvas. No frameworks, no dependencies.</p>
+  <p style="margin-top:.4rem;" data-lang-cn>纯HTML、CSS和Canvas构建，无框架、无依赖。</p>
+</footer>
+
+<script>
+// ===== GLOBAL UTILITIES =====
+const lerp = (a, b, t) => a + (b - a) * t;
+const rand = (a, b) => a + Math.random() * (b - a);
+const randInt = (a, b) => Math.floor(rand(a, b + 1));
+const dist = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1);
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const tau = Math.PI * 2;
+const colors = {
+  bg: '#0a0c12', bg2: '#12151f', bg3: '#181c2a',
+  text: '#c8cdd8', dim: '#6e7587', heading: '#eaeff8',
+  accent: '#6c8cff', accent2: '#a78bfa',
+  green: '#34d399', orange: '#fb923c', pink: '#f472b6',
+  cyan: '#22d3ee', red: '#f87171', yellow: '#fbbf24',
+  border: '#252a3e',
+};
+
+// ===== BILINGUAL TEXT HELPER =====
+// Returns appropriate text based on current language
+function txt(en, cn) {
+  return document.documentElement.lang === 'zh' ? cn : en;
+}
+
+// ===== DPR-AWARE CANVAS SETUP (responsive) =====
+function setupCanvas(id) {
+  const c = document.getElementById(id);
+  if (!c) return null;
+  const container = c.parentElement;
+  const dpr = window.devicePixelRatio || 1;
+  const rect = container.getBoundingClientRect();
+  const w = Math.floor(rect.width);
+  const h = parseInt(c.getAttribute('height')) || 300;
+  c.width = w * dpr;
+  c.height = h * dpr;
+  c.style.width = w + 'px';
+  c.style.height = h + 'px';
+  const ctx = c.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { ctx, w, h, c, dpr };
+}
+
+// ===== ANIMATION MANAGER =====
+const vizStates = {};
+function registerViz(id, drawFn) {
+  vizStates[id] = { paused: false, raf: null, draw: drawFn };
+  function loop() {
+    if (!vizStates[id].paused) drawFn();
+    vizStates[id].raf = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+// ===== PAUSE / PLAY BUTTONS =====
+document.querySelectorAll('.pause-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const id = btn.dataset.target;
+    if (!vizStates[id]) return;
+    vizStates[id].paused = !vizStates[id].paused;
+    btn.textContent = vizStates[id].paused ? txt('▶ Play', '▶ 播放') : txt('⏸ Pause', '⏸ 暂停');
+  });
+});
+
+// ===== TOOLTIP HELPER =====
+const tooltipEl = document.getElementById('tooltip');
+function showTooltip(e, text) {
+  tooltipEl.textContent = text;
+  tooltipEl.classList.add('show');
+  tooltipEl.style.left = (e.clientX + 14) + 'px';
+  tooltipEl.style.top = (e.clientY - 10) + 'px';
+}
+function hideTooltip() { tooltipEl.classList.remove('show'); }
+
+// ===== ROUND RECT & ARROW =====
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+function drawArrow(ctx, x1, y1, x2, y2, color, lineW) {
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+  const headLen = 9;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineW || 1.5;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - headLen * Math.cos(angle - .4), y2 - headLen * Math.sin(angle - .4));
+  ctx.lineTo(x2 - headLen * Math.cos(angle + .4), y2 - headLen * Math.sin(angle + .4));
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+function drawGlowDot(ctx, x, y, r, color, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha * .3;
+  ctx.beginPath();
+  ctx.arc(x, y, r * 2.5, 0, tau);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.globalAlpha = alpha;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, tau);
+  ctx.fill();
+  ctx.restore();
+}
+
+// ===== HERO PARTICLE BACKGROUND =====
+(function() {
+  const c = document.getElementById('heroBg');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  let W, H;
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    c.width = W * dpr;
+    c.height = H * dpr;
+    c.style.width = W + 'px';
+    c.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+  }
+  resize();
+  // Only resize on actual window resize, debounced
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      resize();
+    }, 150);
+  });
+
+  const N = 70;
+  const pts = [];
+  for (let i = 0; i < N; i++) {
+    pts.push({ x: rand(0, W), y: rand(0, H), vx: rand(-.25, .25), vy: rand(-.25, .25), r: rand(1.5, 3) });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+    });
+    // draw connections
+    for (let i = 0; i < N; i++) {
+      for (let j = i + 1; j < N; j++) {
+        const d = dist(pts[i].x, pts[i].y, pts[j].x, pts[j].y);
+        if (d < 160) {
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x, pts[i].y);
+          ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `rgba(108,140,255,${.06 * (1 - d / 160)})`;
+          ctx.lineWidth = .8;
+          ctx.stroke();
+        }
+      }
+    }
+    pts.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, tau);
+      ctx.fillStyle = `rgba(108,140,255,${rand(.15, .35)})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ===== STICKY NAV =====
+(function() {
+  const nav = document.getElementById('stickyNav');
+  const hero = document.getElementById('hero');
+  const links = nav.querySelectorAll('.nav-link');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('visible', window.scrollY > hero.offsetHeight - 100);
+
+    // Active link tracking
+    let current = '';
+    document.querySelectorAll('section[id]').forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 200) current = sec.id;
+    });
+    links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+  });
+})();
+
+// ===== SCROLL PROGRESS BAR + BACK TO TOP =====
+(function() {
+  const bar = document.getElementById('progressBar');
+  const btn = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+    bar.style.width = pct + '%';
+    btn.classList.toggle('show', window.scrollY > 600);
+  });
+})();
+
+// ===== REVEAL ON SCROLL =====
+(function() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: .1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+})();
+
+// ===== VIZ: INTRO =====
+(function() {
+  const s = setupCanvas('vizIntro');
+  if (!s) return;
+  const { ctx, w, h, c } = s;
+
+  let dataPoints = [];
+  let trainPhase = 0; // 0 = gathering, 1 = training, 2 = predicting
+  let trainProgress = 0;
+  let predLine = [];
+
+  function generateData() {
+    dataPoints = [];
+    for (let i = 0; i < 30; i++) {
+      const x = rand(.05, .95);
+      const y = .5 + .3 * Math.sin(x * 6) + rand(-.08, .08);
+      dataPoints.push({ x, y, shown: false, showT: rand(.2, 1.5) });
+    }
+    trainPhase = 0; trainProgress = 0; predLine = [];
+  }
+  generateData();
+
+  c.addEventListener('click', generateData);
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += .016;
+
+    const px = 60, pw = w - 100, py = 30, ph = h - 70;
+
+    // Axes
+    ctx.strokeStyle = colors.border;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(px, py); ctx.lineTo(px, py + ph); ctx.lineTo(px + pw, py + ph);
+    ctx.stroke();
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim; ctx.textAlign = 'center';
+    ctx.fillText(txt('Design Parameters →', '设计参数 →'), px + pw / 2, py + ph + 28);
+    ctx.save(); ctx.translate(20, py + ph / 2); ctx.rotate(-Math.PI / 2);
+    ctx.fillText(txt('Performance →', '性能 →'), 0, 0); ctx.restore();
+
+    // Phase 0: show data appearing
+    if (trainPhase === 0) {
+      let allShown = true;
+      dataPoints.forEach(d => {
+        if (t > d.showT) d.shown = true; else allShown = false;
+      });
+      if (allShown && t > 2) { trainPhase = 1; trainProgress = 0; }
+    }
+
+    // Draw data points
+    dataPoints.forEach(d => {
+      if (!d.shown) return;
+      const sx = px + d.x * pw;
+      const sy = py + ph - d.y * ph;
+      drawGlowDot(ctx, sx, sy, 4, colors.cyan, .85);
+    });
+
+    // Phase 1: training animation
+    if (trainPhase === 1) {
+      trainProgress = Math.min(1, trainProgress + .008);
+      // Animated line fitting
+      const nPts = Math.floor(trainProgress * pw);
+      ctx.beginPath();
+      for (let i = 0; i <= nPts; i++) {
+        const x = i / pw;
+        const y = .5 + .3 * Math.sin(x * 6);
+        const sx = px + i;
+        const sy = py + ph - y * ph;
+        if (i === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      }
+      ctx.strokeStyle = colors.accent;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Label
+      ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.accent;
+      ctx.textAlign = 'left';
+      ctx.fillText(txt('Training... ', '训练中... ') + Math.floor(trainProgress * 100) + '%', px + 10, py + 18);
+
+      if (trainProgress >= 1) trainPhase = 2;
+    }
+
+    // Phase 2: full prediction line
+    if (trainPhase === 2) {
+      ctx.beginPath();
+      for (let i = 0; i <= pw; i++) {
+        const x = i / pw;
+        const y = .5 + .3 * Math.sin(x * 6);
+        const sx = px + i;
+        const sy = py + ph - y * ph;
+        if (i === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      }
+      ctx.strokeStyle = colors.accent;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Prediction band
+      ctx.beginPath();
+      for (let i = 0; i <= pw; i++) {
+        const x = i / pw;
+        const y = .5 + .3 * Math.sin(x * 6) + .06;
+        if (i === 0) ctx.moveTo(px + i, py + ph - y * ph); else ctx.lineTo(px + i, py + ph - y * ph);
+      }
+      for (let i = pw; i >= 0; i--) {
+        const x = i / pw;
+        const y = .5 + .3 * Math.sin(x * 6) - .06;
+        ctx.lineTo(px + i, py + ph - y * ph);
+      }
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(108,140,255,.08)';
+      ctx.fill();
+
+      ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.green;
+      ctx.textAlign = 'left';
+      ctx.fillText(txt('✓ Model Trained — Click to retrain', '✓ 模型训练完成 — 点击重新训练'), px + 10, py + 18);
+    }
+
+    if (trainPhase === 0) {
+      ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.orange;
+      ctx.textAlign = 'left';
+      ctx.fillText(txt('Gathering data...', '收集数据中...'), px + 10, py + 18);
+    }
+  }
+  registerViz('vizIntro', draw);
+})();
+
+// ===== VIZ: KNN =====
+(function() {
+  const s = setupCanvas('vizKnn');
+  if (!s) return;
+  const { ctx, w, h, c } = s;
+
+  const K = 5;
+  const classColors = [colors.cyan, colors.pink, colors.green];
+  const classNamesEn = ['Low ε', 'Medium ε', 'High ε'];
+  const classNamesCn = ['低发射率', '中发射率', '高发射率'];
+  const getClassNames = () => txt(classNamesEn, classNamesCn);
+  let known = [];
+  for (let i = 0; i < 60; i++) {
+    const cls = randInt(0, 2);
+    const cx = cls === 0 ? .25 : cls === 1 ? .55 : .75;
+    const cy = cls === 0 ? .65 : cls === 1 ? .35 : .7;
+    known.push({ x: cx + rand(-.15, .15), y: cy + rand(-.15, .15), cls });
+  }
+
+  let query = null;
+  let queryAnim = 0;
+  let neighbors = [];
+
+  c.addEventListener('click', (e) => {
+    const rect = c.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) / rect.width;
+    const my = (e.clientY - rect.top) / rect.height;
+    query = { x: mx, y: my };
+    queryAnim = 0;
+
+    // Find K nearest
+    const dists = known.map((k, i) => ({ i, d: dist(k.x, k.y, query.x, query.y) }));
+    dists.sort((a, b) => a.d - b.d);
+    neighbors = dists.slice(0, K).map(d => d.i);
+  });
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += .016;
+
+    const pad = 40;
+    const pw = w - pad * 2, ph = h - pad * 2 - 30;
+
+    // Title
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.heading;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt(`K-Nearest Neighbors (K = ${K}) — Click anywhere to classify`, `K近邻算法 (K = ${K}) — 点击任意位置分类`), w / 2, 22);
+
+    // Grid
+    ctx.strokeStyle = 'rgba(255,255,255,.03)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 10; i++) {
+      const x = pad + (i / 10) * pw;
+      const y = pad + 20 + (i / 10) * ph;
+      ctx.beginPath(); ctx.moveTo(x, pad + 20); ctx.lineTo(x, pad + 20 + ph); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(pad + pw, y); ctx.stroke();
+    }
+
+    // Known points
+    known.forEach((k, i) => {
+      const sx = pad + k.x * pw;
+      const sy = pad + 20 + k.y * ph;
+      const isNeighbor = neighbors.includes(i);
+      const r = isNeighbor ? 6 + Math.sin(t * 5) * 1.5 : 4;
+      ctx.beginPath();
+      ctx.arc(sx, sy, r, 0, tau);
+      ctx.fillStyle = classColors[k.cls];
+      ctx.globalAlpha = isNeighbor ? .95 : .4;
+      ctx.fill();
+      if (isNeighbor) {
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    });
+
+    // Query point & connections
+    if (query) {
+      queryAnim = Math.min(1, queryAnim + .03);
+      const qx = pad + query.x * pw;
+      const qy = pad + 20 + query.y * ph;
+
+      // Lines to neighbors
+      neighbors.forEach(ni => {
+        const k = known[ni];
+        const kx = pad + k.x * pw;
+        const ky = pad + 20 + k.y * ph;
+        ctx.beginPath();
+        ctx.moveTo(qx, qy);
+        ctx.lineTo(lerp(qx, kx, queryAnim), lerp(qy, ky, queryAnim));
+        ctx.strokeStyle = 'rgba(251,191,36,.4)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 3]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
+
+      // Vote result
+      const votes = [0, 0, 0];
+      neighbors.forEach(ni => votes[known[ni].cls]++);
+      const winner = votes.indexOf(Math.max(...votes));
+
+      // Query dot
+      drawGlowDot(ctx, qx, qy, 8, colors.yellow, .9);
+      ctx.font = '10px system-ui'; ctx.fillStyle = colors.yellow;
+      ctx.textAlign = 'center';
+      ctx.fillText('?', qx, qy + 3.5);
+
+      // Result label
+      if (queryAnim > .5) {
+        ctx.font = 'bold 11px system-ui';
+        ctx.fillStyle = classColors[winner];
+        ctx.textAlign = 'left';
+        ctx.fillText(txt('Prediction: ', '预测: ') + getClassNames()[winner], qx + 16, qy - 6);
+        ctx.font = '10px system-ui';
+        ctx.fillStyle = colors.dim;
+        ctx.fillText(txt(`(${votes[winner]}/${K} neighbors agree)`, `(${votes[winner]}/${K} 个邻居一致)`), qx + 16, qy + 8);
+      }
+    }
+
+    // Legend
+    ctx.textAlign = 'left';
+    const classNamesForLegend = getClassNames();
+    classNamesForLegend.forEach((name, i) => {
+      const lx = pad + i * 120, ly = h - 16;
+      ctx.beginPath(); ctx.arc(lx, ly, 4, 0, tau);
+      ctx.fillStyle = classColors[i]; ctx.fill();
+      ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+      ctx.fillText(name, lx + 10, ly + 4);
+    });
+  }
+  registerViz('vizKnn', draw);
+})();
+
+// ===== VIZ: RANDOM FOREST =====
+(function() {
+  const s = setupCanvas('vizRf');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const nTrees = 7;
+  const treeW = Math.min(100, (w - 80) / nTrees - 10);
+  const treeGap = (w - 60) / nTrees;
+  let treePreds = [];
+  let trueVal = 0;
+  let animT = 0;
+  let phaseTimer = 0;
+
+  function reset() {
+    trueVal = rand(30, 85);
+    treePreds = [];
+    for (let i = 0; i < nTrees; i++) {
+      treePreds.push({ val: trueVal + rand(-15, 15), shown: false, showAt: .3 + i * .3 });
+    }
+    phaseTimer = 0; animT = 0;
+  }
+  reset();
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    animT += .016;
+    phaseTimer += .016;
+
+    if (phaseTimer > 6) reset();
+
+    // Title
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.heading;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Random Forest: Each tree votes independently, then we average', '随机森林: 每棵树独立投票，然后平均'), w / 2, 22);
+
+    const baseY = 140;
+    const barH = 140;
+
+    // Draw trees
+    treePreds.forEach((tp, i) => {
+      if (animT < tp.showAt) return;
+      tp.shown = true;
+      const cx = 40 + i * treeGap + treeGap / 2;
+      const progressSince = Math.min(1, (animT - tp.showAt) * 2);
+
+      // Tree trunk
+      ctx.fillStyle = colors.border;
+      ctx.fillRect(cx - 3, baseY - 55, 6, 25);
+
+      // Tree crown (triangle)
+      ctx.beginPath();
+      ctx.moveTo(cx, baseY - 85);
+      ctx.lineTo(cx - 22, baseY - 55);
+      ctx.lineTo(cx + 22, baseY - 55);
+      ctx.closePath();
+      ctx.fillStyle = `rgba(52,211,153,${.15 + progressSince * .25})`;
+      ctx.fill();
+      ctx.strokeStyle = colors.green;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Prediction bar
+      const predH = (tp.val / 100) * barH * progressSince;
+      const trueH = (trueVal / 100) * barH;
+      const barX = cx - treeW / 2 + 5;
+      const barW = treeW - 10;
+
+      // Background bar
+      ctx.fillStyle = 'rgba(255,255,255,.03)';
+      roundRect(ctx, barX, baseY, barW, barH, 4);
+      ctx.fill();
+
+      // True value line
+      ctx.strokeStyle = 'rgba(52,211,153,.3)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(barX, baseY + barH - trueH);
+      ctx.lineTo(barX + barW, baseY + barH - trueH);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Prediction bar fill
+      const err = tp.val - trueVal;
+      ctx.fillStyle = Math.abs(err) < 5 ? 'rgba(52,211,153,.4)' : Math.abs(err) < 10 ? 'rgba(251,191,36,.4)' : 'rgba(248,113,113,.4)';
+      roundRect(ctx, barX, baseY + barH - predH, barW, predH, 4);
+      ctx.fill();
+
+      // Labels
+      ctx.font = 'bold 10px system-ui';
+      ctx.fillStyle = colors.orange;
+      ctx.textAlign = 'center';
+      ctx.fillText(txt('Tree ', '树 ') + (i + 1), cx, baseY + barH + 18);
+      if (progressSince > .5) {
+        ctx.font = '10px system-ui';
+        ctx.fillStyle = colors.text;
+        ctx.fillText(tp.val.toFixed(1) + '%', cx, baseY + barH + 32);
+      }
+    });
+
+    // Average result
+    const shownPreds = treePreds.filter(t => t.shown);
+    if (shownPreds.length > 0) {
+      const avg = shownPreds.reduce((s, t) => s + t.val, 0) / shownPreds.length;
+      const resultY = baseY + barH + 60;
+
+      // Result box
+      ctx.fillStyle = 'rgba(108,140,255,.08)';
+      ctx.strokeStyle = colors.accent;
+      ctx.lineWidth = 1.5;
+      roundRect(ctx, w / 2 - 160, resultY, 320, 44, 10);
+      ctx.fill(); ctx.stroke();
+
+      ctx.font = 'bold 12px system-ui';
+      ctx.fillStyle = colors.accent;
+      ctx.textAlign = 'center';
+      ctx.fillText(txt(`Forest Average: ${avg.toFixed(1)}%`, `森林平均: ${avg.toFixed(1)}%`), w / 2, resultY + 18);
+      ctx.font = '10px system-ui';
+      ctx.fillStyle = colors.green;
+      ctx.fillText(txt(`True Value: ${trueVal.toFixed(1)}%  |  Error: ${Math.abs(avg - trueVal).toFixed(1)}%`, `真实值: ${trueVal.toFixed(1)}%  |  误差: ${Math.abs(avg - trueVal).toFixed(1)}%`), w / 2, resultY + 34);
+    }
+  }
+  registerViz('vizRf', draw);
+})();
+
+// ===== VIZ: XGBOOST =====
+(function() {
+  const s = setupCanvas('vizXgb');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const nTrees = 5;
+  let trueVal = 72;
+  let preds = [40]; // initial guess
+  let errors = [trueVal - 40];
+  let currentTree = 0;
+  let t = 0;
+  let phaseTimer = 0;
+
+  function reset() {
+    trueVal = rand(50, 90);
+    preds = [rand(30, 50)];
+    errors = [trueVal - preds[0]];
+    currentTree = 0;
+    phaseTimer = 0;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += .016;
+    phaseTimer += .016;
+
+    // Add trees over time
+    if (phaseTimer > 1.8 && currentTree < nTrees - 1) {
+      const correction = errors[errors.length - 1] * rand(.4, .7);
+      const newPred = preds[preds.length - 1] + correction;
+      preds.push(newPred);
+      errors.push(trueVal - newPred);
+      currentTree++;
+      phaseTimer = 0;
+    }
+    if (currentTree >= nTrees - 1 && phaseTimer > 3) reset();
+
+    // Title
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.heading;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('XGBoost: Each tree corrects the residual error of all previous trees', 'XGBoost: 每棵树修正前面所有树的残差'), w / 2, 22);
+
+    const stageW = (w - 80) / nTrees;
+    const midY = h / 2 + 10;
+
+    for (let i = 0; i <= currentTree && i < nTrees; i++) {
+      const cx = 50 + i * stageW + stageW / 2;
+      const pred = preds[i];
+      const err = errors[i];
+
+      // Tree icon
+      ctx.beginPath();
+      ctx.moveTo(cx, midY - 80);
+      ctx.lineTo(cx - 20, midY - 55);
+      ctx.lineTo(cx + 20, midY - 55);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(108,140,255,.2)';
+      ctx.fill();
+      ctx.strokeStyle = colors.accent;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.fillStyle = colors.border;
+      ctx.fillRect(cx - 2, midY - 55, 4, 15);
+
+      ctx.font = 'bold 10px system-ui';
+      ctx.fillStyle = colors.accent;
+      ctx.textAlign = 'center';
+      ctx.fillText(txt('Tree ', '树 ') + (i + 1), cx, midY - 88);
+
+      // Current prediction
+      ctx.font = '11px system-ui';
+      ctx.fillStyle = colors.text;
+      ctx.fillText(txt('Pred: ', '预测: ') + pred.toFixed(1) + '%', cx, midY - 30);
+
+      // Error bar
+      const errBarW = 60;
+      const errH = Math.abs(err) / trueVal * 80;
+      const barX = cx - errBarW / 2;
+      const barY = midY + 5;
+
+      ctx.fillStyle = 'rgba(255,255,255,.03)';
+      roundRect(ctx, barX, barY, errBarW, 80, 4);
+      ctx.fill();
+
+      const errColor = Math.abs(err) < 3 ? colors.green : Math.abs(err) < 8 ? colors.yellow : colors.red;
+      ctx.fillStyle = errColor;
+      ctx.globalAlpha = .5;
+      roundRect(ctx, barX, barY + 80 - errH, errBarW, errH, 4);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      ctx.font = '10px system-ui';
+      ctx.fillStyle = errColor;
+      ctx.fillText(txt('err: ', '误: ') + Math.abs(err).toFixed(1), cx, barY + 96);
+
+      // Arrow
+      if (i < currentTree) {
+        drawArrow(ctx, cx + stageW / 2 - 10, midY - 60, cx + stageW / 2 + 10, midY - 60, colors.dim);
+        ctx.font = '9px system-ui'; ctx.fillStyle = colors.yellow;
+        ctx.fillText(txt('fix errors', '修正误差'), cx + stageW / 2, midY - 68);
+      }
+    }
+
+    // True value label
+    ctx.font = 'bold 11px system-ui';
+    ctx.fillStyle = colors.green;
+    ctx.textAlign = 'right';
+    ctx.fillText(txt('True Value: ', '真实值: ') + trueVal.toFixed(1) + '%', w - 30, h - 18);
+  }
+  registerViz('vizXgb', draw);
+})();
+
+// ===== VIZ: ANN =====
+(function() {
+  const s = setupCanvas('vizAnn');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const layers = [3, 6, 8, 6, 3];
+  const layerX = layers.map((_, i) => 80 + i * ((w - 160) / (layers.length - 1)));
+  const nodes = layers.map((n, li) => {
+    const arr = [];
+    const gap = Math.min(42, (h - 100) / n);
+    const startY = h / 2 - (n - 1) * gap / 2;
+    for (let i = 0; i < n; i++) arr.push({ x: layerX[li], y: startY + i * gap, val: 0 });
+    return arr;
+  });
+
+  let pulses = [];
+  let t = 0;
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += .016;
+
+    // Spawn pulses
+    if (Math.random() < .07) {
+      const startNode = randInt(0, layers[0] - 1);
+      // Pre-determine the entire path to avoid jitter
+      const path = [startNode];
+      for (let l = 1; l < layers.length; l++) {
+        path.push(randInt(0, layers[l] - 1));
+      }
+      pulses.push({ layer: 0, pathIdx: 0, path, progress: 0, speed: rand(.012, .022) });
+    }
+
+    // Draw connections (faint)
+    for (let l = 0; l < layers.length - 1; l++) {
+      for (const n1 of nodes[l]) {
+        for (const n2 of nodes[l + 1]) {
+          ctx.beginPath();
+          ctx.moveTo(n1.x, n1.y);
+          ctx.lineTo(n2.x, n2.y);
+          ctx.strokeStyle = 'rgba(108,140,255,.05)';
+          ctx.lineWidth = .7;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Draw & update pulses
+    for (let i = pulses.length - 1; i >= 0; i--) {
+      const p = pulses[i];
+      p.progress += p.speed;
+      if (p.progress >= 1) {
+        if (p.pathIdx < layers.length - 2) {
+          // Highlight connection
+          const n1 = nodes[p.pathIdx][p.path[p.pathIdx]];
+          const n2 = nodes[p.pathIdx + 1][p.path[p.pathIdx + 1]];
+          ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y);
+          ctx.strokeStyle = 'rgba(108,140,255,.3)';
+          ctx.lineWidth = 1.5; ctx.stroke();
+          p.pathIdx++;
+          p.progress = 0;
+        } else {
+          pulses.splice(i, 1);
+          continue;
+        }
+      }
+      // Draw pulse dot using pre-determined path
+      if (p.pathIdx < layers.length - 1) {
+        const n1 = nodes[p.pathIdx][p.path[p.pathIdx]];
+        const n2 = nodes[p.pathIdx + 1][p.path[p.pathIdx + 1]];
+        const px = lerp(n1.x, n2.x, p.progress);
+        const py = lerp(n1.y, n2.y, p.progress);
+        drawGlowDot(ctx, px, py, 3, colors.cyan, .85);
+      }
+    }
+
+    // Keep pulse array bounded
+    if (pulses.length > 30) pulses.splice(0, pulses.length - 30);
+
+    // Draw nodes
+    const layerLabels = txt(['Input', 'Hidden 1', 'Hidden 2', 'Hidden 3', 'Output'], ['输入', '隐藏1', '隐藏2', '隐藏3', '输出']);
+    const inputNames = txt(['Size', 'Thick', 'Vol%'], ['尺寸', '厚度', '体积%']);
+    const outputNames = txt(['ρ_sol', 'ε_IR', 'P_cool'], ['ρ_太阳', 'ε_红外', 'P_制冷']);
+    for (let l = 0; l < layers.length; l++) {
+      ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+      ctx.textAlign = 'center';
+      ctx.fillText(layerLabels[l], layerX[l], 18);
+
+      for (let n = 0; n < nodes[l].length; n++) {
+        const nd = nodes[l][n];
+        ctx.beginPath();
+        ctx.arc(nd.x, nd.y, 13, 0, tau);
+        const isInput = l === 0, isOutput = l === layers.length - 1;
+        ctx.fillStyle = isInput ? 'rgba(52,211,153,.15)' : isOutput ? 'rgba(244,114,182,.15)' : 'rgba(108,140,255,.1)';
+        ctx.strokeStyle = isInput ? colors.green : isOutput ? colors.pink : colors.accent;
+        ctx.lineWidth = 1.5;
+        ctx.fill(); ctx.stroke();
+
+        if (isInput) {
+          ctx.font = '9px system-ui'; ctx.fillStyle = colors.green;
+          ctx.textAlign = 'right';
+          ctx.fillText(inputNames[n], nd.x - 19, nd.y + 4);
+        }
+        if (isOutput) {
+          ctx.font = '9px system-ui'; ctx.fillStyle = colors.pink;
+          ctx.textAlign = 'left';
+          ctx.fillText(outputNames[n], nd.x + 19, nd.y + 4);
+        }
+      }
+    }
+
+    // Label
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Signals flow forward through weighted connections', '信号通过加权连接向前传播'), w / 2, h - 10);
+  }
+  registerViz('vizAnn', draw);
+})();
+
+// ===== VIZ: CNN =====
+(function() {
+  const s = setupCanvas('vizCnn');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const nPoints = 120;
+  const spectrum = [];
+  for (let i = 0; i < nPoints; i++) {
+    const x = i / nPoints;
+    let v = .3 + .5 * Math.exp(-((x - .15) ** 2) / .01)
+      + .7 * (1 / (1 + Math.exp(-(x - .35) * 30)))
+      - .4 * Math.exp(-((x - .55) ** 2) / .005)
+      + .25 * Math.exp(-((x - .75) ** 2) / .02);
+    spectrum.push(clamp(v, 0, 1));
+  }
+
+  let filterPos = 0;
+  const filterW = 12;
+  let features = [];
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    const specX = 60, specW = w - 120, specY = 55, specH = 120;
+
+    // Title
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.heading;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('1D Convolution: Filter slides across the spectrum, detecting local features', '1D卷积: 滤波器在光谱上滑动，检测局部特征'), w / 2, 22);
+
+    // Wavelength labels
+    ctx.font = '9px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.textAlign = 'left'; ctx.fillText(txt('UV (0.3 μm)', 'UV (0.3 μm)'), specX, specY - 8);
+    ctx.textAlign = 'right'; ctx.fillText(txt('Mid-IR (25 μm)', '中红外 (25 μm)'), specX + specW, specY - 8);
+    ctx.textAlign = 'center'; ctx.fillText(txt('Wavelength →', '波长 →'), specX + specW / 2, specY + specH + 20);
+
+    // Draw spectrum
+    ctx.beginPath();
+    for (let i = 0; i < nPoints; i++) {
+      const x = specX + (i / nPoints) * specW;
+      const y = specY + specH - spectrum[i] * specH;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = colors.cyan;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Fill below spectrum lightly
+    ctx.lineTo(specX + specW, specY + specH);
+    ctx.lineTo(specX, specY + specH);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(34,211,238,.04)';
+    ctx.fill();
+
+    // Filter window — clamp to avoid overflow
+    filterPos = (filterPos + .3) % nPoints;
+    const fp = Math.floor(filterPos);
+    const fpEnd = Math.min(fp + filterW, nPoints - 1);
+    const fx1 = specX + (fp / nPoints) * specW;
+    const fx2 = specX + (fpEnd / nPoints) * specW;
+    ctx.fillStyle = 'rgba(251,191,36,.1)';
+    ctx.fillRect(fx1, specY, fx2 - fx1, specH);
+    ctx.strokeStyle = colors.yellow;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(fx1, specY, fx2 - fx1, specH);
+
+    ctx.font = 'bold 10px system-ui'; ctx.fillStyle = colors.yellow;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Filter', '滤波器'), (fx1 + fx2) / 2, specY - 12);
+
+    // Compute filter output
+    let sum = 0, count = 0;
+    for (let fi = fp; fi < fpEnd && fi < nPoints; fi++) {
+      sum += spectrum[fi]; count++;
+    }
+    const filterOut = count > 0 ? sum / count : 0;
+
+    if (Math.floor(filterPos) % 3 === 0) {
+      features.push({ x: fx1, val: filterOut });
+      if (features.length > 60) features.shift();
+    }
+
+    // Feature map
+    const fmY = specY + specH + 50;
+    ctx.font = '11px system-ui'; ctx.fillStyle = colors.dim; ctx.textAlign = 'left';
+    ctx.fillText(txt('Feature Map (Conv Layer Output):', '特征图 (卷积层输出):'), specX, fmY - 10);
+
+    const fmH = 80;
+    features.forEach((f, i) => {
+      const bx = specX + (i / 60) * specW;
+      const bh = f.val * fmH;
+      ctx.fillStyle = `rgba(108,140,255,${.25 + f.val * .5})`;
+      ctx.fillRect(bx, fmY + fmH - bh, specW / 62, bh);
+    });
+    ctx.strokeStyle = colors.border;
+    ctx.strokeRect(specX, fmY, specW, fmH);
+
+    drawArrow(ctx, w / 2, specY + specH + 8, w / 2, fmY - 15, colors.dim);
+  }
+  registerViz('vizCnn', draw);
+})();
+
+// ===== VIZ: TANDEM NN =====
+(function() {
+  const s = setupCanvas('vizTandem');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += .01;
+
+    const midY = h / 2;
+    // Responsive box sizing
+    const totalW = w - 60;
+    const boxW = Math.min(140, totalW / 5.5);
+    const smallW = Math.min(90, totalW / 7);
+    const gap = (totalW - boxW * 2 - smallW - boxW - smallW) / 4;
+
+    const positions = [];
+    let cx = 30;
+    // Target box
+    positions.push({ x: cx, w: boxW, label: txt('Target Spectrum', '目标光谱'), sub: txt('"I want this spectrum"', '"我想要这个光谱"'), color: colors.pink, bg: 'rgba(244,114,182,.06)' });
+    cx += boxW + gap;
+    // Inverse
+    positions.push({ x: cx, w: boxW, label: txt('Inverse Network', '逆向网络'), sub: txt('Spec → Structure', '光谱 → 结构'), color: colors.accent2, bg: 'rgba(167,139,250,.06)' });
+    cx += boxW + gap;
+    // Structure
+    positions.push({ x: cx, w: smallW, label: txt('Structure', '结构'), sub: 'SiO₂/TiO₂...', color: colors.green, bg: 'rgba(52,211,153,.06)' });
+    cx += smallW + gap;
+    // Forward
+    positions.push({ x: cx, w: boxW, label: txt('Forward Net', '正向网络'), sub: txt('🔒 Frozen', '🔒 冻结'), color: colors.accent, bg: 'rgba(108,140,255,.06)' });
+    cx += boxW + gap;
+    // Predicted
+    positions.push({ x: cx, w: smallW, label: txt('Predicted', '预测'), sub: txt('Spectrum', '光谱'), color: colors.cyan, bg: 'rgba(34,211,238,.06)' });
+
+    const boxH = 65;
+
+    positions.forEach(b => {
+      ctx.fillStyle = b.bg;
+      ctx.strokeStyle = b.color;
+      ctx.lineWidth = 1.5;
+      roundRect(ctx, b.x, midY - boxH / 2, b.w, boxH, 10);
+      ctx.fill(); ctx.stroke();
+
+      ctx.font = 'bold 11px system-ui'; ctx.fillStyle = b.color;
+      ctx.textAlign = 'center';
+      ctx.fillText(b.label, b.x + b.w / 2, midY - 8);
+      ctx.font = '9px system-ui'; ctx.fillStyle = colors.dim;
+      ctx.fillText(b.sub, b.x + b.w / 2, midY + 10);
+    });
+
+    // Arrows between boxes
+    for (let i = 0; i < positions.length - 1; i++) {
+      const from = positions[i];
+      const to = positions[i + 1];
+      drawArrow(ctx, from.x + from.w + 3, midY, to.x - 3, midY, from.color);
+    }
+
+    // Loss comparison arc
+    const lossY = midY + boxH / 2 + 30;
+    ctx.strokeStyle = colors.red;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 3]);
+    ctx.beginPath();
+    const p0 = positions[0], p4 = positions[4];
+    ctx.moveTo(p0.x + p0.w / 2, midY + boxH / 2);
+    ctx.quadraticCurveTo(w / 2, lossY + 25, p4.x + p4.w / 2, midY + boxH / 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    const pulseA = .5 + .5 * Math.sin(t * 3);
+    ctx.font = 'bold 11px system-ui';
+    ctx.fillStyle = `rgba(248,113,113,${.5 + pulseA * .5})`;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Loss = |Target − Predicted|', '损失 = |目标 − 预测|'), w / 2, lossY + 38);
+
+    // Animated pulse
+    const px = (t * .4) % 1;
+    const pulseX = lerp(p0.x, p4.x + p4.w, px);
+    drawGlowDot(ctx, pulseX, midY, 4, colors.cyan, 1 - px * .6);
+  }
+  registerViz('vizTandem', draw);
+})();
+
+// ===== VIZ: GA =====
+(function() {
+  const s = setupCanvas('vizGa');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const popSize = 30;
+  let pop = [];
+  let gen = 0;
+  let animT = 0;
+  const targetX = w / 2, targetY = 80;
+
+  function fitness(ind) { return 1 / (1 + dist(ind.x, ind.y, targetX, targetY) / 100); }
+
+  function initPop() {
+    pop = [];
+    for (let i = 0; i < popSize; i++) pop.push({ x: rand(50, w - 50), y: rand(120, h - 40), r: rand(4, 8) });
+    gen = 0;
+    animT = 0;
+  }
+  initPop();
+
+  function evolve() {
+    pop.sort((a, b) => fitness(b) - fitness(a));
+    const newPop = [];
+    for (let i = 0; i < 5; i++) newPop.push({...pop[i]});
+    while (newPop.length < popSize) {
+      const p1 = pop[randInt(0, 9)], p2 = pop[randInt(0, 9)];
+      const child = { x: Math.random() < .5 ? p1.x : p2.x, y: Math.random() < .5 ? p1.y : p2.y, r: rand(4, 8) };
+      if (Math.random() < .3) { child.x += rand(-40, 40); child.y += rand(-40, 40); }
+      child.x = clamp(child.x, 30, w - 30);
+      child.y = clamp(child.y, 60, h - 30);
+      newPop.push(child);
+    }
+    pop = newPop;
+    gen++;
+  }
+
+  let evolveTimer = 0;
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    animT += .016;
+    evolveTimer += .016;
+    if (evolveTimer > 1.5) {
+      evolve();
+      evolveTimer = 0;
+      if (gen > 15) initPop();
+    }
+
+    // Target
+    ctx.beginPath(); ctx.arc(targetX, targetY, 22, 0, tau);
+    ctx.fillStyle = 'rgba(52,211,153,.12)'; ctx.fill();
+    ctx.strokeStyle = colors.green; ctx.lineWidth = 2; ctx.stroke();
+    // Target inner glow
+    ctx.beginPath(); ctx.arc(targetX, targetY, 8, 0, tau);
+    ctx.fillStyle = 'rgba(52,211,153,.3)'; ctx.fill();
+    ctx.font = 'bold 10px system-ui'; ctx.fillStyle = colors.green;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('OPTIMAL', '最优'), targetX, targetY + 36);
+
+    // Population
+    pop.forEach((ind, i) => {
+      const f = fitness(ind);
+      const r = lerp(3, 10, f);
+      const alpha = lerp(.25, .95, f);
+      ctx.beginPath(); ctx.arc(ind.x, ind.y, r, 0, tau);
+      ctx.fillStyle = `rgba(108,140,255,${alpha})`;
+      ctx.fill();
+      if (i < 5) {
+        ctx.strokeStyle = colors.yellow;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    });
+
+    // Info
+    ctx.font = 'bold 13px system-ui'; ctx.fillStyle = colors.orange;
+    ctx.textAlign = 'left';
+    ctx.fillText(txt('Generation: ', '代数: ') + gen, 20, 28);
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.fillText(txt('Gold ring = top 5 (elite parents)', '金环 = 前5名(精英父母)'), 20, 46);
+    ctx.textAlign = 'right';
+    ctx.fillText(txt('Brighter & larger = higher fitness', '越亮越大 = 适应度越高'), w - 20, 28);
+
+    // Best fitness
+    const bestF = Math.max(...pop.map(p => fitness(p)));
+    ctx.textAlign = 'right'; ctx.font = '10px system-ui'; ctx.fillStyle = colors.green;
+    ctx.fillText(txt('Best fitness: ', '最佳适应度: ') + (bestF * 100).toFixed(1) + '%', w - 20, 46);
+  }
+  registerViz('vizGa', draw);
+})();
+
+// ===== VIZ: PSO =====
+(function() {
+  const s = setupCanvas('vizPso');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const nParticles = 25;
+  const peakX = w * .6, peakY = h * .35;
+  function landscape(x, y) { return Math.exp(-((x - peakX) ** 2 + (y - peakY) ** 2) / 15000); }
+
+  let particles = [];
+  let globalBest = { x: 0, y: 0, f: 0 };
+  let t = 0;
+
+  function init() {
+    particles = [];
+    globalBest = { x: 0, y: 0, f: 0 };
+    for (let i = 0; i < nParticles; i++) {
+      const x = rand(40, w - 40), y = rand(40, h - 40);
+      const f = landscape(x, y);
+      particles.push({ x, y, vx: rand(-2, 2), vy: rand(-2, 2), bestX: x, bestY: y, bestF: f, trail: [] });
+      if (f > globalBest.f) globalBest = { x, y, f };
+    }
+    t = 0;
+  }
+  init();
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += .016;
+
+    // Contour rings
+    for (let r = 200; r > 20; r -= 35) {
+      ctx.beginPath(); ctx.arc(peakX, peakY, r, 0, tau);
+      ctx.strokeStyle = `rgba(52,211,153,${.03 + .025 * (200 - r) / 200})`;
+      ctx.lineWidth = 1; ctx.stroke();
+    }
+
+    // Update particles
+    const wI = .7, c1 = 1.5, c2 = 2;
+    particles.forEach(p => {
+      p.vx = wI * p.vx + c1 * Math.random() * (p.bestX - p.x) + c2 * Math.random() * (globalBest.x - p.x);
+      p.vy = wI * p.vy + c1 * Math.random() * (p.bestY - p.y) + c2 * Math.random() * (globalBest.y - p.y);
+      p.vx = clamp(p.vx, -5, 5); p.vy = clamp(p.vy, -5, 5);
+      p.x += p.vx; p.y += p.vy;
+      p.x = clamp(p.x, 20, w - 20); p.y = clamp(p.y, 20, h - 20);
+      const f = landscape(p.x, p.y);
+      if (f > p.bestF) { p.bestX = p.x; p.bestY = p.y; p.bestF = f; }
+      if (f > globalBest.f) globalBest = { x: p.x, y: p.y, f };
+      p.trail.push({ x: p.x, y: p.y });
+      if (p.trail.length > 18) p.trail.shift();
+    });
+
+    // Trails
+    particles.forEach(p => {
+      if (p.trail.length < 2) return;
+      ctx.beginPath();
+      p.trail.forEach((pt, i) => { if (i === 0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y); });
+      ctx.strokeStyle = 'rgba(108,140,255,.12)';
+      ctx.lineWidth = 1; ctx.stroke();
+    });
+
+    // Particles
+    particles.forEach(p => {
+      const f = landscape(p.x, p.y);
+      const alpha = lerp(.4, 1, f);
+      ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, tau);
+      ctx.fillStyle = `rgba(108,140,255,${alpha})`;
+      ctx.fill();
+    });
+
+    // Global best marker
+    ctx.beginPath(); ctx.arc(globalBest.x, globalBest.y, 11, 0, tau);
+    ctx.strokeStyle = colors.yellow; ctx.lineWidth = 2; ctx.stroke();
+    ctx.font = 'bold 9px system-ui'; ctx.fillStyle = colors.yellow;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('BEST', '最佳'), globalBest.x, globalBest.y - 16);
+
+    // Peak
+    ctx.beginPath(); ctx.arc(peakX, peakY, 6, 0, tau);
+    ctx.fillStyle = colors.green; ctx.fill();
+    ctx.font = '9px system-ui'; ctx.fillStyle = colors.green;
+    ctx.fillText(txt('Peak', '峰值'), peakX, peakY - 10);
+
+    // Labels
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.orange;
+    ctx.textAlign = 'left';
+    ctx.fillText(txt('Particle Swarm Optimization', '粒子群优化'), 20, 25);
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.fillText(txt('Particles converge toward the global best', '粒子向全局最优解收敛'), 20, 42);
+
+    if (t > 10) init();
+  }
+  registerViz('vizPso', draw);
+})();
+
+// ===== VIZ: BO =====
+(function() {
+  const s = setupCanvas('vizBo');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const margin = { l: 60, r: 40, t: 48, b: 40 };
+  const plotW = w - margin.l - margin.r;
+  const plotH = h - margin.t - margin.b;
+
+  function trueF(x) {
+    return .3 + .5 * Math.sin(x * 3) + .2 * Math.cos(x * 7) - .15 * Math.sin(x * 11);
+  }
+
+  let samples = [];
+  let step = 0;
+  let t = 0;
+
+  function reset() {
+    samples = [];
+    for (let i = 0; i < 3; i++) {
+      const x = rand(.1, .9);
+      samples.push({ x, y: trueF(x) });
+    }
+    step = 0; t = 0;
+  }
+  reset();
+
+  function gpPredict(xq) {
+    if (samples.length === 0) return { mu: .5, sigma: .3 };
+    let wSum = 0, ySum = 0, minD = 999;
+    const lengthScale = .03;
+    for (const s of samples) {
+      const d = Math.abs(xq - s.x);
+      const w = Math.exp(-d * d / lengthScale);
+      wSum += w; ySum += w * s.y;
+      minD = Math.min(minD, d);
+    }
+    const mu = wSum > .001 ? ySum / wSum : .5;
+    const sigma = Math.min(.2, .05 + minD * .6);
+    return { mu, sigma };
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += .016;
+
+    // Add sample periodically
+    if (t > 2.2 && step < 12) {
+      let bestX = .5, bestAcq = -Infinity;
+      for (let x = .02; x <= .98; x += .01) {
+        const { mu, sigma } = gpPredict(x);
+        const acq = mu + 1.5 * sigma;
+        if (acq > bestAcq) { bestAcq = acq; bestX = x; }
+      }
+      samples.push({ x: bestX, y: trueF(bestX) });
+      step++; t = 0;
+      if (step >= 12) setTimeout(reset, 3500);
+    }
+
+    // Draw plot area background
+    ctx.fillStyle = 'rgba(255,255,255,.015)';
+    ctx.fillRect(margin.l, margin.t, plotW, plotH);
+
+    // True function (dashed)
+    ctx.beginPath();
+    for (let px = 0; px <= plotW; px++) {
+      const x = px / plotW;
+      const y = trueF(x);
+      const sx = margin.l + px, sy = margin.t + plotH - y * plotH;
+      if (px === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.strokeStyle = 'rgba(52,211,153,.35)'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]); ctx.stroke(); ctx.setLineDash([]);
+
+    // GP mean + uncertainty band
+    const upperPts = [], lowerPts = [];
+    ctx.beginPath();
+    for (let px = 0; px <= plotW; px += 2) {
+      const x = px / plotW;
+      const { mu, sigma } = gpPredict(x);
+      const sx = margin.l + px;
+      const muY = margin.t + plotH - mu * plotH;
+      upperPts.push({ x: sx, y: margin.t + plotH - (mu + sigma) * plotH });
+      lowerPts.push({ x: sx, y: margin.t + plotH - (mu - sigma) * plotH });
+      if (px === 0) ctx.moveTo(sx, muY); else ctx.lineTo(sx, muY);
+    }
+    ctx.strokeStyle = colors.accent; ctx.lineWidth = 2; ctx.stroke();
+
+    // Uncertainty band
+    ctx.beginPath();
+    upperPts.forEach((p, i) => { if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); });
+    for (let i = lowerPts.length - 1; i >= 0; i--) ctx.lineTo(lowerPts[i].x, lowerPts[i].y);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(108,140,255,.07)'; ctx.fill();
+
+    // Sample points
+    samples.forEach((s, i) => {
+      const sx = margin.l + s.x * plotW;
+      const sy = margin.t + plotH - s.y * plotH;
+      const isLast = i === samples.length - 1;
+      ctx.beginPath(); ctx.arc(sx, sy, isLast ? 7 : 5, 0, tau);
+      ctx.fillStyle = isLast ? colors.yellow : colors.accent;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 1.5; ctx.stroke();
+      if (isLast) {
+        ctx.font = '9px system-ui'; ctx.fillStyle = colors.yellow;
+        ctx.textAlign = 'center';
+        ctx.fillText(txt('NEW', '新'), sx, sy - 12);
+      }
+    });
+
+    // Labels
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.orange;
+    ctx.textAlign = 'left';
+    ctx.fillText(txt(`Bayesian Optimization — Step ${step}/12`, `贝叶斯优化 — 步骤 ${step}/12`), margin.l, 22);
+
+    // Legend
+    ctx.font = '10px system-ui'; ctx.textAlign = 'right';
+    ctx.fillStyle = 'rgba(52,211,153,.6)';
+    ctx.fillText(txt('--- True function (hidden)', '--- 真实函数 (隐藏)'), w - margin.r, 22);
+    ctx.fillStyle = colors.accent;
+    ctx.fillText(txt('— GP prediction ± uncertainty', '— GP预测 ± 不确定性'), w - margin.r, 38);
+
+    // Axis
+    ctx.strokeStyle = colors.border; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(margin.l, margin.t + plotH);
+    ctx.lineTo(margin.l + plotW, margin.t + plotH);
+    ctx.stroke();
+  }
+  registerViz('vizBo', draw);
+})();
+
+// ===== VIZ: VAE =====
+(function() {
+  const s = setupCanvas('vizVae');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  let t = 0;
+  const latentPoints = [];
+  for (let i = 0; i < 50; i++) {
+    const angle = rand(0, tau);
+    const r = rand(5, 60);
+    latentPoints.push({ x: Math.cos(angle) * r, y: Math.sin(angle) * r, hue: (angle / tau * 360 + 180) % 360 });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += .01;
+
+    const midY = h / 2;
+    // Responsive layout
+    const boxW = Math.min(140, w * .16);
+    const lRad = Math.min(80, w * .1);
+    const lx = w / 2, ly = midY;
+
+    // Encoder
+    ctx.fillStyle = 'rgba(108,140,255,.05)';
+    ctx.strokeStyle = colors.accent; ctx.lineWidth = 1.5;
+    roundRect(ctx, 30, midY - 55, boxW, 110, 12);
+    ctx.fill(); ctx.stroke();
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.accent;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Encoder', '编码器'), 30 + boxW / 2, midY - 20);
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.fillText(txt('Design →', '设计 →'), 30 + boxW / 2, midY);
+    ctx.fillText(txt('Compact Code', '紧凑编码'), 30 + boxW / 2, midY + 16);
+
+    // Latent space
+    ctx.beginPath(); ctx.arc(lx, ly, lRad, 0, tau);
+    ctx.fillStyle = 'rgba(167,139,250,.05)';
+    ctx.strokeStyle = colors.accent2; ctx.lineWidth = 1.5;
+    ctx.fill(); ctx.stroke();
+    ctx.font = 'bold 11px system-ui'; ctx.fillStyle = colors.accent2;
+    ctx.fillText(txt('Latent Space', '潜在空间'), lx, ly - lRad - 10);
+
+    // Latent points (rotating)
+    latentPoints.forEach(p => {
+      const angle = Math.atan2(p.y, p.x) + t * .2;
+      const r = Math.hypot(p.x, p.y);
+      const px = lx + Math.cos(angle) * r;
+      const py = ly + Math.sin(angle) * r;
+      ctx.beginPath(); ctx.arc(px, py, 3.5, 0, tau);
+      ctx.fillStyle = `hsla(${p.hue},70%,65%,.65)`;
+      ctx.fill();
+    });
+
+    // Sample point (pulsing)
+    const sampleAngle = t * .5;
+    const sampleR = 30 + 15 * Math.sin(t * 1.5);
+    const sx = lx + Math.cos(sampleAngle) * sampleR;
+    const sy = ly + Math.sin(sampleAngle) * sampleR;
+    drawGlowDot(ctx, sx, sy, 7, colors.yellow, .9);
+    ctx.font = '9px system-ui'; ctx.fillStyle = colors.yellow;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('sample', '采样'), sx, sy - 14);
+
+    // Decoder
+    ctx.fillStyle = 'rgba(244,114,182,.05)';
+    ctx.strokeStyle = colors.pink; ctx.lineWidth = 1.5;
+    roundRect(ctx, w - 30 - boxW, midY - 55, boxW, 110, 12);
+    ctx.fill(); ctx.stroke();
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.pink;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Decoder', '解码器'), w - 30 - boxW / 2, midY - 20);
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.fillText(txt('Code →', '编码 →'), w - 30 - boxW / 2, midY);
+    ctx.fillText(txt('New Design!', '新设计!'), w - 30 - boxW / 2, midY + 16);
+
+    // Arrows
+    drawArrow(ctx, 30 + boxW + 5, midY, lx - lRad - 8, midY, colors.accent);
+    drawArrow(ctx, lx + lRad + 8, midY, w - 30 - boxW - 5, midY, colors.pink);
+
+    // Bottom labels
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Nearby points → similar designs  •  Smooth interpolation between designs', '临近点 → 相似设计  •  设计之间平滑插值'), lx, ly + lRad + 22);
+  }
+  registerViz('vizVae', draw);
+})();
+
+// ===== VIZ: GAN =====
+(function() {
+  const s = setupCanvas('vizGan');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  let t = 0;
+  let genScore = 30, discScore = 70, round = 0;
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += .016;
+
+    if (t > .05) {
+      genScore = Math.min(95, genScore + rand(0, .15));
+      discScore = Math.max(52, discScore - rand(0, .05));
+      t = 0; round++;
+      if (round > 400) { genScore = 30; discScore = 70; round = 0; }
+    }
+
+    const midY = h / 2 - 15;
+    const boxW = Math.min(190, w * .23);
+    const gh = 120;
+
+    // Generator
+    const gx = w * .08;
+    ctx.fillStyle = 'rgba(244,114,182,.05)';
+    ctx.strokeStyle = colors.pink; ctx.lineWidth = 1.5;
+    roundRect(ctx, gx, midY - gh / 2, boxW, gh, 12);
+    ctx.fill(); ctx.stroke();
+    ctx.font = 'bold 13px system-ui'; ctx.fillStyle = colors.pink;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Generator', '生成器'), gx + boxW / 2, midY - 28);
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.fillText(txt('Noise + Target →', '噪声 + 目标 →'), gx + boxW / 2, midY - 8);
+    ctx.fillText(txt('Fake Design', '假设计'), gx + boxW / 2, midY + 8);
+
+    // Gen quality bar
+    const gBarX = gx + 15, gBarW = boxW - 30, gBarY = midY + 25;
+    ctx.fillStyle = 'rgba(255,255,255,.04)'; roundRect(ctx, gBarX, gBarY, gBarW, 14, 4); ctx.fill();
+    ctx.fillStyle = colors.pink; roundRect(ctx, gBarX, gBarY, gBarW * (genScore / 100), 14, 4); ctx.fill();
+    ctx.font = '9px system-ui'; ctx.fillStyle = colors.dim; ctx.textAlign = 'center';
+    ctx.fillText(txt('Quality: ', '质量: ') + genScore.toFixed(0) + '%', gx + boxW / 2, gBarY + 28);
+
+    // Discriminator
+    const dx = w - w * .08 - boxW;
+    ctx.fillStyle = 'rgba(108,140,255,.05)';
+    ctx.strokeStyle = colors.accent; ctx.lineWidth = 1.5;
+    roundRect(ctx, dx, midY - gh / 2, boxW, gh, 12);
+    ctx.fill(); ctx.stroke();
+    ctx.font = 'bold 13px system-ui'; ctx.fillStyle = colors.accent;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Discriminator', '判别器'), dx + boxW / 2, midY - 28);
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.fillText(txt('Design →', '设计 →'), dx + boxW / 2, midY - 8);
+    ctx.fillText(txt('"Real" or "Fake"?', '"真"还是"假"？'), dx + boxW / 2, midY + 8);
+
+    // Disc accuracy bar
+    const dBarX = dx + 15, dBarW = boxW - 30, dBarY = midY + 25;
+    ctx.fillStyle = 'rgba(255,255,255,.04)'; roundRect(ctx, dBarX, dBarY, dBarW, 14, 4); ctx.fill();
+    ctx.fillStyle = colors.accent; roundRect(ctx, dBarX, dBarY, dBarW * (discScore / 100), 14, 4); ctx.fill();
+    ctx.font = '9px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.fillText(txt('Accuracy: ', '准确率: ') + discScore.toFixed(0) + '%', dx + boxW / 2, dBarY + 28);
+
+    // VS badge
+    const vsX = w / 2;
+    ctx.beginPath(); ctx.arc(vsX, midY, 24, 0, tau);
+    ctx.fillStyle = 'rgba(251,191,36,.12)';
+    ctx.strokeStyle = colors.yellow; ctx.lineWidth = 2;
+    ctx.fill(); ctx.stroke();
+    ctx.font = 'bold 15px system-ui'; ctx.fillStyle = colors.yellow;
+    ctx.textAlign = 'center'; ctx.fillText('VS', vsX, midY + 5);
+
+    // Arrows
+    drawArrow(ctx, gx + boxW + 5, midY, vsX - 27, midY, colors.pink);
+    drawArrow(ctx, vsX + 27, midY, dx - 5, midY, colors.accent);
+
+    // Round counter
+    ctx.font = 'bold 13px system-ui'; ctx.fillStyle = colors.yellow;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Training Round: ', '训练轮次: ') + round, w / 2, 25);
+
+    // Feedback arc
+    const fbY = midY + gh / 2 + 30;
+    ctx.strokeStyle = 'rgba(251,191,36,.35)'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(dx, midY + gh / 2);
+    ctx.quadraticCurveTo(w / 2, fbY + 28, gx + boxW, midY + gh / 2);
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.yellow;
+    ctx.fillText(txt('Competition drives improvement', '竞争驱动进步'), w / 2, fbY + 18);
+
+    if (genScore > 85) {
+      ctx.font = 'bold 11px system-ui'; ctx.fillStyle = colors.green;
+      ctx.fillText(txt('Generator now produces near-realistic designs!', '生成器现在能生成近似真实的设计！'), w / 2, h - 12);
+    }
+  }
+  registerViz('vizGan', draw);
+})();
+
+// ===== VIZ: DIFFUSION =====
+(function() {
+  const s = setupCanvas('vizDiffusion');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  let t = 0;
+  const nSteps = 6;
+  const stepW = (w - 80) / nSteps;
+
+  const layerColors = ['#6c8cff', '#34d399', '#f472b6', '#fb923c', '#22d3ee'];
+
+  function drawDesign(cx, cy, size, noiseLevel) {
+    const layers = 5;
+    const layerH = size / layers;
+    ctx.save();
+    for (let i = 0; i < layers; i++) {
+      const y = cy - size / 2 + i * layerH;
+      ctx.globalAlpha = 1 - noiseLevel * .8;
+      ctx.fillStyle = layerColors[i];
+      ctx.fillRect(cx - size / 2, y, size, layerH - 2);
+      ctx.globalAlpha = noiseLevel * .7;
+      for (let d = 0; d < Math.floor(noiseLevel * 18); d++) {
+        ctx.fillStyle = `hsl(${rand(0,360)},50%,50%)`;
+        ctx.fillRect(cx - size / 2 + rand(0, size), y + rand(0, layerH - 2), rand(2, 5), rand(2, 5));
+      }
+    }
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += .003;
+    if (t > 2) t = 0;
+
+    const midY = h / 2 + 10;
+    const size = Math.min(60, stepW * .6);
+
+    // Forward title
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.heading;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Forward: Add noise step by step →', '正向: 逐步添加噪声 →'), w / 2, 22);
+
+    for (let i = 0; i < nSteps; i++) {
+      const cx = 50 + i * stepW + stepW / 2;
+      const noiseLevel = i / (nSteps - 1);
+      drawDesign(cx, midY - 50, size, noiseLevel);
+      ctx.font = '9px system-ui'; ctx.fillStyle = colors.dim;
+      ctx.textAlign = 'center';
+      ctx.fillText(i === 0 ? txt('Clean', '干净') : i === nSteps - 1 ? txt('Pure noise', '纯噪声') : `t=${i}`, cx, midY - 50 + size / 2 + 14);
+      if (i < nSteps - 1) {
+        ctx.fillStyle = colors.dim; ctx.font = '14px system-ui';
+        ctx.fillText('→', cx + stepW / 2, midY - 50);
+      }
+    }
+
+    // Reverse title
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.pink;
+    ctx.fillText(txt('← Reverse: Learned denoiser removes noise', '← 反向: 学习的去噪器去除噪声'), w / 2, midY + 15);
+
+    const phase = (t * nSteps) % nSteps;
+    for (let i = 0; i < nSteps; i++) {
+      const cx = 50 + (nSteps - 1 - i) * stepW + stepW / 2;
+      const noiseLevel = i / (nSteps - 1);
+      const alpha = i <= Math.floor(phase) ? 1 : i <= phase + 1 ? (phase % 1) : .15;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      drawDesign(cx, midY + 65, size, noiseLevel);
+      ctx.restore();
+      if (i < nSteps - 1) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = colors.pink; ctx.font = '14px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('←', cx - stepW / 2, midY + 65);
+        ctx.restore();
+      }
+    }
+  }
+  registerViz('vizDiffusion', draw);
+})();
+
+// ===== VIZ: DRL =====
+(function() {
+  const s = setupCanvas('vizDrl');
+  if (!s) return;
+  const { ctx, w, h } = s;
+
+  const materials = [
+    { name: 'SiO₂', color: '#6c8cff' },
+    { name: 'TiO₂', color: '#34d399' },
+    { name: 'Al₂O₃', color: '#fb923c' },
+    { name: 'Ag', color: '#c8cdd8' },
+    { name: 'Si₃N₄', color: '#f472b6' },
+  ];
+
+  let layers = [], reward = 0, totalReward = 0, step = 0, t = 0;
+
+  function reset() { layers = []; reward = 0; totalReward = 0; step = 0; t = 0; }
+  reset();
+
+  function addLayer() {
+    const mat = materials[randInt(0, materials.length - 1)];
+    const thickness = randInt(20, 180);
+    layers.push({ mat, thickness });
+    reward = rand(.3, 1) * (1 / (1 + Math.exp(-(layers.length - 3))));
+    totalReward += reward;
+    step++;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    t += .016;
+
+    if (Math.floor(t / 1.2) > step && layers.length < 8) addLayer();
+    if (layers.length >= 8 && t > step * 1.2 + 2) { reset(); }
+
+    const midY = h / 2;
+    // Responsive layout
+    const agentW = Math.min(120, w * .15);
+    const stackW = Math.min(200, w * .25);
+    const rewardW = Math.min(170, w * .2);
+
+    // Agent box
+    ctx.fillStyle = 'rgba(251,191,36,.06)';
+    ctx.strokeStyle = colors.yellow; ctx.lineWidth = 1.5;
+    roundRect(ctx, 25, midY - 50, agentW, 100, 12);
+    ctx.fill(); ctx.stroke();
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.yellow;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('DRL Agent', 'DRL智能体'), 25 + agentW / 2, midY - 14);
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.fillText(txt('Decides next', '决定下一'), 25 + agentW / 2, midY + 5);
+    ctx.fillText(txt('action', '动作'), 25 + agentW / 2, midY + 20);
+
+    // Layer stack
+    const stackX = 25 + agentW + 50;
+    const stackTop = 35;
+    ctx.font = 'bold 11px system-ui'; ctx.fillStyle = colors.heading;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Current Structure (State)', '当前结构 (状态)'), stackX + stackW / 2, stackTop - 8);
+
+    let cy = stackTop;
+    layers.forEach(l => {
+      const lh = 12 + (l.thickness / 180) * 25;
+      ctx.save();
+      ctx.globalAlpha = .5;
+      ctx.fillStyle = l.mat.color;
+      roundRect(ctx, stackX, cy, stackW, lh, 3);
+      ctx.fill();
+      ctx.restore();
+      ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = .5;
+      ctx.strokeRect(stackX, cy, stackW, lh);
+      ctx.font = '9px system-ui'; ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${l.mat.name} — ${l.thickness}nm`, stackX + stackW / 2, cy + lh / 2 + 3);
+      cy += lh + 2;
+    });
+
+    // Arrow agent -> stack
+    drawArrow(ctx, 25 + agentW + 5, midY, stackX - 10, midY, colors.yellow);
+
+    // Reward box
+    const rwdX = stackX + stackW + 40;
+    ctx.fillStyle = 'rgba(52,211,153,.06)';
+    ctx.strokeStyle = colors.green; ctx.lineWidth = 1.5;
+    roundRect(ctx, rwdX, 35, rewardW, 75, 12);
+    ctx.fill(); ctx.stroke();
+    ctx.font = 'bold 11px system-ui'; ctx.fillStyle = colors.green;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('Reward', '奖励'), rwdX + rewardW / 2, 58);
+    ctx.font = 'bold 18px system-ui';
+    ctx.fillText('+' + reward.toFixed(2), rwdX + rewardW / 2, 88);
+
+    // Total reward bar
+    ctx.font = '10px system-ui'; ctx.fillStyle = colors.dim;
+    ctx.textAlign = 'left';
+    ctx.fillText(txt('Total reward:', '总奖励:'), rwdX, 135);
+    ctx.fillStyle = 'rgba(255,255,255,.04)';
+    roundRect(ctx, rwdX, 145, rewardW, 16, 4); ctx.fill();
+    ctx.fillStyle = colors.green;
+    roundRect(ctx, rwdX, 145, rewardW * Math.min(totalReward / 5, 1), 16, 4); ctx.fill();
+    ctx.font = '10px system-ui'; ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.fillText(totalReward.toFixed(2), rwdX + rewardW / 2, 158);
+
+    // Step counter
+    ctx.font = 'bold 12px system-ui'; ctx.fillStyle = colors.pink;
+    ctx.fillText(txt(`Step ${step} / 8`, `步骤 ${step} / 8`), rwdX + rewardW / 2, h - 25);
+
+    // Feedback loop
+    ctx.strokeStyle = 'rgba(52,211,153,.25)'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(rwdX, 120);
+    ctx.quadraticCurveTo(rwdX - 60, h - 8, 25 + agentW / 2, midY + 50);
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.font = '9px system-ui'; ctx.fillStyle = colors.green;
+    ctx.textAlign = 'center';
+    ctx.fillText(txt('reward → agent learns better policy', '奖励 → 智能体学习更好策略'), (rwdX + 25 + agentW / 2) / 2, h - 10);
+  }
+  registerViz('vizDrl', draw);
+})();
+
+// ===== LANGUAGE TOGGLE =====
+(function() {
+  const langBtns = document.querySelectorAll('.lang-btn');
+  const html = document.documentElement;
+  
+  // Check localStorage for saved preference
+  const savedLang = localStorage.getItem('ml-visual-lang') || 'en';
+  if (savedLang === 'zh') {
+    html.lang = 'zh';
+    langBtns.forEach(b => b.classList.toggle('active', b.dataset.lang === 'zh'));
+  }
+  
+  langBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      html.lang = lang === 'zh' ? 'zh' : 'en';
+      localStorage.setItem('ml-visual-lang', lang);
+      langBtns.forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+    });
+  });
+})();
+
+</script>
+</body>
+</html>

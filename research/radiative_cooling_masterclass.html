@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radiative Cooling Masterclass | 辐射制冷大师课</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #12122a;
+            --bg-tertiary: #1a1a3a;
+            --accent-cyan: #00d4ff;
+            --accent-magenta: #ff00ff;
+            --accent-orange: #ff6b00;
+            --accent-green: #00ff88;
+            --accent-yellow: #ffee00;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0cc;
+            --glass: rgba(255,255,255,0.05);
+            --glass-border: rgba(255,255,255,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Progress Bar */
+        #progressContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--bg-tertiary);
+            z-index: 1000;
+        }
+        #progressBar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 4px;
+            left: 0;
+            width: 100%;
+            background: rgba(10,10,26,0.95);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .lang-toggle {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .lang-toggle:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+        }
+
+        /* Chapter Navigation */
+        .chapter-nav {
+            display: flex;
+            gap: 5px;
+        }
+        .chapter-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .chapter-dot:hover, .chapter-dot.active {
+            background: var(--accent-cyan);
+            transform: scale(1.2);
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 80px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta), var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 5s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            color: var(--bg-primary);
+            font-weight: 600;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            font-size: 1.1rem;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,212,255,0.3);
+        }
+
+        /* Chapter Sections */
+        .chapter {
+            min-height: 100vh;
+            padding: 80px 40px;
+            position: relative;
+        }
+
+        .chapter-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .chapter-number {
+            font-size: 0.9rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .chapter-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 15px;
+        }
+
+        .chapter-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+        .glass-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title .icon {
+            font-size: 1.5rem;
+        }
+
+        /* Key Concept Boxes */
+        .key-concept {
+            background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(255,0,255,0.1));
+            border-left: 4px solid var(--accent-cyan);
+            padding: 20px 25px;
+            margin: 25px 0;
+            border-radius: 0 15px 15px 0;
+        }
+        .key-concept h4 {
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Analogy Boxes */
+        .analogy {
+            background: linear-gradient(135deg, rgba(255,238,0,0.1), rgba(255,107,0,0.1));
+            border-left: 4px solid var(--accent-yellow);
+            padding: 20px 25px;
+            margin: 25px 0;
+            border-radius: 0 15px 15px 0;
+        }
+        .analogy h4 {
+            color: var(--accent-yellow);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Interactive Canvas Containers */
+        .canvas-container {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px 0;
+            border: 1px solid var(--glass-border);
+        }
+        .canvas-container canvas {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .canvas-label {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+
+        /* Grid Layouts */
+        .two-column {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Spectrum Visualizer */
+        .spectrum-bar {
+            display: flex;
+            height: 50px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .spectrum-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0 10px;
+            text-align: center;
+        }
+
+        /* Step Indicators */
+        .steps {
+            counter-reset: step;
+        }
+        .step {
+            position: relative;
+            padding-left: 70px;
+            margin-bottom: 30px;
+        }
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--bg-primary);
+        }
+        .step h4 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Interactive Toggles */
+        .toggle-section {
+            margin: 20px 0;
+        }
+        .toggle-header {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .toggle-header:hover {
+            border-color: var(--accent-cyan);
+        }
+        .toggle-header .arrow {
+            transition: transform 0.3s;
+        }
+        .toggle-header.open .arrow {
+            transform: rotate(180deg);
+        }
+        .toggle-content {
+            display: none;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 0 0 10px 10px;
+            border: 1px solid var(--glass-border);
+            border-top: none;
+        }
+        .toggle-content.open {
+            display: block;
+        }
+
+        /* Quiz Section */
+        .quiz-container {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        .quiz-question {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .quiz-option {
+            padding: 15px 20px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--glass-border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .quiz-option:hover {
+            border-color: var(--accent-cyan);
+        }
+        .quiz-option.correct {
+            border-color: var(--accent-green);
+            background: rgba(0,255,136,0.1);
+        }
+        .quiz-option.incorrect {
+            border-color: #ff4444;
+            background: rgba(255,68,68,0.1);
+        }
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        /* ML Model Cards */
+        .ml-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .ml-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+        .ml-card.tier1::before { background: var(--accent-cyan); }
+        .ml-card.tier2::before { background: var(--accent-orange); }
+        .ml-card.tier3::before { background: var(--accent-magenta); }
+
+        .ml-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-cyan);
+        }
+        .ml-card-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .ml-card-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .ml-card.tier1 .ml-card-tag { background: rgba(0,212,255,0.2); color: var(--accent-cyan); }
+        .ml-card.tier2 .ml-card-tag { background: rgba(255,107,0,0.2); color: var(--accent-orange); }
+        .ml-card.tier3 .ml-card-tag { background: rgba(255,0,255,0.2); color: var(--accent-magenta); }
+
+        /* Tier Legend */
+        .tier-legend {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .tier-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tier-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .tier-dot.t1 { background: var(--accent-cyan); }
+        .tier-dot.t2 { background: var(--accent-orange); }
+        .tier-dot.t3 { background: var(--accent-magenta); }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-magenta));
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 30px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 5px;
+            width: 15px;
+            height: 15px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            border: 3px solid var(--bg-primary);
+        }
+
+        /* Material Type Cards */
+        .material-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .material-card:hover {
+            transform: scale(1.02);
+            border-color: var(--accent-cyan);
+        }
+        .material-image {
+            height: 150px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .material-card-content {
+            padding: 20px;
+        }
+
+        /* Formula Display */
+        .formula {
+            background: var(--bg-secondary);
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.4rem;
+            margin: 20px 0;
+            border: 1px solid var(--glass-border);
+            overflow-x: auto;
+        }
+        .formula sub, .formula sup {
+            font-size: 0.7em;
+        }
+
+        /* Highlight Text */
+        .highlight {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+        .highlight-mag {
+            color: var(--accent-magenta);
+            font-weight: 600;
+        }
+        .highlight-orange {
+            color: var(--accent-orange);
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 40px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+            50% { box-shadow: 0 0 40px rgba(0,212,255,0.6); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chapter { padding: 60px 20px; }
+            .two-column, .three-column { grid-template-columns: 1fr; }
+            nav { padding: 10px 15px; }
+            .step { padding-left: 60px; }
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mini-game styles */
+        .game-container {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid var(--glass-border);
+            margin: 30px 0;
+        }
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+        .game-stat {
+            text-align: center;
+        }
+        .game-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+        .game-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div id="progressContainer">
+        <div id="progressBar"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-title" data-en="Radiative Cooling Masterclass" data-cn="辐射制冷大师课">Radiative Cooling Masterclass</div>
+        <div class="nav-controls">
+            <div class="chapter-nav" id="chapterNav"></div>
+            <button class="lang-toggle" id="langToggle">中文</button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="hero">
+            <canvas class="hero-canvas" id="heroCanvas"></canvas>
+            <div class="hero-content">
+                <h1 data-en="Master the Science of Cooling Without Energy" data-cn="掌握零能耗制冷的科学">Master the Science of Cooling Without Energy</h1>
+                <p data-en="By the end of this journey, you'll understand radiative cooling at a research level — from fundamental physics to cutting-edge machine learning. Let's make you a peer of the experts." data-cn="学完本课程后，你将以研究者的水平理解辐射制冷——从基础物理到前沿机器学习。让我们把你变成专家的同行。">By the end of this journey, you'll understand radiative cooling at a research level — from fundamental physics to cutting-edge machine learning. Let's make you a peer of the experts.</p>
+                <button class="cta-button" onclick="scrollToChapter(1)" data-en="Begin Your Journey →" data-cn="开始你的旅程 →">Begin Your Journey →</button>
+            </div>
+        </section>
+
+        <!-- Chapter 1: The Big Picture -->
+        <section class="chapter" id="chapter1">
+            <div class="chapter-header">
+                <div class="chapter-number" data-en="Chapter 1" data-cn="第一章">Chapter 1</div>
+                <h2 class="chapter-title" data-en="The Universe's Free Air Conditioner" data-cn="宇宙的免费空调">The Universe's Free Air Conditioner</h2>
+                <p class="chapter-subtitle" data-en="Everything radiates heat. If you're smart about it, you can send that heat to the coldest place in existence: outer space." data-cn="万物都在辐射热量。如果方法得当，你可以把热量送往宇宙中最冷的地方：太空。">Everything radiates heat. If you're smart about it, you can send that heat to the coldest place in existence: outer space.</p>
+            </div>
+
+            <div class="content-container">
+                <div class="glass-card reveal">
+                    <div class="card-title"><span class="icon">🌡️</span> <span data-en="The Core Idea" data-cn="核心理念">The Core Idea</span></div>
+                    <p data-en="Every object, including you, your phone, and buildings, constantly emits infrared radiation — invisible light that carries away heat. This is called <strong>thermal radiation</strong>." data-cn="每个物体，包括你、你的手机和建筑物，都在不断发射红外辐射——这是一种带走热量的不可见光。这叫做<strong>热辐射</strong>。">Every object, including you, your phone, and buildings, constantly emits infrared radiation — invisible light that carries away heat. This is called <strong>thermal radiation</strong>.</p>
+                    
+                    <div class="key-concept">
+                        <h4 data-en="Key Insight" data-cn="关键洞察">Key Insight</h4>
+                        <p data-en="Outer space is about 3 Kelvin (-270°C). If you could shoot your heat directly into space, the temperature difference would suck heat away from Earth like a cosmic vacuum cleaner." data-cn="太空温度约为3开尔文（-270°C）。如果你能把热量直接射入太空，温差会像宇宙吸尘器一样把热量从地球吸走。">Outer space is about 3 Kelvin (-270°C). If you could shoot your heat directly into space, the temperature difference would suck heat away from Earth like a cosmic vacuum cleaner.</p>
+                    </div>
+                </div>
+
+                <div class="canvas-container reveal">
+                    <canvas id="radiationCanvas" height="350"></canvas>
+                    <p class="canvas-label" data-en="🔴 Heat radiating from Earth → 🌌 Deep space (3K)" data-cn="🔴 地球辐射的热量 → 🌌 深空（3K）">🔴 Heat radiating from Earth → 🌌 Deep space (3K)</p>
+                </div>
+
+                <div class="glass-card reveal">
+                    <div class="card-title"><span class="icon">🌍</span> <span data-en="The Atmospheric Window" data-cn="大气窗口">The Atmospheric Window</span></div>
+                    <p data-en="Here's the catch: Earth's atmosphere is like a blanket. Most infrared radiation gets absorbed and bounced back. <strong>But there's a hole in the blanket!</strong>" data-cn="问题来了：地球大气层就像一条毯子。大多数红外辐射会被吸收并反弹回来。<strong>但毯子上有个洞！</strong>">Here's the catch: Earth's atmosphere is like a blanket. Most infrared radiation gets absorbed and bounced back. <strong>But there's a hole in the blanket!</strong></p>
+                    
+                    <div class="analogy">
+                        <h4 data-en="🎯 Think of it like this:" data-cn="🎯 可以这样理解：">🎯 Think of it like this:</h4>
+                        <p data-en="Imagine you're in a room with soundproof walls, but there's one small window that lets sound through. If you want to be heard outside, you need to aim your voice right at that window. The atmosphere has an 'infrared window' between 8-13 micrometers wavelength." data-cn="想象你在一个隔音房间里，但有一扇小窗户可以让声音穿过。如果你想被外面听到，你需要对准那扇窗户说话。大气层在8-13微米波长处有一个'红外窗口'。">Imagine you're in a room with soundproof walls, but there's one small window that lets sound through. If you want to be heard outside, you need to aim your voice right at that window. The atmosphere has an "infrared window" between 8-13 micrometers wavelength.</p>
+                    </div>
+                </div>
+
+                <!-- Atmospheric Window Spectrum -->
+                <div class="glass-card reveal">
+                    <div class="card-title"><span class="icon">📊</span> <span data-en="The Electromagnetic Spectrum" data-cn="电磁波谱">The Electromagnetic Spectrum</span></div>
+                    <div class="spectrum-bar">
+                        <div class="spectrum-segment" style="background: linear-gradient(90deg, #9400D3, #0000FF); flex: 1; color: white;">UV<br>< 0.3μm</div>
+                        <div class="spectrum-segment" style="background: linear-gradient(90deg, #0000FF, #00FF00, #FFFF00, #FF0000); flex: 2; color: black;">Visible<br>0.3-0.7μm</div>
+                        <div class="spectrum-segment" style="background: linear-gradient(90deg, #FF0000, #8B0000); flex: 1.5; color: white;">Near-IR<br>0.7-2.5μm</div>
+                        <div class="spectrum-segment" style="background: var(--accent-cyan); flex: 2; color: black;"><strong>WINDOW!</strong><br>8-13μm</div>
+                        <div class="spectrum-segment" style="background: #333; flex: 1.5; color: white;">Far-IR<br>>13μm</div>
+                    </div>
+                    <p style="text-align: center; margin-top: 15px; color: var(--text-secondary);" data-en="The 8-13μm window is where infrared can escape to space unblocked" data-cn="8-13μm窗口是红外线可以畅通无阻逃逸到太空的区域">The 8-13μm window is where infrared can escape to space unblocked</p>
+                </div>
+
+                <!-- Quiz 1 -->
+                <div class="quiz-container reveal">
+                    <h4 style="color: var(--accent-cyan); margin-bottom: 15px;" data-en="🧠 Quick Check" data-cn="🧠 快速检查">🧠 Quick Check</h4>
+                    <p class="quiz-question" data-en="Why can't heat just radiate straight into space from any surface?" data-cn="为什么热量不能从任何表面直接辐射到太空？">Why can't heat just radiate straight into space from any surface?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-correct="false" data-en="Space is too far away" data-cn="太空太远了">Space is too far away</div>
+                        <div class="quiz-option" data-correct="true" data-en="The atmosphere absorbs most infrared wavelengths" data-cn="大气层吸收了大部分红外波长">The atmosphere absorbs most infrared wavelengths</div>
+                        <div class="quiz-option" data-correct="false" data-en="Heat can only travel through solid materials" data-cn="热量只能通过固体材料传播">Heat can only travel through solid materials</div>
+                    </div>
+                    <div class="quiz-feedback" id="quiz1feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 2: The Design Challenge -->
+        <section class="chapter" id="chapter2" style="background: linear-gradient(180deg, var(--bg-primary), var(--bg-secondary));">
+            <div class="chapter-header">
+                <div class="chapter-number" data-en="Chapter 2" data-cn="第二章">Chapter 2</div>
+                <h2 class="chapter-title" data-en="The Impossible Balancing Act" data-cn="不可能的平衡之术">The Impossible Balancing Act</h2>
+                <p class="chapter-subtitle" data-en="To cool something during daytime, you need materials that do two contradictory things at once." data-cn="要在白天冷却某物，你需要能同时做两件矛盾事情的材料。">To cool something during daytime, you need materials that do two contradictory things at once.</p>
+            </div>
+
+            <div class="content-container">
+                <div class="two-column">
+                    <div class="glass-card reveal">
+                        <div class="card-title" style="color: var(--accent-yellow);"><span class="icon">☀️</span> <span data-en="Challenge #1: Reject the Sun" data-cn="挑战 #1：反射阳光">Challenge #1: Reject the Sun</span></div>
+                        <p data-en="Sunlight delivers ~1000 W/m² of power. If your material absorbs even 5% of that, you're gaining 50W of heat — which overwhelms any cooling effect." data-cn="阳光提供约1000 W/m²的功率。如果你的材料吸收哪怕5%，你就获得了50W的热量——这会压倒任何冷却效果。">Sunlight delivers ~1000 W/m² of power. If your material absorbs even 5% of that, you're gaining 50W of heat — which overwhelms any cooling effect.</p>
+                        <div class="key-concept">
+                            <h4 data-en="Goal" data-cn="目标">Goal</h4>
+                            <p data-en="Reflect >95% of solar radiation (0.3-2.5μm wavelength)" data-cn="反射>95%的太阳辐射（0.3-2.5μm波长）">Reflect >95% of solar radiation (0.3-2.5μm wavelength)</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card reveal">
+                        <div class="card-title" style="color: var(--accent-cyan);"><span class="icon">🌌</span> <span data-en="Challenge #2: Emit to Space" data-cn="挑战 #2：向太空发射">Challenge #2: Emit to Space</span></div>
+                        <p data-en="At the same time, you need to emit as much infrared as possible in the 8-13μm atmospheric window — acting like a perfect radiator at those specific wavelengths." data-cn="同时，你需要在8-13μm大气窗口发射尽可能多的红外线——在这些特定波长上像完美的辐射体一样工作。">At the same time, you need to emit as much infrared as possible in the 8-13μm atmospheric window — acting like a perfect radiator at those specific wavelengths.</p>
+                        <div class="key-concept">
+                            <h4 data-en="Goal" data-cn="目标">Goal</h4>
+                            <p data-en="Emit >90% emissivity in the 8-13μm window" data-cn="在8-13μm窗口发射率>90%">Emit >90% emissivity in the 8-13μm window</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Net Cooling Power Equation -->
+                <div class="glass-card reveal">
+                    <div class="card-title"><span class="icon">⚡</span> <span data-en="The Physics: Net Cooling Power" data-cn="物理学：净冷却功率">The Physics: Net Cooling Power</span></div>
+                    <div class="formula">
+                        P<sub>net</sub> = P<sub>rad</sub> − P<sub>atm</sub> − P<sub>sun</sub> − P<sub>cond+conv</sub>
+                    </div>
+                    <div class="two-column" style="margin-top: 20px;">
+                        <div>
+                            <p><span class="highlight">P<sub>rad</sub></span> = <span data-en="Heat your material radiates away" data-cn="材料辐射出去的热量">Heat your material radiates away</span></p>
+                            <p><span class="highlight-orange">P<sub>atm</sub></span> = <span data-en="Heat absorbed from warm atmosphere" data-cn="从温暖大气吸收的热量">Heat absorbed from warm atmosphere</span></p>
+                        </div>
+                        <div>
+                            <p><span class="highlight-orange">P<sub>sun</sub></span> = <span data-en="Solar energy absorbed" data-cn="吸收的太阳能">Solar energy absorbed</span></p>
+                            <p><span class="highlight-orange">P<sub>cond+conv</sub></span> = <span data-en="Heat from conduction/convection" data-cn="传导/对流的热量">Heat from conduction/convection</span></p>
+                        </div>
+                    </div>
+                    <p style="margin-top: 20px; color: var(--text-secondary);" data-en="For cooling below ambient temperature, P_net must be POSITIVE. Typical excellent values: 80-120 W/m² net cooling." data-cn="要冷却到环境温度以下，P_net必须为正。典型优秀值：净冷却功率80-120 W/m²。">For cooling below ambient temperature, P_net must be POSITIVE. Typical excellent values: 80-120 W/m² net cooling.</p>
+                </div>
+
+                <!-- Material Types Interactive -->
+                <div class="glass-card reveal">
+                    <div class="card-title"><span class="icon">🔬</span> <span data-en="Four Material Strategies" data-cn="四种材料策略">Four Material Strategies</span></div>
+                    <p style="margin-bottom: 25px;" data-en="Researchers have developed four main approaches, each with trade-offs:" data-cn="研究人员开发了四种主要方法，各有权衡：">Researchers have developed four main approaches, each with trade-offs:</p>
+                    
+                    <div class="three-column">
+                        <div class="material-card">
+                            <div class="material-image">
+                                <canvas id="particleMatCanvas" width="200" height="150"></canvas>
+                            </div>
+                            <div class="material-card-content">
+                                <h4 data-en="Particle-Filled Polymers" data-cn="粒子填充聚合物">Particle-Filled Polymers</h4>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary);" data-en="Microscopic particles (SiO₂, TiO₂, BaSO₄) embedded in a polymer matrix. Cheap, scalable, paintable." data-cn="微米级颗粒（SiO₂、TiO₂、BaSO₄）嵌入聚合物基质中。便宜、可规模化、可涂刷。">Microscopic particles (SiO₂, TiO₂, BaSO₄) embedded in a polymer matrix. Cheap, scalable, paintable.</p>
+                            </div>
+                        </div>
+
+                        <div class="material-card">
+                            <div class="material-image">
+                                <canvas id="multilayerCanvas" width="200" height="150"></canvas>
+                            </div>
+                            <div class="material-card-content">
+                                <h4 data-en="Multilayer Films" data-cn="多层薄膜">Multilayer Films</h4>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary);" data-en="Alternating layers of different materials (SiO₂/HfO₂/TiO₂) create interference patterns that control reflection/emission." data-cn="不同材料的交替层（SiO₂/HfO₂/TiO₂）产生干涉图案来控制反射/发射。">Alternating layers of different materials (SiO₂/HfO₂/TiO₂) create interference patterns that control reflection/emission.</p>
+                            </div>
+                        </div>
+
+                        <div class="material-card">
+                            <div class="material-image">
+                                <canvas id="metasurfaceCanvas" width="200" height="150"></canvas>
+                            </div>
+                            <div class="material-card-content">
+                                <h4 data-en="Metasurfaces" data-cn="超表面">Metasurfaces</h4>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary);" data-en="Precisely patterned nanostructures (pillars, pyramids, gratings) engineered to manipulate light at each wavelength." data-cn="精确图案化的纳米结构（柱子、金字塔、光栅）设计用于操控各个波长的光。">Precisely patterned nanostructures (pillars, pyramids, gratings) engineered to manipulate light at each wavelength.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="toggle-section" style="margin-top: 25px;">
+                        <div class="toggle-header" onclick="toggleContent(this)">
+                            <span data-en="💡 Bonus: Colored & Transparent Coolers" data-cn="💡 扩展：彩色和透明冷却器">💡 Bonus: Colored & Transparent Coolers</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="toggle-content">
+                            <p data-en="The hardest challenge: making materials that are colored (for aesthetics) or transparent (for windows) while still achieving cooling. This requires sacrificing some solar reflectance in specific visible bands while maximizing it elsewhere — a multi-objective optimization nightmare that only ML can solve efficiently." data-cn="最难的挑战：制造有颜色（用于美观）或透明（用于窗户）的材料，同时仍能实现冷却。这需要在特定可见光波段牺牲一些太阳反射率，同时最大化其他地方的反射率——这是一个只有机器学习才能有效解决的多目标优化噩梦。">The hardest challenge: making materials that are colored (for aesthetics) or transparent (for windows) while still achieving cooling. This requires sacrificing some solar reflectance in specific visible bands while maximizing it elsewhere — a multi-objective optimization nightmare that only ML can solve efficiently.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Design Space Problem -->
+                <div class="glass-card reveal">
+                    <div class="card-title"><span class="icon">🎯</span> <span data-en="Why This Is HARD (The Curse of Dimensionality)" data-cn="为什么这很难（维度诅咒）">Why This Is HARD (The Curse of Dimensionality)</span></div>
+                    
+                    <div class="analogy">
+                        <h4 data-en="🎯 Imagine..." data-cn="🎯 想象一下...">🎯 Imagine...</h4>
+                        <p data-en="You're designing a multilayer film with 10 layers. Each layer can be one of 5 materials, with thickness from 10-500nm. That's 5¹⁰ × 490¹⁰ = roughly 10²⁷ possible combinations. Even if each simulation takes 1 second, checking them all would take longer than the age of the universe." data-cn="你正在设计一个10层的多层薄膜。每层可以是5种材料之一，厚度从10-500纳米。这就是5¹⁰ × 490¹⁰ ≈ 10²⁷种可能的组合。即使每次模拟需要1秒，检查所有组合所需的时间也比宇宙的年龄还长。">You're designing a multilayer film with 10 layers. Each layer can be one of 5 materials, with thickness from 10-500nm. That's 5¹⁰ × 490¹⁰ = roughly 10²⁷ possible combinations. Even if each simulation takes 1 second, checking them all would take longer than the age of the universe.</p>
+                    </div>
+
+                    <p style="margin-top: 20px;" data-en="This is why machine learning is ESSENTIAL. You can't brute-force your way to good designs — you need intelligent search." data-cn="这就是为什么机器学习是必不可少的。你不能暴力搜索来获得好的设计——你需要智能搜索。">This is why machine learning is ESSENTIAL. You can't brute-force your way to good designs — you need intelligent search.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 3: The ML Framework -->
+        <section class="chapter" id="chapter3">
+            <div class="chapter-header">
+                <div class="chapter-number" data-en="Chapter 3" data-cn="第三章">Chapter 3</div>
+                <h2 class="chapter-title" data-en="The Three-Tier ML Framework" data-cn="三层机器学习框架">The Three-Tier ML Framework</h2>
+                <p class="chapter-subtitle" data-en="How machine learning transforms radiative cooling design from impossible to practical" data-cn="机器学习如何将辐射制冷设计从不可能变为实际可行">How machine learning transforms radiative cooling design from impossible to practical</p>
+            </div>
+
+            <div class="content-container">
+                <!-- Overview Card -->
+                <div class="glass-card reveal">
+                    <canvas id="pipelineCanvas" height="200"></canvas>
+                    <p class="canvas-label" data-en="The ML Pipeline: Simulation → Surrogate → Optimization → Generation" data-cn="机器学习流程：模拟 → 代理模型 → 优化 → 生成">The ML Pipeline: Simulation → Surrogate → Optimization → Generation</p>
+                </div>
+
+                <!-- Tier Legend -->
+                <div class="tier-legend reveal">
+                    <div class="tier-item">
+                        <div class="tier-dot t1"></div>
+                        <span data-en="Tier 1: Forward Prediction" data-cn="层级1：正向预测">Tier 1: Forward Prediction</span>
+                    </div>
+                    <div class="tier-item">
+                        <div class="tier-dot t2"></div>
+                        <span data-en="Tier 2: Optimization" data-cn="层级2：优化">Tier 2: Optimization</span>
+                    </div>
+                    <div class="tier-item">
+                        <div class="tier-dot t3"></div>
+                        <span data-en="Tier 3: Inverse/Generative" data-cn="层级3：逆向/生成">Tier 3: Inverse/Generative</span>
+                    </div>
+                </div>
+
+                <!-- Tier 1 -->
+                <div class="glass-card reveal">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 20px;" data-en="Tier 1: Forward Prediction — \"What will this design do?\"" data-cn="层级1：正向预测 —— "这个设计会怎样？"">Tier 1: Forward Prediction — "What will this design do?"</h3>
+                    <p data-en="Given a material structure (particle size, layer thicknesses, materials), predict its optical spectrum and cooling performance. These models replace slow physics simulations with instant predictions." data-cn="给定一个材料结构（粒子大小、层厚度、材料），预测其光谱和冷却性能。这些模型用即时预测取代了缓慢的物理模拟。">Given a material structure (particle size, layer thicknesses, materials), predict its optical spectrum and cooling performance. These models replace slow physics simulations with instant predictions.</p>
+                    
+                    <div class="three-column" style="margin-top: 25px;">
+                        <div class="ml-card tier1">
+                            <h4 class="ml-card-title">KNN</h4>
+                            <div class="ml-card-tag" data-en="Simple & Interpretable" data-cn="简单且可解释">Simple & Interpretable</div>
+                            <p style="font-size: 0.9rem;" data-en="Finds similar known designs and averages their performance. Great for well-sampled regions; struggles with novelty." data-cn="找到相似的已知设计并平均它们的性能。适合样本充足的区域；在新颖区域表现不佳。">Finds similar known designs and averages their performance. Great for well-sampled regions; struggles with novelty.</p>
+                        </div>
+                        
+                        <div class="ml-card tier1">
+                            <h4 class="ml-card-title">Random Forest</h4>
+                            <div class="ml-card-tag" data-en="Robust & Insightful" data-cn="稳健且有洞察力">Robust & Insightful</div>
+                            <p style="font-size: 0.9rem;" data-en="100 decision trees vote on the prediction. Reveals which parameters matter most (feature importance)." data-cn="100棵决策树对预测进行投票。揭示哪些参数最重要（特征重要性）。">100 decision trees vote on the prediction. Reveals which parameters matter most (feature importance).</p>
+                        </div>
+                        
+                        <div class="ml-card tier1">
+                            <h4 class="ml-card-title">XGBoost</h4>
+                            <div class="ml-card-tag" data-en="State-of-the-Art Tabular" data-cn="表格数据最优">State-of-the-Art Tabular</div>
+                            <p style="font-size: 0.9rem;" data-en="Builds trees iteratively, each fixing previous mistakes. Often #1 for structured data. Combined with SHAP for explanations." data-cn="迭代构建树，每棵修复前面的错误。通常是结构化数据的第一选择。结合SHAP进行解释。">Builds trees iteratively, each fixing previous mistakes. Often #1 for structured data. Combined with SHAP for explanations.</p>
+                        </div>
+                        
+                        <div class="ml-card tier1">
+                            <h4 class="ml-card-title">ANN</h4>
+                            <div class="ml-card-tag" data-en="Universal Approximator" data-cn="万能逼近器">Universal Approximator</div>
+                            <p style="font-size: 0.9rem;" data-en="Neural network that can learn any continuous function. The workhorse surrogate model — predicts full spectrum in milliseconds." data-cn="可以学习任何连续函数的神经网络。主力代理模型——在毫秒内预测完整光谱。">Neural network that can learn any continuous function. The workhorse surrogate model — predicts full spectrum in milliseconds.</p>
+                        </div>
+                        
+                        <div class="ml-card tier1">
+                            <h4 class="ml-card-title">CNN</h4>
+                            <div class="ml-card-tag" data-en="Spectral Pattern Expert" data-cn="光谱模式专家">Spectral Pattern Expert</div>
+                            <p style="font-size: 0.9rem;" data-en="Convolutional layers detect local wavelength patterns (peaks, slopes). Essential when spectral SHAPE matters, not just integrated values." data-cn="卷积层检测局部波长模式（峰值、斜率）。当光谱形状重要时必不可少，而不仅仅是积分值。">Convolutional layers detect local wavelength patterns (peaks, slopes). Essential when spectral SHAPE matters, not just integrated values.</p>
+                        </div>
+                    </div>
+
+                    <div class="toggle-section" style="margin-top: 20px;">
+                        <div class="toggle-header" onclick="toggleContent(this)">
+                            <span data-en="📌 How Tier 1 works in practice" data-cn="📌 层级1实际如何工作">📌 How Tier 1 works in practice</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="toggle-content">
+                            <div class="steps">
+                                <div class="step">
+                                    <h4 data-en="Generate Training Data" data-cn="生成训练数据">Generate Training Data</h4>
+                                    <p data-en="Run 10,000-50,000 physics simulations (TMM for films, FDTD for metasurfaces, Mie theory for particles) with random parameter combinations." data-cn="运行10,000-50,000次物理模拟（薄膜用TMM，超表面用FDTD，颗粒用Mie理论），使用随机参数组合。">Run 10,000-50,000 physics simulations (TMM for films, FDTD for metasurfaces, Mie theory for particles) with random parameter combinations.</p>
+                                </div>
+                                <div class="step">
+                                    <h4 data-en="Train the Surrogate Model" data-cn="训练代理模型">Train the Surrogate Model</h4>
+                                    <p data-en="Feed (structure parameters → spectrum) pairs to your chosen ML model. Train until R² > 0.99 on held-out test data." data-cn="将（结构参数 → 光谱）的数据对输入选定的机器学习模型。训练直到在保留测试数据上R² > 0.99。">Feed (structure parameters → spectrum) pairs to your chosen ML model. Train until R² > 0.99 on held-out test data.</p>
+                                </div>
+                                <div class="step">
+                                    <h4 data-en="Replace Simulation with Prediction" data-cn="用预测替代模拟">Replace Simulation with Prediction</h4>
+                                    <p data-en="Now any new design can be evaluated in milliseconds instead of minutes. This 1000x speedup enables optimization." data-cn="现在任何新设计都可以在毫秒内评估，而不是几分钟。这1000倍的加速使优化成为可能。">Now any new design can be evaluated in milliseconds instead of minutes. This 1000x speedup enables optimization.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tier 2 -->
+                <div class="glass-card reveal">
+                    <h3 style="color: var(--accent-orange); margin-bottom: 20px;" data-en="Tier 2: Optimization — \"What's the best design?\"" data-cn="层级2：优化 —— "最佳设计是什么？"">Tier 2: Optimization — "What's the best design?"</h3>
+                    <p data-en="Given a performance target, search through the design space to find parameters that maximize cooling power. These algorithms intelligently explore billions of possibilities." data-cn="给定性能目标，在设计空间中搜索以找到最大化冷却功率的参数。这些算法智能地探索数十亿种可能性。">Given a performance target, search through the design space to find parameters that maximize cooling power. These algorithms intelligently explore billions of possibilities.</p>
+                    
+                    <div class="three-column" style="margin-top: 25px;">
+                        <div class="ml-card tier2">
+                            <h4 class="ml-card-title" data-en="Genetic Algorithm (GA)" data-cn="遗传算法（GA）">Genetic Algorithm (GA)</h4>
+                            <div class="ml-card-tag" data-en="Evolution-Inspired" data-cn="进化启发">Evolution-Inspired</div>
+                            <p style="font-size: 0.9rem; margin-bottom: 15px;" data-en="Breeds designs like dogs: keep the best performers, crossbreed their features, add random mutations. Repeats for generations until excellent designs emerge." data-cn="像培育狗一样培育设计：保留最佳表现者，杂交它们的特征，添加随机突变。重复多代直到出现优秀设计。">Breeds designs like dogs: keep the best performers, crossbreed their features, add random mutations. Repeats for generations until excellent designs emerge.</p>
+                            <p style="font-size: 0.85rem; color: var(--accent-orange);" data-en="Best for: Multilayer films with mixed discrete (material type) + continuous (thickness) variables" data-cn="最适合：混合离散（材料类型）+ 连续（厚度）变量的多层薄膜">Best for: Multilayer films with mixed discrete (material type) + continuous (thickness) variables</p>
+                        </div>
+                        
+                        <div class="ml-card tier2">
+                            <h4 class="ml-card-title" data-en="Particle Swarm (PSO)" data-cn="粒子群优化（PSO）">Particle Swarm (PSO)</h4>
+                            <div class="ml-card-tag" data-en="Swarm Intelligence" data-cn="群体智能">Swarm Intelligence</div>
+                            <p style="font-size: 0.9rem; margin-bottom: 15px;" data-en="Like birds searching for food: each particle remembers its personal best, knows the global best, and balances exploring vs. exploiting. Fast convergence." data-cn="像鸟群寻找食物：每个粒子记住自己的最佳位置，知道全局最佳，平衡探索与利用。收敛快速。">Like birds searching for food: each particle remembers its personal best, knows the global best, and balances exploring vs. exploiting. Fast convergence.</p>
+                            <p style="font-size: 0.85rem; color: var(--accent-orange);" data-en="Best for: Continuous parameters (microstructure geometry, particle sizes)" data-cn="最适合：连续参数（微结构几何、颗粒尺寸）">Best for: Continuous parameters (microstructure geometry, particle sizes)</p>
+                        </div>
+                        
+                        <div class="ml-card tier2">
+                            <h4 class="ml-card-title" data-en="Bayesian Optimization (BO)" data-cn="贝叶斯优化（BO）">Bayesian Optimization (BO)</h4>
+                            <div class="ml-card-tag" data-en="Sample Efficient" data-cn="样本高效">Sample Efficient</div>
+                            <p style="font-size: 0.9rem; margin-bottom: 15px;" data-en="Builds a probability model of the objective function, then chooses the next evaluation point by balancing \"likely good\" vs. \"uncertain\". Works with <100 evaluations." data-cn="构建目标函数的概率模型，然后通过平衡"可能好"与"不确定"来选择下一个评估点。适用于<100次评估。">Builds a probability model of the objective function, then chooses the next evaluation point by balancing "likely good" vs. "uncertain". Works with <100 evaluations.</p>
+                            <p style="font-size: 0.85rem; color: var(--accent-orange);" data-en="Best for: When each evaluation costs hours (direct simulation without surrogate)" data-cn="最适合：每次评估需要数小时的情况（无代理的直接模拟）">Best for: When each evaluation costs hours (direct simulation without surrogate)</p>
+                        </div>
+                    </div>
+
+                    <div class="analogy" style="margin-top: 25px;">
+                        <h4 data-en="🎯 The Key Workflow" data-cn="🎯 关键工作流程">🎯 The Key Workflow</h4>
+                        <p data-en="Physics Simulation → Trains a Tier 1 Surrogate → Tier 2 Optimizer queries the surrogate 100,000 times → Top 10 candidates verified with real simulation → Best design fabricated" data-cn="物理模拟 → 训练层级1代理模型 → 层级2优化器查询代理模型100,000次 → 前10个候选者用真实模拟验证 → 制造最佳设计">Physics Simulation → Trains a Tier 1 Surrogate → Tier 2 Optimizer queries the surrogate 100,000 times → Top 10 candidates verified with real simulation → Best design fabricated</p>
+                    </div>
+                </div>
+
+                <!-- Tier 3 -->
+                <div class="glass-card reveal">
+                    <h3 style="color: var(--accent-magenta); margin-bottom: 20px;" data-en="Tier 3: Inverse/Generative — \"Create a design for this target\"" data-cn="层级3：逆向/生成 —— "为这个目标创造设计"">Tier 3: Inverse/Generative — "Create a design for this target"</h3>
+                    <p data-en="The frontier. Instead of optimizing within known boundaries, generate entirely new structures that haven't been imagined before. These models learn to map from desired performance directly to structure." data-cn="这是前沿。不是在已知边界内优化，而是生成以前从未想象过的全新结构。这些模型学习从期望性能直接映射到结构。">The frontier. Instead of optimizing within known boundaries, generate entirely new structures that haven't been imagined before. These models learn to map from desired performance directly to structure.</p>
+                    
+                    <div class="three-column" style="margin-top: 25px;">
+                        <div class="ml-card tier3">
+                            <h4 class="ml-card-title">Tandem NN</h4>
+                            <div class="ml-card-tag" data-en="Forward + Inverse" data-cn="正向 + 逆向">Forward + Inverse</div>
+                            <p style="font-size: 0.9rem;" data-en="Two networks connected: Inverse net proposes a structure, Forward net verifies it produces the target spectrum. Solves the 'many solutions' problem." data-cn="两个网络连接：逆向网络提出结构，正向网络验证它是否产生目标光谱。解决"多解"问题。">Two networks connected: Inverse net proposes a structure, Forward net verifies it produces the target spectrum. Solves the "many solutions" problem.</p>
+                        </div>
+                        
+                        <div class="ml-card tier3">
+                            <h4 class="ml-card-title">GAN</h4>
+                            <div class="ml-card-tag" data-en="Adversarial Creation" data-cn="对抗生成">Adversarial Creation</div>
+                            <p style="font-size: 0.9rem;" data-en="Generator creates new designs; Discriminator judges if they're realistic. The competition produces increasingly sophisticated structures." data-cn="生成器创造新设计；判别器判断它们是否真实。竞争产生越来越复杂的结构。">Generator creates new designs; Discriminator judges if they're realistic. The competition produces increasingly sophisticated structures.</p>
+                        </div>
+
+                        <div class="ml-card tier3">
+                            <h4 class="ml-card-title">VAE</h4>
+                            <div class="ml-card-tag" data-en="Latent Space Navigation" data-cn="潜在空间导航">Latent Space Navigation</div>
+                            <p style="font-size: 0.9rem;" data-en="Compresses designs to a meaningful 'latent space' where similar designs are nearby. Navigate this space to explore diverse solutions." data-cn="将设计压缩到有意义的"潜在空间"中，相似的设计彼此接近。在这个空间中导航以探索多样化的解决方案。">Compresses designs to a meaningful "latent space" where similar designs are nearby. Navigate this space to explore diverse solutions.</p>
+                        </div>
+                        
+                        <div class="ml-card tier3">
+                            <h4 class="ml-card-title">Diffusion</h4>
+                            <div class="ml-card-tag" data-en="SOTA Generation" data-cn="最新生成技术">SOTA Generation</div>
+                            <p style="font-size: 0.9rem;" data-en="Like image generation AI (DALL-E): learns to denoise random noise into valid structures. State-of-the-art quality but data-hungry." data-cn="像图像生成AI（DALL-E）：学习将随机噪声去噪成有效结构。质量最先进但需要大量数据。">Like image generation AI (DALL-E): learns to denoise random noise into valid structures. State-of-the-art quality but data-hungry.</p>
+                        </div>
+                        
+                        <div class="ml-card tier3">
+                            <h4 class="ml-card-title" data-en="DRL (Deep RL)" data-cn="深度强化学习（DRL）">DRL (Deep RL)</h4>
+                            <div class="ml-card-tag" data-en="Sequential Design" data-cn="序列设计">Sequential Design</div>
+                            <p style="font-size: 0.9rem;" data-en="Agent learns to build structures layer by layer, receiving reward after each action. Natural for multilayer film design decisions." data-cn="智能体学习逐层构建结构，每次行动后获得奖励。自然适合多层薄膜设计决策。">Agent learns to build structures layer by layer, receiving reward after each action. Natural for multilayer film design decisions.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Complete Picture -->
+                <div class="glass-card reveal">
+                    <div class="card-title"><span class="icon">🔄</span> <span data-en="The Closed Loop" data-cn="闭环系统">The Closed Loop</span></div>
+                    <canvas id="closedLoopCanvas" height="250"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 4: Real Results -->
+        <section class="chapter" id="chapter4" style="background: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));">
+            <div class="chapter-header">
+                <div class="chapter-number" data-en="Chapter 4" data-cn="第四章">Chapter 4</div>
+                <h2 class="chapter-title" data-en="Real World Results" data-cn="真实世界成果">Real World Results</h2>
+                <p class="chapter-subtitle" data-en="Actual performance numbers achieved by ML-designed radiative cooling materials" data-cn="机器学习设计的辐射制冷材料取得的实际性能数据">Actual performance numbers achieved by ML-designed radiative cooling materials</p>
+            </div>
+
+            <div class="content-container">
+                <!-- Key Achievements -->
+                <div class="two-column reveal">
+                    <div class="glass-card" style="border-left: 4px solid var(--accent-green);">
+                        <h4 style="color: var(--accent-green); margin-bottom: 15px;" data-en="🏆 Net Cooling Record" data-cn="🏆 净冷却记录">🏆 Net Cooling Record</h4>
+                        <p style="font-size: 2rem; font-weight: 700;">118.17 W/m²</p>
+                        <p style="color: var(--text-secondary); margin-top: 10px;" data-en="Achieved by PSO-optimized multilayer grating (2025). Equivalent to ~0.1 kWh per square meter per hour of free cooling." data-cn="由PSO优化的多层光栅实现（2025年）。相当于每平方米每小时约0.1千瓦时的免费冷却。">Achieved by PSO-optimized multilayer grating (2025). Equivalent to ~0.1 kWh per square meter per hour of free cooling.</p>
+                    </div>
+
+                    <div class="glass-card" style="border-left: 4px solid var(--accent-cyan);">
+                        <h4 style="color: var(--accent-cyan); margin-bottom: 15px;" data-en="☀️ Solar Reflectance Record" data-cn="☀️ 太阳反射率记录">☀️ Solar Reflectance Record</h4>
+                        <p style="font-size: 2rem; font-weight: 700;">97.18%</p>
+                        <p style="color: var(--text-secondary); margin-top: 10px;" data-en="GA-optimized DMDMD multilayer film for transparent colored radiative coolers (2024). Only absorbs ~3% of sunlight." data-cn="GA优化的DMDMD多层薄膜用于透明彩色辐射冷却器（2024年）。仅吸收约3%的阳光。">GA-optimized DMDMD multilayer film for transparent colored radiative coolers (2024). Only absorbs ~3% of sunlight.</p>
+                    </div>
+                </div>
+
+                <div class="two-column reveal">
+                    <div class="glass-card" style="border-left: 4px solid var(--accent-magenta);">
+                        <h4 style="color: var(--accent-magenta); margin-bottom: 15px;" data-en="🌡️ Sub-Ambient Cooling" data-cn="🌡️ 低于环境温度冷却">🌡️ Sub-Ambient Cooling</h4>
+                        <p style="font-size: 2rem; font-weight: 700;">8-12°C</p>
+                        <p style="color: var(--text-secondary); margin-top: 10px;" data-en="Typical temperature drop below ambient achieved by top-performing designs under direct sunlight (clear sky, no wind cover)." data-cn="在直射阳光下（晴空、无风罩），顶级设计通常实现的低于环境温度的温度下降。">Typical temperature drop below ambient achieved by top-performing designs under direct sunlight (clear sky, no wind cover).</p>
+                    </div>
+
+                    <div class="glass-card" style="border-left: 4px solid var(--accent-yellow);">
+                        <h4 style="color: var(--accent-yellow); margin-bottom: 15px;" data-en="🔬 Atmospheric Window Emissivity" data-cn="🔬 大气窗口发射率">🔬 Atmospheric Window Emissivity</h4>
+                        <p style="font-size: 2rem; font-weight: 700;">>95%</p>
+                        <p style="color: var(--text-secondary); margin-top: 10px;" data-en="Near-perfect emission in 8-13μm band achieved by PSO-optimized truncated pyramid microstructures (R² = 0.998 surrogate accuracy)." data-cn="通过PSO优化的截顶金字塔微结构实现8-13μm波段近乎完美的发射（代理模型精度R² = 0.998）。">Near-perfect emission in 8-13μm band achieved by PSO-optimized truncated pyramid microstructures (R² = 0.998 surrogate accuracy).</p>
+                    </div>
+                </div>
+
+                <!-- Comparison Table -->
+                <div class="glass-card reveal">
+                    <div class="card-title"><span class="icon">📊</span> <span data-en="Method Comparison for Radiative Cooling" data-cn="辐射制冷方法比较">Method Comparison for Radiative Cooling</span></div>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--accent-cyan);">
+                                    <th style="text-align: left; padding: 15px; color: var(--accent-cyan);" data-en="Material System" data-cn="材料体系">Material System</th>
+                                    <th style="text-align: left; padding: 15px; color: var(--accent-cyan);" data-en="Best Forward Model" data-cn="最佳正向模型">Best Forward Model</th>
+                                    <th style="text-align: left; padding: 15px; color: var(--accent-cyan);" data-en="Best Optimizer" data-cn="最佳优化器">Best Optimizer</th>
+                                    <th style="text-align: left; padding: 15px; color: var(--accent-cyan);" data-en="Inverse Design" data-cn="逆向设计">Inverse Design</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--glass-border);">
+                                    <td style="padding: 15px;" data-en="Particle-filled polymers" data-cn="颗粒填充聚合物">Particle-filled polymers</td>
+                                    <td style="padding: 15px;">RF, ANN</td>
+                                    <td style="padding: 15px;">PSO</td>
+                                    <td style="padding: 15px;" data-en="CNN-based inverse" data-cn="基于CNN的逆向">CNN-based inverse</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--glass-border);">
+                                    <td style="padding: 15px;" data-en="Multilayer films" data-cn="多层薄膜">Multilayer films</td>
+                                    <td style="padding: 15px;">ANN, CNN</td>
+                                    <td style="padding: 15px;">GA</td>
+                                    <td style="padding: 15px;">Tandem NN, DRL</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--glass-border);">
+                                    <td style="padding: 15px;" data-en="Colored/transparent" data-cn="彩色/透明">Colored/transparent</td>
+                                    <td style="padding: 15px;">Tandem NN</td>
+                                    <td style="padding: 15px;">GA, BO</td>
+                                    <td style="padding: 15px;">GAN, VAE</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--glass-border);">
+                                    <td style="padding: 15px;" data-en="Metasurfaces" data-cn="超表面">Metasurfaces</td>
+                                    <td style="padding: 15px;">KNN, CNN</td>
+                                    <td style="padding: 15px;">PSO, BO</td>
+                                    <td style="padding: 15px;" data-en="DRL sequential" data-cn="DRL序列">DRL sequential</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px;" data-en="Aerogels" data-cn="气凝胶">Aerogels</td>
+                                    <td style="padding: 15px;">XGBoost</td>
+                                    <td style="padding: 15px;">GA</td>
+                                    <td style="padding: 15px; color: var(--text-secondary);" data-en="Not yet explored" data-cn="尚待探索">Not yet explored</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 5: The Big Picture -->
+        <section class="chapter" id="chapter5">
+            <div class="chapter-header">
+                <div class="chapter-number" data-en="Chapter 5" data-cn="第五章">Chapter 5</div>
+                <h2 class="chapter-title" data-en="The Future & Remaining Challenges" data-cn="未来与剩余挑战">The Future & Remaining Challenges</h2>
+                <p class="chapter-subtitle" data-en="What's next for ML-driven radiative cooling — and what's holding it back" data-cn="机器学习驱动的辐射制冷的下一步是什么——以及什么在阻碍它">What's next for ML-driven radiative cooling — and what's holding it back</p>
+            </div>
+
+            <div class="content-container">
+                <!-- Challenges -->
+                <div class="glass-card reveal">
+                    <div class="card-title"><span class="icon">⚠️</span> <span data-en="Current Challenges" data-cn="当前挑战">Current Challenges</span></div>
+                    
+                    <div class="two-column">
+                        <div>
+                            <h4 style="color: var(--accent-orange); margin-bottom: 10px;" data-en="1. No Standardized Datasets" data-cn="1. 缺乏标准化数据集">1. No Standardized Datasets</h4>
+                            <p style="font-size: 0.95rem; margin-bottom: 20px;" data-en="Every research group generates their own simulation data. No public benchmarks exist. This makes comparing methods nearly impossible and wastes enormous compute re-simulating the same designs." data-cn="每个研究组都生成自己的模拟数据。没有公共基准。这使得比较方法几乎不可能，并浪费大量计算重新模拟相同的设计。">Every research group generates their own simulation data. No public benchmarks exist. This makes comparing methods nearly impossible and wastes enormous compute re-simulating the same designs.</p>
+                            
+                            <h4 style="color: var(--accent-orange); margin-bottom: 10px;" data-en="2. Simulation-to-Reality Gap" data-cn="2. 模拟与现实的差距">2. Simulation-to-Reality Gap</h4>
+                            <p style="font-size: 0.95rem;" data-en="ML models predict idealized simulated performance. Real fabricated materials have defects, surface roughness, and environmental variability. Bridging this gap is critical." data-cn="机器学习模型预测的是理想化的模拟性能。真实制造的材料有缺陷、表面粗糙度和环境变异性。弥合这一差距至关重要。">ML models predict idealized simulated performance. Real fabricated materials have defects, surface roughness, and environmental variability. Bridging this gap is critical.</p>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--accent-orange); margin-bottom: 10px;" data-en="3. Limited Generalization" data-cn="3. 有限的泛化能力">3. Limited Generalization</h4>
+                            <p style="font-size: 0.95rem; margin-bottom: 20px;" data-en="Models trained on one material system (e.g., multilayer SiO₂/TiO₂) don't transfer to others (e.g., metasurfaces). Transfer learning and physics-informed approaches are needed." data-cn="在一种材料体系（如SiO₂/TiO₂多层膜）上训练的模型不能迁移到其他体系（如超表面）。需要迁移学习和物理启发的方法。">Models trained on one material system (e.g., multilayer SiO₂/TiO₂) don't transfer to others (e.g., metasurfaces). Transfer learning and physics-informed approaches are needed.</p>
+                            
+                            <h4 style="color: var(--accent-orange); margin-bottom: 10px;" data-en="4. Multi-Objective Trade-offs" data-cn="4. 多目标权衡">4. Multi-Objective Trade-offs</h4>
+                            <p style="font-size: 0.95rem;" data-en="Real applications need cooling + durability + cost + aesthetics + manufacturability. Current methods mostly optimize single objectives. Multi-objective Pareto optimization is emerging." data-cn="实际应用需要冷却 + 耐久性 + 成本 + 美观 + 可制造性。当前方法主要优化单一目标。多目标帕累托优化正在兴起。">Real applications need cooling + durability + cost + aesthetics + manufacturability. Current methods mostly optimize single objectives. Multi-objective Pareto optimization is emerging.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Frontier Directions -->
+                <div class="glass-card reveal">
+                    <div class="card-title"><span class="icon">🚀</span> <span data-en="Frontier Research Directions" data-cn="前沿研究方向">Frontier Research Directions</span></div>
+                    
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <h4 data-en="Foundation Models for Materials" data-cn="材料基础模型">Foundation Models for Materials</h4>
+                            <p data-en="Pre-trained on millions of material structures, then fine-tuned for radiative cooling. Like GPT for materials design." data-cn="在数百万材料结构上预训练，然后针对辐射制冷进行微调。就像材料设计的GPT。">Pre-trained on millions of material structures, then fine-tuned for radiative cooling. Like GPT for materials design.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 data-en="Active Learning with Real Experiments" data-cn="结合真实实验的主动学习">Active Learning with Real Experiments</h4>
+                            <p data-en="ML proposes the most informative design to fabricate next, lab measures it, data feeds back to improve the model. Closes the sim-to-real loop." data-cn="机器学习提出下一个最具信息量的设计来制造，实验室测量它，数据反馈以改进模型。关闭模拟到现实的循环。">ML proposes the most informative design to fabricate next, lab measures it, data feeds back to improve the model. Closes the sim-to-real loop.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 data-en="Physics-Informed Neural Networks" data-cn="物理启发神经网络">Physics-Informed Neural Networks</h4>
+                            <p data-en="Embed Maxwell's equations directly into the network architecture or loss function. Guarantees physically valid predictions." data-cn="将麦克斯韦方程直接嵌入网络架构或损失函数。保证物理上有效的预测。">Embed Maxwell's equations directly into the network architecture or loss function. Guarantees physically valid predictions.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 data-en="Diffusion Models for Novel Structures" data-cn="新型结构的扩散模型">Diffusion Models for Novel Structures</h4>
+                            <p data-en="Generate entirely new material configurations beyond human intuition — potentially discovering unprecedented cooling mechanisms." data-cn="生成超越人类直觉的全新材料配置——可能发现前所未有的冷却机制。">Generate entirely new material configurations beyond human intuition — potentially discovering unprecedented cooling mechanisms.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final Quiz -->
+                <div class="quiz-container reveal">
+                    <h4 style="color: var(--accent-magenta); margin-bottom: 20px; font-size: 1.3rem;" data-en="🎓 Final Understanding Check" data-cn="🎓 最终理解检查">🎓 Final Understanding Check</h4>
+                    
+                    <p class="quiz-question" data-en="A researcher wants to design a colored radiative cooler (specific blue color + maximum cooling). Which workflow makes the most sense?" data-cn="研究人员想设计一个彩色辐射冷却器（特定蓝色 + 最大冷却）。哪种工作流程最合理？">A researcher wants to design a colored radiative cooler (specific blue color + maximum cooling). Which workflow makes the most sense?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-correct="false" data-en="KNN with manual search through previous designs" data-cn="KNN配合手动搜索以往设计">KNN with manual search through previous designs</div>
+                        <div class="quiz-option" data-correct="true" data-en="Train Tandem NN on TMM data, input target color + cooling specs, output structure" data-cn="在TMM数据上训练Tandem NN，输入目标颜色 + 冷却规格，输出结构">Train Tandem NN on TMM data, input target color + cooling specs, output structure</div>
+                        <div class="quiz-option" data-correct="false" data-en="Run FDTD on 10^27 random combinations and pick the best one" data-cn="对10^27个随机组合运行FDTD并选择最好的">Run FDTD on 10^27 random combinations and pick the best one</div>
+                    </div>
+                    <div class="quiz-feedback" id="quiz2feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Completion Section -->
+        <section class="chapter" id="completion" style="min-height: auto; padding: 100px 40px; text-align: center;">
+            <div class="content-container reveal">
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px;" data-en="🎓 Congratulations, Expert!" data-cn="🎓 恭喜你，专家！">🎓 Congratulations, Expert!</h2>
+                <p style="font-size: 1.2rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto 30px;" data-en="You now understand radiative cooling at a research level. You know the physics (atmospheric window, spectral selectivity), the design challenge (simultaneous solar reflection + IR emission), the material strategies, and the complete ML toolkit from forward prediction to generative inverse design." data-cn="你现在已经以研究水平理解了辐射制冷。你了解物理学（大气窗口、光谱选择性）、设计挑战（同时进行太阳反射 + 红外发射）、材料策略，以及从正向预测到生成式逆向设计的完整机器学习工具包。">You now understand radiative cooling at a research level. You know the physics (atmospheric window, spectral selectivity), the design challenge (simultaneous solar reflection + IR emission), the material strategies, and the complete ML toolkit from forward prediction to generative inverse design.</p>
+                
+                <div class="glass-card" style="max-width: 600px; margin: 0 auto; text-align: left;">
+                    <h4 style="color: var(--accent-cyan); margin-bottom: 15px;" data-en="💬 Conversation Starters with Experts" data-cn="💬 与专家的对话开场白">💬 Conversation Starters with Experts</h4>
+                    <ul style="color: var(--text-secondary); list-style: none;">
+                        <li style="margin-bottom: 10px;" data-en="→ \"What surrogate model do you use for your TMM data — ANN or CNN for spectral input?\"" data-cn="→ "你用什么代理模型处理TMM数据——ANN还是CNN用于光谱输入？"">"What surrogate model do you use for your TMM data — ANN or CNN for spectral input?"</li>
+                        <li style="margin-bottom: 10px;" data-en="→ \"Have you tried Bayesian optimization for the colored cooler constraints? BO's multi-objective handling seems ideal.\"" data-cn="→ "你试过用贝叶斯优化处理彩色冷却器约束吗？BO的多目标处理似乎很理想。"">"Have you tried Bayesian optimization for the colored cooler constraints? BO's multi-objective handling seems ideal."</li>
+                        <li style="margin-bottom: 10px;" data-en="→ \"I'm curious about your sim-to-real gap — do you retrain on experimental measurements?\"" data-cn="→ "我很好奇你们的模拟到现实差距——你们会根据实验测量重新训练吗？"">"I'm curious about your sim-to-real gap — do you retrain on experimental measurements?"</li>
+                        <li data-en="→ \"The Tandem NN approach for inverse design is elegant — are you exploring diffusion models as next steps?\"" data-cn="→ "Tandem NN的逆向设计方法很优雅——你们在探索扩散模型作为下一步吗？"">"The Tandem NN approach for inverse design is elegant — are you exploring diffusion models as next steps?"</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p style="color: var(--text-secondary);" data-en="Built to make you an expert. Based on \"Machine-Learning-Driven Advances in Radiative Cooling Material Design\"" data-cn="为让你成为专家而构建。基于《机器学习驱动的辐射制冷材料设计进展》">Built to make you an expert. Based on "Machine-Learning-Driven Advances in Radiative Cooling Material Design"</p>
+    </footer>
+
+    <script>
+        // Language Toggle
+        let currentLang = 'en';
+        const langToggle = document.getElementById('langToggle');
+        
+        function updateLanguage() {
+            document.querySelectorAll('[data-en]').forEach(el => {
+                el.textContent = el.getAttribute(`data-${currentLang}`);
+            });
+            langToggle.textContent = currentLang === 'en' ? '中文' : 'English';
+        }
+        
+        langToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'cn' : 'en';
+            updateLanguage();
+        });
+
+        // Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Chapter Navigation
+        const chapters = document.querySelectorAll('.chapter');
+        const chapterNav = document.getElementById('chapterNav');
+        chapters.forEach((chapter, i) => {
+            const dot = document.createElement('div');
+            dot.className = 'chapter-dot';
+            dot.title = `Chapter ${i + 1}`;
+            dot.onclick = () => chapter.scrollIntoView({ behavior: 'smooth' });
+            chapterNav.appendChild(dot);
+        });
+
+        // Scroll reveal
+        const reveals = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        reveals.forEach(el => revealObserver.observe(el));
+
+        // Toggle Content
+        function toggleContent(header) {
+            header.classList.toggle('open');
+            header.nextElementSibling.classList.toggle('open');
+        }
+
+        // Quiz Handler
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const container = this.closest('.quiz-container');
+                const options = container.querySelectorAll('.quiz-option');
+                const feedback = container.querySelector('.quiz-feedback');
+                
+                options.forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                    if (opt.getAttribute('data-correct') === 'true') {
+                        opt.classList.add('correct');
+                    } else if (opt === this) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                
+                const isCorrect = this.getAttribute('data-correct') === 'true';
+                feedback.className = 'quiz-feedback show';
+                feedback.style.background = isCorrect ? 'rgba(0,255,136,0.1)' : 'rgba(255,68,68,0.1)';
+                feedback.style.border = `1px solid ${isCorrect ? 'var(--accent-green)' : '#ff4444'}`;
+                
+                if (isCorrect) {
+                    feedback.innerHTML = currentLang === 'en' 
+                        ? '<strong style="color: var(--accent-green);">✓ Correct!</strong> You understand the core workflow.'
+                        : '<strong style="color: var(--accent-green);">✓ 正确！</strong> 你理解了核心工作流程。';
+                } else {
+                    feedback.innerHTML = currentLang === 'en'
+                        ? '<strong style="color: #ff4444;">✗ Not quite.</strong> Think about the three-tier framework!'
+                        : '<strong style="color: #ff4444;">✗ 不太对。</strong> 想想三层框架！';
+                }
+            });
+        });
+
+        // Scroll to chapter
+        function scrollToChapter(n) {
+            document.getElementById(`chapter${n}`).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ============== CANVAS ANIMATIONS ==============
+
+        // Hero Canvas - Heat radiating to space
+        const heroCanvas = document.getElementById('heroCanvas');
+        const heroCtx = heroCanvas.getContext('2d');
+        
+        function resizeHeroCanvas() {
+            heroCanvas.width = heroCanvas.offsetWidth;
+            heroCanvas.height = heroCanvas.offsetHeight;
+        }
+        resizeHeroCanvas();
+        window.addEventListener('resize', resizeHeroCanvas);
+
+        const particles = [];
+        for (let i = 0; i < 100; i++) {
+            particles.push({
+                x: Math.random() * heroCanvas.width,
+                y: heroCanvas.height * 0.7 + Math.random() * 100,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: -Math.random() * 1.5 - 0.5,
+                size: Math.random() * 3 + 1,
+                alpha: Math.random() * 0.5 + 0.3,
+                hue: Math.random() * 60 + 180 // cyan to blue
+            });
+        }
+
+        function animateHero() {
+            heroCtx.fillStyle = 'rgba(10, 10, 26, 0.1)';
+            heroCtx.fillRect(0, 0, heroCanvas.width, heroCanvas.height);
+            
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.002;
+                
+                if (p.y < 0 || p.alpha <= 0) {
+                    p.x = Math.random() * heroCanvas.width;
+                    p.y = heroCanvas.height * 0.7 + Math.random() * 50;
+                    p.alpha = Math.random() * 0.5 + 0.3;
+                }
+                
+                heroCtx.beginPath();
+                heroCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                heroCtx.fillStyle = `hsla(${p.hue}, 100%, 60%, ${p.alpha})`;
+                heroCtx.fill();
+            });
+            
+            requestAnimationFrame(animateHero);
+        }
+        animateHero();
+
+        // Radiation Canvas
+        const radCanvas = document.getElementById('radiationCanvas');
+        if (radCanvas) {
+            const radCtx = radCanvas.getContext('2d');
+            radCanvas.width = radCanvas.parentElement.offsetWidth - 40;
+            
+            let radWaves = [];
+            for (let i = 0; i < 8; i++) {
+                radWaves.push({ angle: (i / 8) * Math.PI * 2, radius: 50 + Math.random() * 30 });
+            }
+            
+            function animateRadiation() {
+                radCtx.fillStyle = '#12122a';
+                radCtx.fillRect(0, 0, radCanvas.width, radCanvas.height);
+                
+                const cx = radCanvas.width / 2;
+                const cy = radCanvas.height - 80;
+                
+                // Draw Earth surface
+                radCtx.beginPath();
+                radCtx.ellipse(cx, cy + 60, radCanvas.width / 2, 60, 0, Math.PI, 0);
+                const earthGrad = radCtx.createLinearGradient(0, cy, 0, cy + 100);
+                earthGrad.addColorStop(0, '#1a5f3a');
+                earthGrad.addColorStop(1, '#0d2d1a');
+                radCtx.fillStyle = earthGrad;
+                radCtx.fill();
+                
+                // Draw radiating waves
+                radWaves.forEach((wave, i) => {
+                    wave.radius += 1.5;
+                    if (wave.radius > 300) wave.radius = 50;
+                    
+                    const alpha = 1 - (wave.radius - 50) / 250;
+                    radCtx.beginPath();
+                    radCtx.arc(cx, cy, wave.radius, Math.PI * 1.1, Math.PI * 1.9);
+                    radCtx.strokeStyle = `rgba(255, 100, 100, ${alpha * 0.7})`;
+                    radCtx.lineWidth = 3;
+                    radCtx.stroke();
+                });
+                
+                // Space label
+                radCtx.fillStyle = '#b0b0cc';
+                radCtx.font = '14px Segoe UI';
+                radCtx.textAlign = 'center';
+                radCtx.fillText(currentLang === 'en' ? '🌌 DEEP SPACE (3K)' : '🌌 深空 (3K)', cx, 30);
+                radCtx.fillText(currentLang === 'en' ? '🌍 EARTH SURFACE' : '🌍 地球表面', cx, radCanvas.height - 10);
+                
+                requestAnimationFrame(animateRadiation);
+            }
+            animateRadiation();
+        }
+
+        // Material Canvases
+        function drawParticleMaterial() {
+            const canvas = document.getElementById('particleMatCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            // Background
+            ctx.fillStyle = '#1a1a3a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Polymer matrix
+            ctx.fillStyle = 'rgba(100, 150, 255, 0.3)';
+            ctx.fillRect(20, 20, 160, 110);
+            
+            // Particles
+            for (let i = 0; i < 15; i++) {
+                const x = 30 + Math.random() * 140;
+                const y = 30 + Math.random() * 90;
+                const r = 5 + Math.random() * 10;
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + Math.random() * 0.5})`;
+                ctx.fill();
+            }
+            
+            ctx.strokeStyle = '#00d4ff';
+            ctx.strokeRect(20, 20, 160, 110);
+        }
+        
+        function drawMultilayer() {
+            const canvas = document.getElementById('multilayerCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = '#1a1a3a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#f38181', '#aa96da'];
+            const layerHeight = 15;
+            const startY = 25;
+            
+            for (let i = 0; i < 7; i++) {
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fillRect(30, startY + i * layerHeight, 140, layerHeight - 2);
+            }
+            
+            // Labels
+            ctx.fillStyle = '#b0b0cc';
+            ctx.font = '10px Segoe UI';
+            ctx.fillText('SiO₂', 175, startY + 10);
+            ctx.fillText('TiO₂', 175, startY + 25);
+            ctx.fillText('HfO₂', 175, startY + 40);
+        }
+        
+        function drawMetasurface() {
+            const canvas = document.getElementById('metasurfaceCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = '#1a1a3a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Base
+            ctx.fillStyle = '#333';
+            ctx.fillRect(20, 100, 160, 30);
+            
+            // Pillars/pyramids
+            for (let i = 0; i < 6; i++) {
+                const x = 35 + i * 25;
+                ctx.beginPath();
+                ctx.moveTo(x - 8, 100);
+                ctx.lineTo(x, 50 + Math.random() * 20);
+                ctx.lineTo(x + 8, 100);
+                ctx.closePath();
+                ctx.fillStyle = `hsl(${180 + i * 15}, 70%, 60%)`;
+                ctx.fill();
+            }
+        }
+
+        // Pipeline Canvas
+        function drawPipeline() {
+            const canvas = document.getElementById('pipelineCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.offsetWidth - 40;
+            
+            ctx.fillStyle = '#12122a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const stages = currentLang === 'en' 
+                ? ['Physics\nSimulation', 'Surrogate\nModel', 'Optimizer', 'Generative\nModel', 'Novel\nDesigns']
+                : ['物理\n模拟', '代理\n模型', '优化器', '生成\n模型', '新颖\n设计'];
+            
+            const colors = ['#ff6b00', '#00d4ff', '#ff6b00', '#ff00ff', '#00ff88'];
+            const boxWidth = 100;
+            const spacing = (canvas.width - stages.length * boxWidth) / (stages.length + 1);
+            
+            stages.forEach((stage, i) => {
+                const x = spacing + i * (boxWidth + spacing);
+                const y = canvas.height / 2 - 35;
+                
+                // Box
+                ctx.fillStyle = 'rgba(255,255,255,0.05)';
+                ctx.strokeStyle = colors[i];
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(x, y, boxWidth, 70, 10);
+                ctx.fill();
+                ctx.stroke();
+                
+                // Text
+                ctx.fillStyle = '#fff';
+                ctx.font = '12px Segoe UI';
+                ctx.textAlign = 'center';
+                const lines = stage.split('\n');
+                lines.forEach((line, li) => {
+                    ctx.fillText(line, x + boxWidth/2, y + 30 + li * 15);
+                });
+                
+                // Arrow
+                if (i < stages.length - 1) {
+                    const arrowX = x + boxWidth + spacing / 2;
+                    ctx.beginPath();
+                    ctx.moveTo(arrowX - 10, canvas.height / 2);
+                    ctx.lineTo(arrowX + 10, canvas.height / 2);
+                    ctx.lineTo(arrowX + 5, canvas.height / 2 - 5);
+                    ctx.moveTo(arrowX + 10, canvas.height / 2);
+                    ctx.lineTo(arrowX + 5, canvas.height / 2 + 5);
+                    ctx.strokeStyle = '#666';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            });
+        }
+
+        // Closed Loop Canvas
+        function drawClosedLoop() {
+            const canvas = document.getElementById('closedLoopCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.offsetWidth - 60;
+            
+            ctx.fillStyle = '#12122a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const radius = Math.min(cx, cy) - 40;
+            
+            const nodes = currentLang === 'en'
+                ? ['Simulation\nData', 'Train\nSurrogate', 'Optimize', 'Generate\nNew', 'Validate']
+                : ['模拟\n数据', '训练\n代理', '优化', '生成\n新设计', '验证'];
+            
+            const colors = ['#ff6b00', '#00d4ff', '#ff6b00', '#ff00ff', '#00ff88'];
+            
+            nodes.forEach((node, i) => {
+                const angle = (i / nodes.length) * Math.PI * 2 - Math.PI / 2;
+                const x = cx + Math.cos(angle) * radius;
+                const y = cy + Math.sin(angle) * radius;
+                
+                // Node
+                ctx.beginPath();
+                ctx.arc(x, y, 35, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,0.05)';
+                ctx.fill();
+                ctx.strokeStyle = colors[i];
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Text
+                ctx.fillStyle = '#fff';
+                ctx.font = '11px Segoe UI';
+                ctx.textAlign = 'center';
+                const lines = node.split('\n');
+                lines.forEach((line, li) => {
+                    ctx.fillText(line, x, y + (li - (lines.length - 1) / 2) * 12);
+                });
+                
+                // Arrow to next
+                const nextAngle = ((i + 1) / nodes.length) * Math.PI * 2 - Math.PI / 2;
+                const midAngle = (angle + nextAngle) / 2 + (i === nodes.length - 1 ? Math.PI : 0);
+                
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius - 5, angle + 0.3, nextAngle - 0.3);
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+            
+            // Center text
+            ctx.fillStyle = '#b0b0cc';
+            ctx.font = '12px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText(currentLang === 'en' ? 'Closed Loop' : '闭环系统', cx, cy);
+        }
+
+        // Initialize canvases when visible
+        const canvasObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    drawParticleMaterial();
+                    drawMultilayer();
+                    drawMetasurface();
+                    drawPipeline();
+                    drawClosedLoop();
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.canvas-container, .material-image, .glass-card').forEach(el => {
+            canvasObserver.observe(el);
+        });
+
+        // Redraw on resize
+        window.addEventListener('resize', () => {
+            drawPipeline();
+            drawClosedLoop();
+        });
+
+        // Initial draw
+        setTimeout(() => {
+            drawParticleMaterial();
+            drawMultilayer();
+            drawMetasurface();
+            drawPipeline();
+            drawClosedLoop();
+        }, 500);
+    </script>
+</body>
+</html>

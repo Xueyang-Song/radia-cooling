@@ -1,0 +1,222 @@
+{
+  "nanophotonic-particle-simulation-and-inverse-design-using-ann": {
+    "title": "Nanophotonic particle simulation and inverse design using artificial neural networks",
+    "authors": "J Peurifoy, Y Shen, L Jing, Y Yang, F Cano-Renteria",
+    "year": 2018,
+    "venue": "Science Advances",
+    "doi": "https://doi.org/10.1126/sciadv.aar4206",
+    "officialUrl": "https://www.science.org/doi/abs/10.1126/sciadv.aar4206",
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "ml-enabled-inverse-design-of-radiative-cooling-film-with-on-demand-transmissive-color": {
+    "title": "Machine learning-enabled inverse design of radiative cooling film with on-demand transmissive color",
+    "authors": "Q Guan, A Raza, SS Mao, LF Vega, TJ Zhang",
+    "year": 2023,
+    "venue": "ACS Photonics",
+    "doi": "https://doi.org/10.1021/acsphotonics.2c01857",
+    "officialUrl": "https://pubs.acs.org/doi/abs/10.1021/acsphotonics.2c01857",
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "inverse-design-of-colored-daytime-radiative-coolers-using-deep-neural-networks": {
+    "title": "Inverse design of colored daytime radiative coolers using deep neural networks",
+    "authors": "Harit Keawmuang, Trevon Badloe, Chihun Lee, Junkyeong Park, Junsuk Rho",
+    "year": 2024,
+    "venue": "Solar Energy Materials and Solar Cells",
+    "doi": "https://doi.org/10.1016/j.solmat.2024.112848",
+    "officialUrl": "https://doi.org/10.1016/j.solmat.2024.112848",
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "deep-learning-assisted-inverse-design-of-nanoparticle-embedded-radiative-coolers": {
+    "title": "Deep learning-assisted inverse design of nanoparticle-embedded radiative coolers",
+    "authors": "Min Ju Kim, June Tae Kim, Mi Jin Hong, Sang Wook Park, Gil Ju Lee",
+    "year": 2024,
+    "venue": "Optics Express",
+    "doi": "https://doi.org/10.1364/oe.518164",
+    "officialUrl": "https://doi.org/10.1364/oe.518164",
+    "openAccessPdfUrl": null,
+    "openAccessUrl": "https://doi.org/10.1364/oe.518164"
+  },
+  "ai-enabled-design-of-extraordinary-daytime-radiative-cooling-materials": {
+    "title": "AI-enabled design of extraordinary daytime radiative cooling materials",
+    "authors": "Quang-Tuyen Le, Sih\u2010Wei Chang, Bo-Ying Chen, Huyen-Anh Phan, An-Chen Yang",
+    "year": 2024,
+    "venue": "Solar Energy Materials and Solar Cells",
+    "doi": "https://doi.org/10.1016/j.solmat.2024.113177",
+    "officialUrl": "https://doi.org/10.1016/j.solmat.2024.113177",
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "ml-assisted-design-of-a-robust-biomimetic-radiative-cooling-metamaterial": {
+    "title": "Machine-learning-assisted design of a robust biomimetic radiative cooling metamaterial",
+    "authors": "Z Ding, X Li, Q Ji, Y Zhang, H Li, H Zhang",
+    "year": 2024,
+    "venue": "ACS Materials Letters",
+    "doi": "https://doi.org/10.1021/acsmaterialslett.4c00337",
+    "officialUrl": "https://pubs.acs.org/doi/abs/10.1021/acsmaterialslett.4c00337",
+    "openAccessPdfUrl": "https://iris.inrim.it/bitstream/11696/81019/1/Manuscript-1.pdf",
+    "openAccessUrl": "https://iris.inrim.it/bitstream/11696/81019/1/Manuscript-1.pdf"
+  },
+  "ml-enabled-design-of-metasurface-based-near-perfect-daytime-radiative-cooler": {
+    "title": "Machine learning-enabled design of metasurface based near-perfect daytime radiative cooler",
+    "authors": "W Su, Z Ding, Y Luo, L Ye, H Wu, H Yao",
+    "year": 2023,
+    "venue": "Solar Energy Materials and Solar Cells",
+    "doi": null,
+    "officialUrl": "https://www.sciencedirect.com/science/article/pii/S0927024823003094",
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "design-of-highly-selective-radiative-cooling-structure-accelerated-by-materials-informatics": {
+    "title": "Design of a highly selective radiative cooling structure accelerated by materials informatics",
+    "authors": "J Guo, S Ju, J Shiomi",
+    "year": 2020,
+    "venue": "Optics Letters",
+    "doi": null,
+    "officialUrl": "https://opg.optica.org/abstract.cfm?uri=ol-45-2-343",
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "general-deep-learning-framework-for-emissivity-engineering": {
+    "title": "General deep learning framework for emissivity engineering",
+    "authors": "Shilv Yu, Peng Zhou, Xi Wang, Zihe Chen, Yuxiang Deng",
+    "year": 2023,
+    "venue": "Light Science & Applications",
+    "doi": "https://doi.org/10.1038/s41377-023-01341-w",
+    "officialUrl": "https://doi.org/10.1038/s41377-023-01341-w",
+    "openAccessPdfUrl": "https://www.nature.com/articles/s41377-023-01341-w.pdf",
+    "openAccessUrl": "https://www.nature.com/articles/s41377-023-01341-w.pdf"
+  },
+  "deep-learning-based-inverse-design-of-microstructured-materials-for-thermal-radiation-control": {
+    "title": "Deep learning-based inverse design of microstructured materials for optical optimization and thermal radiation control",
+    "authors": "J Sullivan, A Mirhashemi, J Lee",
+    "year": 2023,
+    "venue": "Scientific Reports",
+    "doi": "https://doi.org/10.1038/s41598-023-34332-3",
+    "officialUrl": "https://www.nature.com/articles/s41598-023-34332-3",
+    "openAccessPdfUrl": "https://www.nature.com/articles/s41598-023-34332-3.pdf",
+    "openAccessUrl": "https://www.nature.com/articles/s41598-023-34332-3.pdf"
+  },
+  "ai-driven-approaches-for-materials-design-and-discovery": {
+    "title": "AI-driven approaches for materials design and discovery",
+    "authors": "Cheng et al",
+    "year": 2025,
+    "venue": "\"AI-driven approaches for materials design and discovery\"",
+    "doi": null,
+    "officialUrl": null,
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "taking-the-human-out-of-the-loop-a-review-of-bayesian-optimization": {
+    "title": "Taking the Human Out of the Loop: A Review of Bayesian Optimization",
+    "authors": "Bobak Shahriari, Kevin Swersky, Ziyu Wang, Ryan P. Adams, Nando de Freitas",
+    "year": 2015,
+    "venue": "Proceedings of the IEEE",
+    "doi": "https://doi.org/10.1109/jproc.2015.2494218",
+    "officialUrl": "http://nrs.harvard.edu/urn-3:HUL.InstRepos:27769882",
+    "openAccessPdfUrl": null,
+    "openAccessUrl": "http://nrs.harvard.edu/urn-3:HUL.InstRepos:27769882"
+  },
+  "ml-based-inverse-design-methods-considering-data-characteristics-and-design-space-size": {
+    "title": "Machine learning-based inverse design methods considering data characteristics and design space size in materials design and manufacturing: a review",
+    "authors": "J Lee, D Park, M Lee, H Lee, K Park, I Lee, S Ryu",
+    "year": 2023,
+    "venue": "Materials Horizons",
+    "doi": "https://doi.org/10.1039/D3MH00039G",
+    "officialUrl": "https://pubs.rsc.org/en/content/articlehtml/2023/mh/d3mh00039g",
+    "openAccessPdfUrl": "https://engrxiv.org/preprint/download/2845/5279",
+    "openAccessUrl": "https://engrxiv.org/preprint/download/2845/5279"
+  },
+  "inverse-design-of-materials-by-machine-learning": {
+    "title": "Inverse Design of Materials by Machine Learning",
+    "authors": "Wang Jia, Yingxue Wang, Yanan Chen",
+    "year": 2022,
+    "venue": "Materials",
+    "doi": "https://doi.org/10.3390/ma15051811",
+    "officialUrl": "https://doi.org/10.3390/ma15051811",
+    "openAccessPdfUrl": "https://www.mdpi.com/1996-1944/15/5/1811/pdf?version=1646047514",
+    "openAccessUrl": "https://www.mdpi.com/1996-1944/15/5/1811/pdf?version=1646047514"
+  },
+  "plasmonic-nanostructure-design-and-characterization-via-deep-learning": {
+    "title": "Plasmonic nanostructure design and characterization via Deep Learning",
+    "authors": "Itzik Malkiel, Michael Mrejen, Achiya Nagler, Uri Arieli, Lior Wolf",
+    "year": 2018,
+    "venue": "Light Science & Applications",
+    "doi": "https://doi.org/10.1038/s41377-018-0060-7",
+    "officialUrl": "https://doi.org/10.1038/s41377-018-0060-7",
+    "openAccessPdfUrl": "https://www.nature.com/articles/s41377-018-0060-7.pdf",
+    "openAccessUrl": "https://www.nature.com/articles/s41377-018-0060-7.pdf"
+  },
+  "deep-learning-based-multilayer-nano-film-structure-reverse-design-for-efficient-passive-radiative-cooling": {
+    "title": "Deep-learning-based multilayer nano-film structure reverse design for efficient passive radiative cooling",
+    "authors": "Guowen Zhou, Jun Zhu, Fengqi Zhou, Wei Zhang (405), Zao Yi",
+    "year": 2026,
+    "venue": "Chinese Optics Letters",
+    "doi": "https://doi.org/10.3788/col202624.042201",
+    "officialUrl": "https://doi.org/10.3788/col202624.042201",
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "reinforcement-learning-based-inverse-design-of-composite-films-for-spacecraft-smart-thermal-control": {
+    "title": "Reinforcement learning-based inverse design of composite films for spacecraft smart thermal control",
+    "authors": "Yongxing Chen, Haining Ji, Long Peng, Bin Liu, Yi Wang",
+    "year": 2025,
+    "venue": "Physical Chemistry Chemical Physics",
+    "doi": "https://doi.org/10.1039/d5cp00039d",
+    "officialUrl": "https://doi.org/10.1039/d5cp00039d",
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "predicting-surface-temperature-of-radiative-cooling-coatings-with-time-series-forecasting": {
+    "title": "Predicting surface temperature of radiative cooling coatings with time-series forecasting",
+    "authors": "Gan et al",
+    "year": 2025,
+    "venue": "\"Predicting surface temperature of radiative cooling coatings with time-series forecasting\"",
+    "doi": null,
+    "officialUrl": null,
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "ml-assisted-energy-performance-analysis-of-semi-transparent-pv-glazing-with-radiative-cooling-film": {
+    "title": "ML assisted energy performance analysis of semi-transparent PV glazing with radiative cooling film",
+    "authors": "Wang et al",
+    "year": 2025,
+    "venue": "\"ML assisted energy performance analysis of semi-transparent PV glazing with radiative cooling film\"",
+    "doi": null,
+    "officialUrl": null,
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "high-performance-transparent-radiative-cooler-designed-by-quantum-computing": {
+    "title": "High-Performance Transparent Radiative Cooler Designed by Quantum Computing",
+    "authors": "Seongmin Kim, Wenjie Shang, Seunghyun Moon, Trevor Pastega, Eungkyu Lee",
+    "year": 2022,
+    "venue": "ACS Energy Letters",
+    "doi": "https://doi.org/10.1021/acsenergylett.2c01969",
+    "officialUrl": "https://doi.org/10.1021/acsenergylett.2c01969",
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  },
+  "emissivity-prediction-of-multilayer-film-radiators-by-ml-using-an-ultrasmall-dataset": {
+    "title": "Emissivity prediction of multilayer film radiators by machine learning using an ultrasmall dataset",
+    "authors": "T Fan, Y Li",
+    "year": 2022,
+    "venue": "ES Energy and Environment",
+    "doi": null,
+    "officialUrl": "https://www.espublisher.com/journals/articledetails/790",
+    "openAccessPdfUrl": "https://www.espublisher.com/uploads/article_pdf/esee8c790.pdf",
+    "openAccessUrl": "https://www.espublisher.com/uploads/article_pdf/esee8c790.pdf"
+  },
+  "machine-learning-and-optimization-towards-improved-radiative-cooling-paints": {
+    "title": "Machine Learning and Optimization Towards Improved Radiative Cooling Paints",
+    "authors": "Carne",
+    "year": 2025,
+    "venue": "\"Machine Learning and Optimization Towards Improved Radiative Cooling Paints\"",
+    "doi": null,
+    "officialUrl": null,
+    "openAccessPdfUrl": null,
+    "openAccessUrl": null
+  }
+}
