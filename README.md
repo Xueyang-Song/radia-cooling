@@ -1,29 +1,33 @@
 # radia-cooling
 
-> 一个把 **辐射制冷研究流程** 做成可读、可查、可复现实验台的项目。  
-> 不只是“跑模型”，而是把数据、训练、候选设计、仿真回验、文献证据串成一条完整链路。
+> A practical, evidence-driven workspace for **machine-learning-assisted radiative cooling design**.
+>  
+> This repo links data generation, model training, candidate proposal, physics re-verification, and research references in one reproducible workflow.
 
-![Repo vibe](https://img.shields.io/badge/Focus-Radiative%20Cooling-4f46e5)
+![Focus](https://img.shields.io/badge/Focus-Radiative%20Cooling-4f46e5)
 ![Stack](https://img.shields.io/badge/Stack-React%20%2B%20TypeScript%20%2B%20Python-0ea5e9)
-![Pipeline](https://img.shields.io/badge/Pipeline-Forward%20%2B%20Inverse%20%2B%20Verification-16a34a)
+![Workflow](https://img.shields.io/badge/Workflow-Forward%20%2B%20Inverse%20%2B%20Verification-16a34a)
 
-## 这项目在干嘛？
+## What this project does
 
-核心目标很直接：  
-在多层膜辐射制冷设计中，用机器学习把“昂贵仿真 + 人工试错”变成“可规模化搜索 + 保守验证”。
+The goal is to make multilayer radiative-cooling design faster and more trustworthy:
 
-项目分三块：
+- use ML surrogates to explore a large design space efficiently
+- generate inverse-design candidates toward target metrics
+- verify shortlisted candidates again with physics simulation before drawing conclusions
 
-- `ml_pipeline/`：数据生成、前向代理模型、逆向生成模型、候选重排与验证
-- `app/`：可视化工作台（Story / Pipeline / Compare / Explore / Notebook / Research / Audit）
-- `research/`：论文拆解、模型说明、审计报告和外部文献索引
+## Repository structure
 
-## 项目看点（不是花架子版）
+- `ml_pipeline/`: dataset generation, forward surrogates, inverse models, ranking, and verification
+- `app/`: interactive interface (Story / Pipeline / Compare / Explore / Notebook / Research / Audit)
+- `research/`: technical notes, model explainers, audit reports, and literature references
 
-- **Evidence-first**：页面里展示的是本地真实产物，不是写死的 demo 文案  
-- **闭环设计**：生成候选后会回到物理仿真再验，不把代理模型当“真值”  
-- **多路线并行**：RF / XGBoost / MLP / Tandem / CVAE / Diffusion 都能放在同一评估框架里比较  
-- **研究可读性高**：技术细节、代码入口、实验结论和文献来源都能沿着路径追溯
+## Highlights
+
+- **Evidence-first interface**: views are wired to real local artifacts, commands, and outputs.
+- **Closed-loop evaluation**: generated designs are rechecked with simulation, not accepted on surrogate confidence alone.
+- **Model-family comparison**: RF, XGBoost, MLP, Tandem, CVAE, and Diffusion can be evaluated within one framework.
+- **Traceable research workflow**: from code and metrics to supporting papers and audit notes.
 
 ## Examples
 
@@ -35,9 +39,9 @@
 |---|---|
 | ![Explorer view](assets/readme/example-3.png) | ![Research view](assets/readme/example-4.png) |
 
-## 快速启动
+## Quickstart
 
-### 1) Python pipeline
+### 1) Set up the Python pipeline
 
 ```bash
 cd ml_pipeline
@@ -46,14 +50,14 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -e ".[train]"
 ```
 
-### 2) 前端 app
+### 2) Install the frontend app
 
 ```bash
 cd app
 npm install
 ```
 
-### 3) 生成内容并启动界面
+### 3) Generate content and run the app
 
 ```bash
 cd ..
@@ -61,12 +65,8 @@ python app/scripts/generate_content.py
 cd app && npm run dev
 ```
 
-## 一个建议的阅读顺序
+## Suggested reading path
 
-1. 先看 `app` 的 **Story / Pipeline**，搞清楚方法链路  
-2. 再去 **Compare / Explore** 看模型和候选结构表现  
-3. 最后进 **Notebook / Research / Audit** 对照代码与证据细节
-
----
-
-如果你在做辐射制冷方向，这个仓库更像一个“可验证研究工作台”，而不只是一个训练脚本集合。
+1. Start with **Story / Pipeline** for the end-to-end logic.
+2. Move to **Compare / Explore** for model behavior and candidate inspection.
+3. Use **Notebook / Research / Audit** for commands, evidence files, and references.
