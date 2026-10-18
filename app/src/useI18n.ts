@@ -14,7 +14,7 @@ export const I18nContext = createContext<I18nContextValue | null>(null)
 
 export function getPreferredLocale(): Locale {
   if (typeof window === 'undefined') {
-    return 'en'
+    return 'zh-Hans'
   }
 
   const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY)
@@ -22,8 +22,7 @@ export function getPreferredLocale(): Locale {
     return stored
   }
 
-  const browserLanguage = window.navigator.language.toLowerCase()
-  return browserLanguage.startsWith('zh') ? 'zh-Hans' : 'en'
+  return 'zh-Hans'
 }
 
 export function useI18n() {

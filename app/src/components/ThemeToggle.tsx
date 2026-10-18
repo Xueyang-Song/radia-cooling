@@ -1,45 +1,50 @@
-import { useEffect, useState } from 'react'
 import { useI18n } from '../useI18n'
+import { useTheme, type ThemeMode } from '../theme'
 
-type ThemeMode = 'light' | 'dark'
-
-function getPreferredTheme(): ThemeMode {
-  if (typeof window === 'undefined') {
-    return 'light'
-  }
-
-  const stored = window.localStorage.getItem('theme')
-  if (stored === 'light' || stored === 'dark') {
-    return stored
-  }
-
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+interface ThemeToggleProps {
+  compact?: boolean
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ compact = false }: ThemeToggleProps) {
   const { copy } = useI18n()
-  const [theme, setTheme] = useState<ThemeMode>(() => getPreferredTheme())
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark')
-    window.localStorage.setItem('theme', theme)
-  }, [theme])
+  const { resolvedTheme, systemTheme, themePreference, setThemePreference } = useTheme()
+  const isFollowingSystem = themePreference === 'system'
 
   const toggleTheme = () => {
-    const nextTheme: ThemeMode = theme === 'dark' ? 'light' : 'dark'
-    setTheme(nextTheme)
+    const nextTheme: ThemeMode = resolvedTheme === 'dark' ? 'light' : 'dark'
+
+    if (themePreference !== 'system' && nextTheme === systemTheme) {
+      setThemePreference('system')
+      return
+    }
+
+    setThemePreference(nextTheme)
   }
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      className="inline-flex max-w-full shrink-0 items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--panel-strong)] px-4 py-2.5 text-left text-sm font-semibold text-[var(--foreground)] shadow-[var(--panel-shadow)] transition hover:border-[var(--primary)] hover:text-[var(--foreground)] disabled:cursor-wait disabled:opacity-70"
+      className={[
+        'window-no-drag inline-flex max-w-full shrink-0 items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--panel-strong)] text-left font-semibold text-[var(--foreground)] shadow-[var(--panel-shadow)] transition hover:border-[var(--primary)] hover:text-[var(--foreground)] disabled:cursor-wait disabled:opacity-70',
+        compact ? 'px-3 py-2 text-xs' : 'px-4 py-2.5 text-sm',
+      ].join(' ')}
       aria-label={copy.controls.toggleTheme}
-      title={theme === 'dark' ? copy.controls.switchToLight : copy.controls.switchToDark}
+      title={isFollowingSystem
+        ? copy.controls.followSystem
+        : resolvedTheme === 'dark'
+          ? copy.controls.switchToLight
+          : copy.controls.switchToDark}
     >
-      <span className="text-base leading-none">{theme === 'dark' ? '◐' : '◑'}</span>
-      <span className="truncate">{theme === 'dark' ? copy.controls.darkMode : copy.controls.lightMode}</span>
+      <span className={`${compact ? 'text-sm' : 'text-base'} leading-none`}>
+        {resolvedTheme === 'dark' ? '◐' : '◑'}
+      </span>
+      <span className="truncate">{resolvedTheme === 'dark' ? copy.controls.darkMode : copy.controls.lightMode}</span>
+      {isFollowingSystem ? (
+        <span className="inline-flex items-center justify-center rounded-full bg-[var(--accent-soft)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--accent)]">
+          {copy.controls.systemShort}
+        </span>
+      ) : null}
     </button>
   )
 }

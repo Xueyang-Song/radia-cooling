@@ -2,6 +2,8 @@
 
 :root {
   color-scheme: light;
+  --titlebar-height: 0px;
+  --window-controls-width: 0px;
   --font-sans: 'Space Grotesk', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
   --radius: 0.9rem;
@@ -81,7 +83,9 @@ html[data-locale='zh-Hans'] {
 }
 
 html {
+  height: 100%;
   scroll-behavior: smooth;
+  overflow: hidden;
 }
 
 * {
@@ -91,6 +95,8 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
   color: var(--ink);
   font-family: var(--font-sans);
   background:
@@ -133,6 +139,16 @@ textarea {
 
 #root {
   min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
+}
+
+.window-drag {
+  -webkit-app-region: drag;
+}
+
+.window-no-drag {
+  -webkit-app-region: no-drag;
 }
 
 .surface-card {

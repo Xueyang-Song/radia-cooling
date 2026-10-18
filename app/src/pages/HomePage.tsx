@@ -43,12 +43,12 @@ export function HomePage({ siteData }: HomePageProps) {
             </div>
             <div className="surface-inset rounded-[1.3rem] px-4 py-4">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">{copy.home.dataset}</p>
-              <p className="mt-3 text-lg font-semibold text-[var(--ink)]">{siteData.dataset.numSamples} WPTherml samples</p>
+              <p className="mt-3 text-lg font-semibold text-[var(--ink)]">{copy.home.datasetCount(siteData.dataset.numSamples)}</p>
               <p className="mt-2 text-sm leading-7 text-[var(--muted)]">{copy.home.datasetDescription}</p>
             </div>
             <div className="surface-inset rounded-[1.3rem] px-4 py-4">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">{copy.home.research}</p>
-              <p className="mt-3 text-lg font-semibold text-[var(--ink)]">{siteData.researchLibrary.paperCount} papers reviewed</p>
+              <p className="mt-3 text-lg font-semibold text-[var(--ink)]">{copy.home.researchCount(siteData.researchLibrary.paperCount)}</p>
               <p className="mt-2 text-sm leading-7 text-[var(--muted)]">{copy.home.researchDescription}</p>
             </div>
           </div>

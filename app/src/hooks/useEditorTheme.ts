@@ -1,18 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useTheme } from '../theme'
 
 export function useEditorTheme() {
-  const [editorTheme, setEditorTheme] = useState<'light' | 'vs-dark'>('light')
-
-  useEffect(() => {
-    const updateTheme = () => {
-      setEditorTheme(document.documentElement.classList.contains('dark') ? 'vs-dark' : 'light')
-    }
-
-    updateTheme()
-    const observer = new MutationObserver(updateTheme)
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
-    return () => observer.disconnect()
-  }, [])
-
-  return editorTheme
+  const { resolvedTheme } = useTheme()
+  return resolvedTheme === 'dark' ? 'vs-dark' : 'light'
 }
